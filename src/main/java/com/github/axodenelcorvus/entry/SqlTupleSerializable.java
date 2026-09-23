@@ -1,9 +1,9 @@
 package com.github.axodenelcorvus.entry;
 
 /**
- * Contract for objects in program that can be serialized into a tuple string format, but can't be
- * deserialized from tuple string to object.
+ * Contract for objects that can be serialized into an SQL tuple string format for row construction,
+ * but not necessarily the other way around through deserialization.
  */
 public interface SqlTupleSerializable {
-    String toSqlTuple();
+    String toSqlTuple(SqlStringResolver sqlStrResolution);
 }

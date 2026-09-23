@@ -16,17 +16,16 @@ public record PokemonEntry(int id,
         }
     }
 
-    public String toSqlTuple() {
-        String sqlTupleResult = "(%d, %d, '%s', %b, %d, '%s', '%s', %b, %b)";
 
-        return String.format(sqlTupleResult,
+    public String toSqlTuple(SqlStringResolver sqlStrResolution) {
+        return  "(%d, %d, %s, %b, %d, %s, %s, %b, %b)".formatted(
                 id,
                 nationalPokeDexId,
-                name,
+                sqlStrResolution.apply(name),
                 hasGenderDifferences,
                 genderRate,
-                primaryType,
-                secondaryType,
+                sqlStrResolution.apply(primaryType),
+                sqlStrResolution.apply(secondaryType),
                 isMythical,
                 isLegendary
         );
