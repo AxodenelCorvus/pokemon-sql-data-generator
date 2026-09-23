@@ -8,7 +8,7 @@ import org.junit.jupiter.api.TestInstance;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class EntriesTest {
+class PokemonEntryTest {
     private final SqlStringResolver sqlStrResolver = new SqlStringResolver();
 
     @Test
@@ -19,7 +19,6 @@ class EntriesTest {
                 199,
                 199,
                 "Slowking",
-                false,
                 4,
                 "Water",
                 "Psychic",
@@ -38,7 +37,6 @@ class EntriesTest {
                 10166,
                 83,
                 "Farfetch'd",
-                false,
                 4,
                 "Fighting",
                 null,
@@ -57,7 +55,6 @@ class EntriesTest {
                 716,
                 716,
                 "Xerneas",
-                false,
                 -1,
                 "Fairy",
                 null,
