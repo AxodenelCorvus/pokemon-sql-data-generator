@@ -13,7 +13,7 @@ class PokemonEntryTest {
 
     @Test
     void testStandardPokemonEntryDeserializableToTuple() {
-        String expectedTupleStr = "(199, 199, 'Slowking', false, 4, 'Water', 'Psychic', false, false)";
+        String expectedTupleStr = "(199, 199, 'Slowking', 4, 'Water', 'Psychic', false, false)";
 
         PokemonEntry testSlowkingEntry = new PokemonEntry(
                 199,
@@ -32,7 +32,7 @@ class PokemonEntryTest {
 
     @Test
     void testGalarianPokemonWithApostropheName() {
-        String expectedTupleStr = "(10166, 83, 'Farfetch''d', false, 4, 'Fighting', null, false, false)";
+        String expectedTupleStr = "(10166, 83, 'Farfetch''d', 4, 'Fighting', null, false, false)";
         PokemonEntry testFarfetchdEntry = new PokemonEntry(
                 10166,
                 83,
@@ -50,7 +50,7 @@ class PokemonEntryTest {
 
     @Test
     void testPokemonUnknownGender() {
-        String expectedTupleStr = "(716, 716, 'Xerneas', false, null, 'Fairy', null, false, true)";
+        String expectedTupleStr = "(716, 716, 'Xerneas', null, 'Fairy', null, false, true)";
         PokemonEntry testFarfetchdEntry = new PokemonEntry(
                 716,
                 716,

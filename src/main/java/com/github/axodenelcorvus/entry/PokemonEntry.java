@@ -17,7 +17,7 @@ public record PokemonEntry(int id,
 
 
     public String toSqlTuple(SqlStringResolver sqlStrResolution) {
-        return  "(%d, %d, %s, %b, %d, %s, %s, %b, %b)".formatted(
+        return  "(%d, %d, %s, %d, %s, %s, %b, %b)".formatted(
                 id,
                 nationalPokeDexId,
                 sqlStrResolution.apply(name),

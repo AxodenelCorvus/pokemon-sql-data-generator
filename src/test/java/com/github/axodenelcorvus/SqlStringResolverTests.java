@@ -31,9 +31,12 @@ class SqlStringResolverTests {
     void testNullStringFieldResolution() {
         String fieldValueToResolve = null;
         String expectedFieldFormatAbsentSingleQuotes = "null";
+        String unexpectedFieldFormat = "'null'";
+
         String actualFieldFormatResult =
                 sqlStrResolver.apply(fieldValueToResolve);
 
+        assertNotEquals(unexpectedFieldFormat, actualFieldFormatResult);
         assertEquals(expectedFieldFormatAbsentSingleQuotes, actualFieldFormatResult);
     }
 }
