@@ -13,6 +13,7 @@ target/
 ### Project Files ###
 sql-generated-files/
 sql_generated_files/
+testDir*/
 
 ### Eclipse ###
 .apt_generated
