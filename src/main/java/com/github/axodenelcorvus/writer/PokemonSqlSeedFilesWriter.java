@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 //Supports writing and deleting file actions, based on user specified actions
 public class PokemonSqlSeedFilesWriter {
@@ -57,15 +58,16 @@ public class PokemonSqlSeedFilesWriter {
 
     /**
      * Creates new directory as needed when directory does not exist yet.
-     * In addition, to handle cases where specified directory is given, creates a new directory from default one if
+     * In addition, to handle cases where specified directory is given, can reset destination directory to default one of this class and
+     * create that directory if needed. This occurs when:
      * <li>Directory end-user specified exists but application does not have write privileges</li>
      * <li>Directory end-user specified exists as regular file with same name as specified directory</li>
      *
-     * @return The path of newly created directory, null if no new directory created
+     * @return The path of a newly created directory, or none if directory already exists.
      */
-    public Path createDestinationDirectoryIfNotExists() throws IOException {
+    public Optional<Path> createDestinationDirectoryIfNotExists() throws IOException {
         if (Files.notExists(directoryDestination))
-            return Files.createDirectory(directoryDestination);
+            return Optional.of(Files.createDirectory(directoryDestination));
 
         //These are expected to occur when specified directory is given by end user
         if ((!Files.isWritable(directoryDestination) || Files.isRegularFile(directoryDestination))) {
@@ -73,10 +75,10 @@ public class PokemonSqlSeedFilesWriter {
             System.out.printf("INFO: Default directory %s was set for use %n", DEFAULT_DIRECTORY_DEST);
 
             if (Files.notExists(directoryDestination))
-                return Files.createDirectory(directoryDestination);
+                return Optional.of(Files.createDirectory(directoryDestination));
         }
 
-        return null;
+        return Optional.empty();
     }
 
 
