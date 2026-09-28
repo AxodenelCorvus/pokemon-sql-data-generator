@@ -15,6 +15,8 @@ public record PokemonEntry(int id,
         }
     }
 
+    public static final String TABLE_NAME = "pokemon";
+    public static final String COLUMN_LIST = "(id, national_dex_id, name, gender_rate, primary_type, secondary_type, is_mythical, is_legendary)";
 
     public String toSqlTuple(SqlStringResolver sqlStrResolution) {
         return  "(%d, %d, %s, %d, %s, %s, %b, %b)".formatted(
