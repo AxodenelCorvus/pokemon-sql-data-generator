@@ -7,6 +7,7 @@ import com.github.axodenelcorvus.entry.SqlStringResolver;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,32 +16,43 @@ import java.util.List;
 //Supports writing and deleting file actions, based on user specified actions
 public class PokemonSqlSeedFilesWriter {
     private Path directoryDestination;
-    private final Path pokemonEntriesInsertionFile;
-    private final Path pokemonSpriteEntriesInsertionFile;
-    private static final String DEFAULT_DIR_USED = "generated_sql_files";
+    private final Path pokemonEntriesInsertionPath;
+    private final Path pokemonSpriteEntriesInsertionPath;
+    public static final String DEFAULT_DIRECTORY_DEST = "generated_sql_files";
 
     public PokemonSqlSeedFilesWriter(int generation) {
-        this(generation, DEFAULT_DIR_USED);
+        this(generation, DEFAULT_DIRECTORY_DEST);
     }
 
     public PokemonSqlSeedFilesWriter(int generation, String directoryDestination) {
-        if (directoryDestination == null)
-            directoryDestination = DEFAULT_DIR_USED;
-
-        //TODO Validate directory destination here
-        this.directoryDestination = Path.of(directoryDestination);
+        this.setDirectoryDestination(directoryDestination);
 
         String basePokemonInsertFileSegment = "insert_gen%dpokemon".formatted(generation);
-        pokemonEntriesInsertionFile = this.directoryDestination
+        pokemonEntriesInsertionPath = this.directoryDestination
                 .resolve(Path.of(
                         basePokemonInsertFileSegment + getFileSuffix()
                 ));
 
         String basePokemonSpriteInsertFileSegment = "insert_gen%d_significant_pokemon_sprites".formatted(generation);
-        pokemonSpriteEntriesInsertionFile = this.directoryDestination
+        pokemonSpriteEntriesInsertionPath = this.directoryDestination
                 .resolve(Path.of(
                         basePokemonSpriteInsertFileSegment + getFileSuffix()
                 ));
+    }
+
+    private void setDirectoryDestination(String dirDestStr) {
+        if (dirDestStr == null){
+            this.directoryDestination = Path.of(DEFAULT_DIRECTORY_DEST);
+            return;
+        }
+
+        this.directoryDestination = Path.of(dirDestStr).normalize();
+
+        if (this.directoryDestination.isAbsolute())
+            throw new InvalidPathException(dirDestStr, "Unexpected absolute path given");
+
+        if (this.directoryDestination.getNameCount() != 1 || dirDestStr.startsWith(".."))
+            throw new InvalidPathException(dirDestStr, "Only current directory or child directory is acceptable");
     }
 
     /**
@@ -52,16 +64,15 @@ public class PokemonSqlSeedFilesWriter {
      * @return The path of newly created directory, null if no new directory created
      */
     public Path createDestinationDirectoryIfNotExists() throws IOException {
-
-        if (Files.notExists(directoryDestination)) {
+        if (Files.notExists(directoryDestination))
             return Files.createDirectory(directoryDestination);
-        }
-        //These are expected to occur when specified directory is given by end user
-        else if ((!Files.isWritable(directoryDestination) || Files.isRegularFile(directoryDestination))) {
-            directoryDestination = Path.of(DEFAULT_DIR_USED);
-            System.out.println("INFO: Default directory was set for use");
 
-            if (!Files.exists(directoryDestination))
+        //These are expected to occur when specified directory is given by end user
+        if ((!Files.isWritable(directoryDestination) || Files.isRegularFile(directoryDestination))) {
+            directoryDestination = Path.of(DEFAULT_DIRECTORY_DEST);
+            System.out.printf("INFO: Default directory %s was set for use %n", DEFAULT_DIRECTORY_DEST);
+
+            if (Files.notExists(directoryDestination))
                 return Files.createDirectory(directoryDestination);
         }
 
@@ -70,7 +81,7 @@ public class PokemonSqlSeedFilesWriter {
 
 
     public void writeSpriteRowEntries(List<PokemonSpriteEntry> pokemonSpriteEntries) throws IOException {
-        try (BufferedWriter writer = Files.newBufferedWriter(pokemonSpriteEntriesInsertionFile)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(pokemonSpriteEntriesInsertionPath)) {
             SqlStringResolver usingStrLiteralResolver = new SqlStringResolver();
             String tupleToEnter;
             String lastTupleEntry = '\t' + pokemonSpriteEntries.getLast().toSqlTuple(usingStrLiteralResolver) + ';';
@@ -86,12 +97,12 @@ public class PokemonSqlSeedFilesWriter {
         }
     }
 
-    public Path getPokemonEntriesInsertionFile() {
-        return pokemonEntriesInsertionFile;
+    public Path getPokemonEntriesInsertionPath() {
+        return pokemonEntriesInsertionPath;
     }
 
-    public Path getPokemonSpriteEntriesInsertionFile() {
-        return pokemonSpriteEntriesInsertionFile;
+    public Path getPokemonSpriteEntriesInsertionPath() {
+        return pokemonSpriteEntriesInsertionPath;
     }
 
     /*
@@ -113,7 +124,7 @@ public class PokemonSqlSeedFilesWriter {
     }
 
     public void writePokemonRowEntries(List<PokemonEntry> pokemonEntries) throws IOException {
-        try (BufferedWriter writer = Files.newBufferedWriter(pokemonEntriesInsertionFile)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(pokemonEntriesInsertionPath)) {
             SqlStringResolver usingStrLiteralResolver = new SqlStringResolver();
             String tupleToEnter;
             String lastTupleEntry = '\t' + pokemonEntries.getLast().toSqlTuple(usingStrLiteralResolver) + ';';

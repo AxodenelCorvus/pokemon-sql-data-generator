@@ -52,7 +52,7 @@ public class SqlSeedFilesWriterPokemonEntryTests {
 
         testSeedsFilesWriter.writePokemonRowEntries(testEntries);
 
-        try (BufferedReader reader = Files.newBufferedReader(testSeedsFilesWriter.getPokemonEntriesInsertionFile())) {
+        try (BufferedReader reader = Files.newBufferedReader(testSeedsFilesWriter.getPokemonEntriesInsertionPath())) {
             assertAll("Test header of DML statement",
                     () -> assertEquals("INSERT INTO pokemon", reader.readLine()),
                     () -> assertEquals("\t(id, national_dex_id, name, gender_rate, primary_type, secondary_type, is_mythical, is_legendary)", reader.readLine()),

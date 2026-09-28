@@ -19,10 +19,10 @@ public class SqlSeedFilesWriterPokemonSpriteEntryTests {
     void testSpriteEntriesFilePathSuffixMatchesExpectedFormat() {
 
         String pokemonSpriteEntriesFile = testSeedsFilesWriter
-                .getPokemonSpriteEntriesInsertionFile().getFileName().toString();
+                .getPokemonSpriteEntriesInsertionPath().getFileName().toString();
 
         Path pokemonSpriteEntriesFileFullPath = testSeedsFilesWriter
-                .getPokemonSpriteEntriesInsertionFile();
+                .getPokemonSpriteEntriesInsertionPath();
 
         var expectedSuffix = "insert_gen" + GENERATION + "_significant_pokemon_sprites";
 
