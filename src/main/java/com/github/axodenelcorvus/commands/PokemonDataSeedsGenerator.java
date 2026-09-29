@@ -16,7 +16,7 @@ public class PokemonDataSeedsGenerator {
         pokemonDataExtractor = pokeApiDataExtractor;
     }
 
-    public void extractFiles() {
+    public void extractRecords() {
 
     }
 
