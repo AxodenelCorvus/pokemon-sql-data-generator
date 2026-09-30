@@ -11,7 +11,6 @@ import tools.jackson.databind.ObjectMapper;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
-import java.net.URI;
 import java.util.List;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -31,12 +30,11 @@ public class DeserializePokemonSpeciesDtoTests {
         List<PokemonVarietyDTO> varietiesListDTO = List.of(
                 new PokemonVarietyDTO(
                         true,
-                        URI.create("https://pokeapi.co/api/v2/pokemon/215/")
-                ),
+                        "sneasel"),
                 new PokemonVarietyDTO(
                         false,
-                        URI.create("https://pokeapi.co/api/v2/pokemon/10235/")
-        ));
+                        "sneasel-hisui")
+        );
 
         PokemonSpeciesDTO expectedSpeciesDTO = new PokemonSpeciesDTO(
                 215,
