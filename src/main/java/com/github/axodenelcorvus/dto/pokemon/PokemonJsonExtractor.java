@@ -7,8 +7,6 @@ import tools.jackson.databind.node.ArrayNode;
 
 public class PokemonJsonExtractor implements PokeApiJsonBodyExtractor<PokemonDTO> {
 
-    public PokemonJsonExtractor() { }
-
     public PokemonDTO extractFrom(JsonNode root) {
         int id = root.get("id").asInt();
         String primaryType;
@@ -27,6 +25,5 @@ public class PokemonJsonExtractor implements PokeApiJsonBodyExtractor<PokemonDTO
 
         return new PokemonDTO(id, primaryType, secondaryType);
     }
-
 
 }

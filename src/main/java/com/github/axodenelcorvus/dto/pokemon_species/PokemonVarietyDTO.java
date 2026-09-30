@@ -1,7 +1,9 @@
 package com.github.axodenelcorvus.dto.pokemon_species;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.axodenelcorvus.dto.PokeApiDto;
 
-public record SpeciesVarietyDTO(
+import java.net.URI;
+
+public record PokemonVarietyDTO(
         boolean isDefault,
-        @JsonProperty("pokemon") PokemonResourceDTO pokemonResource) { }
+        URI speciesLink) implements PokeApiDto { }

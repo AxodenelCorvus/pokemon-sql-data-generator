@@ -18,8 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class DeserializePokemonDtoTests {
     private final ObjectMapper jacksonMapper = new ObjectMapper();
 
-
-
     @Test
     @DisplayName("Does PokemonDTO deserialize correctly using JsonNode from Jackson dependency")
     void testDeserialize() {
