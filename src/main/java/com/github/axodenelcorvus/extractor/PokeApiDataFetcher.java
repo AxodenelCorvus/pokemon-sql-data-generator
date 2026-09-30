@@ -1,6 +1,7 @@
 package com.github.axodenelcorvus.extractor;
 
 
+import com.github.axodenelcorvus.dto.pokemon.PokemonDTO;
 import com.github.axodenelcorvus.dto.pokemon.PokemonJsonExtractor;
 import com.github.axodenelcorvus.dto.pokemon_species.PokemonSpeciesDTO;
 import com.github.axodenelcorvus.dto.pokemon_species.PokemonSpeciesJsonExtractor;
@@ -14,44 +15,43 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
-public class PokeApiDataExtractor {
+public class PokeApiDataFetcher {
 
     //This serves as base for which all data is fetched from (using the slug names fetched from this resource)
     private final URI generationURL;
-
     private static final String SPECIES_URL_FORMATTER = "https://pokeapi.co/api/v2/pokemon-species/%s/";
+    private static final String POKEMON_URL_FORMATTER = "https://pokeapi.co/api/v2/pokemon/%s/";
 
     private final HttpClient client;
     private final ObjectMapper mapper;
-    private final PokemonJsonExtractor pokemonExtractor;
-    private final PokemonSpeciesJsonExtractor pokemonSpeciesExtractor;
-    private static final int OK = 200;
+    private final PokemonJsonExtractor pokemonExtractor = new PokemonJsonExtractor();
+    private final PokemonSpeciesJsonExtractor pokemonSpeciesExtractor = new PokemonSpeciesJsonExtractor();
+    private static final int OK_STATUS = 200;
 
 
-    public PokeApiDataExtractor(HttpClient httpClient,
-                                ObjectMapper jacksonMapper,
-                                URI generationResourceToExtractFrom,
-                                PokemonJsonExtractor pokemonExtractor,
-                                PokemonSpeciesJsonExtractor pokemonSpeciesExtractor
-    ) {
+    public PokeApiDataFetcher(HttpClient httpClient, ObjectMapper jacksonMapper, URI generationResourceToExtractFrom) {
         client = httpClient;
         mapper = jacksonMapper;
         generationURL = generationResourceToExtractFrom;
-        this.pokemonExtractor = pokemonExtractor;
-        this.pokemonSpeciesExtractor = pokemonSpeciesExtractor;
     }
 
-    private HttpRequest attainRequestToMake(String pokeApiResourcePath) {
+    private static HttpRequest attainRequestToMake(String pokeApiResourcePath) {
         return HttpRequest.newBuilder()
                 .uri(URI.create(pokeApiResourcePath))
                 .GET()
                 .build();
     }
 
-    //TODO
-//    public PokemonDTO fetchPokemon(String slugName) {
-//
-//    }
+    public PokemonDTO fetchPokemon(String slugName) throws IOException,InterruptedException {
+        HttpRequest pokemonRequest = attainRequestToMake(String.format(POKEMON_URL_FORMATTER, slugName));
+        HttpResponse<String> resp = client.send(pokemonRequest, HttpResponse.BodyHandlers.ofString());
+
+        validateResponse(resp);
+
+        JsonNode pokemonBody = mapper.readTree(resp.body());
+
+        return pokemonExtractor.extractFrom(pokemonBody);
+    }
 
     public PokemonSpeciesDTO fetchPokemonSpecies(String slugName) throws IOException,InterruptedException {
         HttpRequest pokemonSpeciesRequest = attainRequestToMake(String.format(SPECIES_URL_FORMATTER, slugName));
@@ -66,7 +66,8 @@ public class PokeApiDataExtractor {
 
 
     public List<String> fetchPokemonSpeciesSlugNames() throws IOException,InterruptedException {
-        HttpRequest generationRequest = attainRequestToMake(generationURL.getPath());
+        HttpRequest generationRequest = attainRequestToMake(generationURL.toString());
+
         HttpResponse<String> resp = client.send(generationRequest, HttpResponse.BodyHandlers.ofString());
 
         validateResponse(resp);
@@ -85,12 +86,11 @@ public class PokeApiDataExtractor {
     }
 
     private static void validateResponse(HttpResponse<String> resp) {
-        if (resp.statusCode() != OK){
+        if (resp.statusCode() != OK_STATUS){
             var errorMsg = "An unexpected issue occurred " +
                     "communicating with server using %s ".formatted(resp.uri().getPath());
             throw new HttpResponseException(errorMsg, resp.statusCode());
         }
     }
-
 
 }
