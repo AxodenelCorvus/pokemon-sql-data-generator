@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
+
+import java.io.File;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -15,69 +18,28 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class DeserializePokemonDtoTests {
     private final ObjectMapper jacksonMapper = new ObjectMapper();
 
-    //Most data omitted compared to what API actually returns
-    static final String jsonPokemonSample1 = """
-    {
-      "id": 1,
-      "name": "bulbasaur",
-    
-      "types": [
-        {
-          "slot": 1,
-          "type": {
-            "name": "grass"
-          }
-        },
-    
-        {
-    
-          "slot": 2,
-          "type": {
-           "name": "poison"
-          }
-        }
-      ]
-    
-    }
-    """;
 
-    static  final String jsonPokemonSample2 = """
-    {
-      "id": 132,
-      "name": "ditto",
-    
-      "types": [
-        {
-          "slot": 1,
-          "type": {
-            "name": "normal"
-          }
-        }
-      ]
-    
-    }
-    """;
 
     @Test
     @DisplayName("Does PokemonDTO deserialize correctly using JsonNode from Jackson dependency")
     void testDeserialize() {
-        JsonNode jsonBody = jacksonMapper.readTree(jsonPokemonSample1);
+        JsonNode jsonBody = jacksonMapper.readTree(new File("src/test/resources/BulbasaurSample.json"));
         PokeApiJsonBodyExtractor<PokemonDTO> pokemonJsonBodyExtractor = new PokemonJsonExtractor();
         PokemonDTO dto = pokemonJsonBodyExtractor.extractFrom(jsonBody);
 
-        assertEquals(1, dto.ID());
+        assertEquals(1, dto.id());
         assertEquals("grass", dto.primaryType());
         assertEquals("poison", dto.secondaryType());
     }
 
     @Test
-    @DisplayName("Does PokemonDTO deserialize correctly using")
+    @DisplayName("Does PokemonDTO deserialize correctly when 2nd type is absent")
     void testDeserializeAbsentSecondaryType() {
-        JsonNode jsonBody = jacksonMapper.readTree(jsonPokemonSample2);
+        JsonNode jsonBody = jacksonMapper.readTree(new File("src/test/resources/DittoSample.json"));
         PokeApiJsonBodyExtractor<PokemonDTO> pokemonJsonBodyExtractor = new PokemonJsonExtractor();
         PokemonDTO dto = pokemonJsonBodyExtractor.extractFrom(jsonBody);
 
-        assertEquals(132, dto.ID());
+        assertEquals(132, dto.id());
         assertEquals("normal", dto.primaryType());
         assertNull(dto.secondaryType());
     }
