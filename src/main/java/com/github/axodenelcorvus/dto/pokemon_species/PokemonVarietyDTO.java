@@ -2,6 +2,6 @@ package com.github.axodenelcorvus.dto.pokemon_species;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record SpeciesVariety(
+public record SpeciesVarietyDTO(
         boolean isDefault,
-        @JsonProperty("pokemon") PokemonResource pokemonResource) { }
+        @JsonProperty("pokemon") PokemonResourceDTO pokemonResource) { }
