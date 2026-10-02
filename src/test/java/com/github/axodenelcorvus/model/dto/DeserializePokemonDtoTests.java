@@ -1,8 +1,7 @@
-package com.github.axodenelcorvus.jackson;
+package com.github.axodenelcorvus.model.dto;
 
-import com.github.axodenelcorvus.dto.PokeApiJsonBodyExtractor;
-import com.github.axodenelcorvus.dto.pokemon.PokemonDTO;
-import com.github.axodenelcorvus.dto.pokemon.PokemonJsonExtractor;
+import com.github.axodenelcorvus.model.dto.pokemon.PokemonDTO;
+import com.github.axodenelcorvus.model.dto.pokemon.PokemonJsonExtractor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -21,11 +20,12 @@ public class DeserializePokemonDtoTests {
     @Test
     @DisplayName("Does PokemonDTO deserialize correctly using JsonNode from Jackson dependency")
     void testDeserialize() {
-        JsonNode jsonBody = jacksonMapper.readTree(new File("src/test/resources/BulbasaurSample.json"));
+        JsonNode jsonBody = jacksonMapper.readTree(new File("src/test/resources/pokemon/BulbasaurSample.json"));
         PokeApiJsonBodyExtractor<PokemonDTO> pokemonJsonBodyExtractor = new PokemonJsonExtractor();
         PokemonDTO dto = pokemonJsonBodyExtractor.extractFrom(jsonBody);
 
         assertEquals(1, dto.id());
+        assertEquals("bulbasaur", dto.slugName());
         assertEquals("grass", dto.primaryType());
         assertEquals("poison", dto.secondaryType());
     }
@@ -33,12 +33,13 @@ public class DeserializePokemonDtoTests {
     @Test
     @DisplayName("Does PokemonDTO deserialize correctly when 2nd type is absent")
     void testDeserializeAbsentSecondaryType() {
-        JsonNode jsonBody = jacksonMapper.readTree(new File("src/test/resources/DittoSample.json"));
+        JsonNode jsonBody = jacksonMapper.readTree(new File("src/test/resources/pokemon/CorsolaSample.json"));
         PokeApiJsonBodyExtractor<PokemonDTO> pokemonJsonBodyExtractor = new PokemonJsonExtractor();
         PokemonDTO dto = pokemonJsonBodyExtractor.extractFrom(jsonBody);
 
-        assertEquals(132, dto.id());
-        assertEquals("normal", dto.primaryType());
+        assertEquals(10173, dto.id());
+        assertEquals("corsola-galar", dto.slugName());
+        assertEquals("ghost", dto.primaryType());
         assertNull(dto.secondaryType());
     }
 

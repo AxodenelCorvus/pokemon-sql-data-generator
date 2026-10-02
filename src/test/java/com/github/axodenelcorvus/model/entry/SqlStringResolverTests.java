@@ -1,6 +1,5 @@
-package com.github.axodenelcorvus;
+package com.github.axodenelcorvus.model.entry;
 
-import com.github.axodenelcorvus.entry.SqlStringResolver;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

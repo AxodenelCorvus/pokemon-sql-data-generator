@@ -1,8 +1,8 @@
-package com.github.axodenelcorvus.jackson;
+package com.github.axodenelcorvus.model.dto;
 
-import com.github.axodenelcorvus.dto.pokemon_species.PokemonSpeciesDTO;
-import com.github.axodenelcorvus.dto.pokemon_species.PokemonSpeciesJsonExtractor;
-import com.github.axodenelcorvus.dto.pokemon_species.PokemonVarietyDTO;
+import com.github.axodenelcorvus.model.dto.pokemon_species.PokemonSpeciesDTO;
+import com.github.axodenelcorvus.model.dto.pokemon_species.PokemonSpeciesJsonExtractor;
+import com.github.axodenelcorvus.model.dto.pokemon_species.PokemonVarietyDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -23,7 +23,7 @@ public class DeserializePokemonSpeciesDtoTests {
         var speciesExtractor = new PokemonSpeciesJsonExtractor();
 
         JsonNode jsonBody = jacksonMapper
-                .readTree(new File("src/test/resources/SneaselSample.json"));
+                .readTree(new File("src/test/resources/pokemon_species/SneaselSample.json"));
 
         PokemonSpeciesDTO pokemonSpeciesDTO = speciesExtractor.extractFrom(jsonBody);
 

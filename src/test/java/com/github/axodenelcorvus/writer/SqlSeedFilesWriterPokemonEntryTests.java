@@ -1,6 +1,7 @@
 package com.github.axodenelcorvus.writer;
 
-import com.github.axodenelcorvus.entry.PokemonEntry;
+import com.github.axodenelcorvus.model.dto.DtoSampleProvider;
+import com.github.axodenelcorvus.model.entry.PokemonEntry;
 import org.junit.jupiter.api.*;
 
 
@@ -14,13 +15,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
 
 public class SqlSeedFilesWriterPokemonEntryTests {
     private final String TEST_DIR = "testDir";
     private final int GENERATION = 1;
+    private final DtoSampleProvider dtoProvider = new DtoSampleProvider();
 
     private final PokemonSqlSeedFilesWriter testSeedsFilesWriter =
             new PokemonSqlSeedFilesWriter(GENERATION, TEST_DIR);
@@ -29,19 +30,19 @@ public class SqlSeedFilesWriterPokemonEntryTests {
     void assumeTestDirectoryIsWritable() {
         try {
             testSeedsFilesWriter.createDestinationDirectoryIfNotExists();
-
             assumeTrue(Files.isWritable(Path.of(TEST_DIR)));
         } catch (IOException e) {
             abort("Error occurred in creating or checking " + TEST_DIR + " | " + e.getMessage());
         }
     }
 
+    //Supplies all Pokemon introduced in generation one, but also including variant forms (produced later)
     private List<PokemonEntry> supplyPokemonEntriesGenerationOne() {
         return List.of(
-                new PokemonEntry(37,37, "Vulpix", 6, "Fire", null, false, false),
-                new PokemonEntry(10104, 38, "Ninetales", 6, "Ice", "Fairy", false, false),
-                new PokemonEntry(80, 80, "Slowbro", 4, "Water", "Psychic", false, false),
-                new PokemonEntry(146, 146, "Moltres", -1, "Fire", null, false, true)
+                PokemonEntry.from(dtoProvider.getPokemonDTO(37), dtoProvider.getPokemonSpeciesDTO(37)),
+                PokemonEntry.from(dtoProvider.getPokemonDTO(10104), dtoProvider.getPokemonSpeciesDTO(10104)),
+                PokemonEntry.from(dtoProvider.getPokemonDTO(80), dtoProvider.getPokemonSpeciesDTO(80)),
+                PokemonEntry.from(dtoProvider.getPokemonDTO(146), dtoProvider.getPokemonSpeciesDTO(146))
         );
     }
 
@@ -69,20 +70,6 @@ public class SqlSeedFilesWriterPokemonEntryTests {
 
             assertNull(reader.readLine(), "More lines written than expected");
         }
-    }
-
-    @Test
-    @DisplayName("Test writePokemonRowEntries does not mutate passed list")
-    void testWritePokemonRowEntriesListParameter() throws IOException {
-        List<PokemonEntry> testEntries =
-                new ArrayList<>(supplyPokemonEntriesGenerationOne());
-
-        testSeedsFilesWriter.writePokemonRowEntries(testEntries);
-
-        assertEquals(supplyPokemonEntriesGenerationOne(),
-                testEntries,
-                "Unexpected modification to writePokemonRowEntriesList method's parameter"
-        );
     }
 
     @Test

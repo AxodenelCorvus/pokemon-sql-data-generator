@@ -1,12 +1,12 @@
 {
-  "id": 132,
-  "name": "ditto",
+  "id": 10173,
+  "name": "corsola-galar",
 
   "types": [
     {
       "slot": 1,
       "type": {
-        "name": "normal"
+        "name": "ghost"
       }
     }
   ]
