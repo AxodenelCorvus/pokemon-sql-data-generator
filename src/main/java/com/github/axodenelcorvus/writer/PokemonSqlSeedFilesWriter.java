@@ -1,8 +1,8 @@
 package com.github.axodenelcorvus.writer;
 
-import com.github.axodenelcorvus.entry.PokemonEntry;
-import com.github.axodenelcorvus.entry.PokemonSpriteEntry;
-import com.github.axodenelcorvus.entry.SqlStringResolver;
+import com.github.axodenelcorvus.model.entry.PokemonEntry;
+import com.github.axodenelcorvus.model.entry.PokemonSpriteEntry;
+import com.github.axodenelcorvus.model.entry.SqlStringResolver;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

@@ -1,10 +1,10 @@
 package com.github.axodenelcorvus.extractor;
 
 
-import com.github.axodenelcorvus.dto.pokemon.PokemonDTO;
-import com.github.axodenelcorvus.dto.pokemon.PokemonJsonExtractor;
-import com.github.axodenelcorvus.dto.pokemon_species.PokemonSpeciesDTO;
-import com.github.axodenelcorvus.dto.pokemon_species.PokemonSpeciesJsonExtractor;
+import com.github.axodenelcorvus.model.dto.pokemon.PokemonDTO;
+import com.github.axodenelcorvus.model.dto.pokemon.PokemonJsonExtractor;
+import com.github.axodenelcorvus.model.dto.pokemon_species.PokemonSpeciesDTO;
+import com.github.axodenelcorvus.model.dto.pokemon_species.PokemonSpeciesJsonExtractor;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
