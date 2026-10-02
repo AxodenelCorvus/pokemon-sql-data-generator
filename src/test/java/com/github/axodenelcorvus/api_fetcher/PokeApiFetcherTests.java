@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("network")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class PokeApiFetcherTests {
+class PokeApiFetcherTests {
     private final PokeApiDataFetcher fetcher;
     private static final String GENERATION_TEST_URL_USED = "https://pokeapi.co/api/v2/generation/1";
     private final HttpClient clientUsed = HttpClient.newHttpClient();

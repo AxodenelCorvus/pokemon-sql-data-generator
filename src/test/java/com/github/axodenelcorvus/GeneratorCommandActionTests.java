@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GeneratorCommandActionTests {
+class GeneratorCommandActionTests {
     private final GeneratorCommandAction generatorCommand = new GeneratorCommandAction();
 
 

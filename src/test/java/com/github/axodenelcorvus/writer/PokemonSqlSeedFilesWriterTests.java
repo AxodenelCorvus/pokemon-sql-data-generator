@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PokemonSqlSeedFilesWriterTests {
+class PokemonSqlSeedFilesWriterTests {
 
     @Test
     @DisplayName("Path object for default directory created correctly when correlating constructor called")

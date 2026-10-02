@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class DeserializePokemonDtoTests {
+class DeserializePokemonDtoTests {
     private final ObjectMapper jacksonMapper = new ObjectMapper();
 
     @Test

@@ -14,7 +14,7 @@ import java.io.File;
 import java.util.List;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class DeserializePokemonSpeciesDtoTests {
+class DeserializePokemonSpeciesDtoTests {
     private final ObjectMapper jacksonMapper = new ObjectMapper();
 
     @Test

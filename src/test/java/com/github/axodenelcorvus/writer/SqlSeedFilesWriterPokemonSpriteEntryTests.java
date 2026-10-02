@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.abort;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-public class SqlSeedFilesWriterPokemonSpriteEntryTests {
+class SqlSeedFilesWriterPokemonSpriteEntryTests {
     private final String TEST_DIR = "testDir";
     private final int GENERATION = 1;
 

@@ -18,7 +18,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 
-public class SqlSeedFilesWriterPokemonEntryTests {
+class SqlSeedFilesWriterPokemonEntryTests {
     private final String TEST_DIR = "testDir";
     private final int GENERATION = 1;
     private final DtoSampleProvider dtoProvider = new DtoSampleProvider();
