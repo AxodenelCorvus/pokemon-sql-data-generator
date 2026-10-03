@@ -34,6 +34,7 @@ public class DtoSampleProvider {
         pokemonDtoById.put(146, new PokemonDTO(146, "moltres", "fire", null));
         pokemonDtoById.put(10166, new PokemonDTO(10166, "farfetchd-galar", "fighting", null));
         pokemonDtoById.put(151, new PokemonDTO(151, "mew", "psychic", null));
+        pokemonDtoById.put(10235, new PokemonDTO(10235, "sneasel-hisui", "fighting", "poison"));
 
         pokemonSpeciesDtoById
                 .put(37, new PokemonSpeciesDTO(37, false, 6, "Vulpix", false, false, emptyList));
@@ -47,6 +48,8 @@ public class DtoSampleProvider {
                 .put(10166, new PokemonSpeciesDTO(83, false, 4, "Farfetch'd", false, false, emptyList));
         pokemonSpeciesDtoById
                 .put(151, new PokemonSpeciesDTO(151, false, -1, "Mew", false, true, emptyList));
+        pokemonSpeciesDtoById
+                .put(10235, new PokemonSpeciesDTO(10235, true, 4, "Sneasel", false, false, emptyList));
     }
 
 
