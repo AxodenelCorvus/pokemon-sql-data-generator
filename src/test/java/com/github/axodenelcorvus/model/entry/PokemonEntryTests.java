@@ -1,6 +1,6 @@
 package com.github.axodenelcorvus.model.entry;
 
-import com.github.axodenelcorvus.model.dto.DtoSampleProvider;
+import com.github.axodenelcorvus.model.DtoSampleProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class PokemonEntryTests {
     private final SqlStringResolver sqlStrResolver = new SqlStringResolver();
     private final DtoSampleProvider dtoProvider = new DtoSampleProvider();
-
 
     @Test
     @DisplayName("Test a standard entry")

@@ -1,8 +1,8 @@
-package com.github.axodenelcorvus.model.dto;
+package com.github.axodenelcorvus.model;
 
-import com.github.axodenelcorvus.model.dto.pokemon.PokemonDTO;
-import com.github.axodenelcorvus.model.dto.pokemon_species.PokemonSpeciesDTO;
-import com.github.axodenelcorvus.model.dto.pokemon_species.PokemonVarietyDTO;
+import com.github.axodenelcorvus.model.dto.PokemonDTO;
+import com.github.axodenelcorvus.model.dto.PokemonSpeciesDTO;
+import com.github.axodenelcorvus.model.dto.PokemonVarietyDTO;
 
 import java.util.HashMap;
 import java.util.List;

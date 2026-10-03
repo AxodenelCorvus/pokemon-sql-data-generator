@@ -49,7 +49,7 @@ class GeneratorCommandActionTests {
         generatorCommand.setup("1");
         assertTrue(generatorCommand.isSetup(),
                 "Generator command was not updated to valid runnable state");
-        assertEquals(1, generatorCommand.getGeneration());
+        assertEquals(1, generatorCommand.getGenerationScope());
     }
 
 
@@ -108,7 +108,7 @@ class GeneratorCommandActionTests {
         generatorCommand.setup(generation, "--to-dir", "sql_pokemon");
         assertTrue(generatorCommand.isSetup());
         assertEquals("sql_pokemon", generatorCommand.getOptionalDirectoryDestination());
-        assertEquals(Integer.parseInt(generation), generatorCommand.getGeneration());
+        assertEquals(Integer.parseInt(generation), generatorCommand.getGenerationScope());
         assertFalse(generatorCommand.hasBeenExhausted(),
                 "setup changes hasBeenExhausted field inside when it should not");
     }

@@ -1,9 +1,7 @@
 package com.github.axodenelcorvus.model.entry;
 
-
-
-import com.github.axodenelcorvus.model.dto.pokemon.PokemonDTO;
-import com.github.axodenelcorvus.model.dto.pokemon_species.PokemonSpeciesDTO;
+import com.github.axodenelcorvus.model.dto.PokemonDTO;
+import com.github.axodenelcorvus.model.dto.PokemonSpeciesDTO;
 
 public class PokemonEntry implements SqlTupleSerializable {
     private int id;

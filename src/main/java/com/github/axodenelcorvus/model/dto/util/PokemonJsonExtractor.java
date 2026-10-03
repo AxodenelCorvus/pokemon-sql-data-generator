@@ -1,11 +1,11 @@
-package com.github.axodenelcorvus.model.dto.pokemon;
+package com.github.axodenelcorvus.model.dto.util;
 
-import com.github.axodenelcorvus.model.dto.PokeApiJsonBodyExtractor;
+import com.github.axodenelcorvus.model.dto.PokemonDTO;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.node.ArrayNode;
 
 
-public class PokemonJsonExtractor implements PokeApiJsonBodyExtractor<PokemonDTO> {
+class PokemonJsonExtractor implements PokeApiJsonBodyExtractor<PokemonDTO> {
 
     public PokemonDTO extractFrom(JsonNode root) {
         int id = root.get("id").asInt();

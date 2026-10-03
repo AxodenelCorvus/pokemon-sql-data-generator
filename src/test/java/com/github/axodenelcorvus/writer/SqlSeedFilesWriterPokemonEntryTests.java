@@ -1,6 +1,6 @@
 package com.github.axodenelcorvus.writer;
 
-import com.github.axodenelcorvus.model.dto.DtoSampleProvider;
+import com.github.axodenelcorvus.model.DtoSampleProvider;
 import com.github.axodenelcorvus.model.entry.PokemonEntry;
 import org.junit.jupiter.api.*;
 

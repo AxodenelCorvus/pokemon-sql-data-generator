@@ -1,11 +1,10 @@
 package com.github.axodenelcorvus.api_fetcher;
 
-import com.github.axodenelcorvus.extractor.PokeApiDataFetcher;
+import com.github.axodenelcorvus.extractor.PokeApiFetcher;
+import com.github.axodenelcorvus.model.dto.util.PokeApiJsonParser;
 import org.junit.jupiter.api.*;
-import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.http.HttpClient;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,15 +15,15 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag("network")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PokeApiFetcherTests {
-    private final PokeApiDataFetcher fetcher;
-    private static final String GENERATION_TEST_URL_USED = "https://pokeapi.co/api/v2/generation/1";
+    private static final int GENERATION_TEST_ID = 1;
+    private final PokeApiFetcher fetcher;
     private final HttpClient clientUsed = HttpClient.newHttpClient();
 
     PokeApiFetcherTests() {
-        this.fetcher = new PokeApiDataFetcher(
+        this.fetcher = new PokeApiFetcher(
                 clientUsed,
-                new ObjectMapper(),
-                URI.create(GENERATION_TEST_URL_USED)
+                new PokeApiJsonParser(),
+                GENERATION_TEST_ID
         );
     }
 

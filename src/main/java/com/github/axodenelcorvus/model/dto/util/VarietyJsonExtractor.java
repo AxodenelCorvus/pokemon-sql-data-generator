@@ -1,10 +1,10 @@
-package com.github.axodenelcorvus.model.dto.pokemon_species;
+package com.github.axodenelcorvus.model.dto.util;
 
-import com.github.axodenelcorvus.model.dto.PokeApiJsonBodyExtractor;
+import com.github.axodenelcorvus.model.dto.PokemonVarietyDTO;
 import tools.jackson.databind.JsonNode;
 
 
-public class VarietyJsonExtractor implements PokeApiJsonBodyExtractor<PokemonVarietyDTO> {
+class VarietyJsonExtractor implements PokeApiJsonBodyExtractor<PokemonVarietyDTO> {
 
     public PokemonVarietyDTO extractFrom(JsonNode root) {
         var isDefault = root.get("is_default").asBoolean();

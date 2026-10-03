@@ -1,6 +1,4 @@
-package com.github.axodenelcorvus.model.dto.pokemon_species;
-
-import com.github.axodenelcorvus.model.dto.PokeApiDto;
+package com.github.axodenelcorvus.model.dto;
 
 import java.util.List;
 

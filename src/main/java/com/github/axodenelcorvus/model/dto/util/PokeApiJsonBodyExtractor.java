@@ -1,9 +1,10 @@
-package com.github.axodenelcorvus.model.dto;
+package com.github.axodenelcorvus.model.dto.util;
 
+import com.github.axodenelcorvus.model.dto.PokeApiDto;
 import tools.jackson.databind.JsonNode;
 
 
-public interface PokeApiJsonBodyExtractor<T extends PokeApiDto> {
+interface PokeApiJsonBodyExtractor<T extends PokeApiDto> {
     /**
      * Extracts from a Poke API JSON body in memory the necessary data to load
      * into a PokeApiDto object before returning.

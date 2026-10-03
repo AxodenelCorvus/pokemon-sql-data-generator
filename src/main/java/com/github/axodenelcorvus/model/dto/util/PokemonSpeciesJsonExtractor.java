@@ -1,15 +1,16 @@
-package com.github.axodenelcorvus.model.dto.pokemon_species;
+package com.github.axodenelcorvus.model.dto.util;
 
-import com.github.axodenelcorvus.model.dto.PokeApiJsonBodyExtractor;
+import com.github.axodenelcorvus.model.dto.PokemonSpeciesDTO;
+import com.github.axodenelcorvus.model.dto.PokemonVarietyDTO;
 import tools.jackson.databind.JsonNode;
 
 import java.util.Collection;
 import java.util.List;
 
-public class PokemonSpeciesJsonExtractor implements PokeApiJsonBodyExtractor<PokemonSpeciesDTO> {
+class PokemonSpeciesJsonExtractor implements PokeApiJsonBodyExtractor<PokemonSpeciesDTO> {
     private final VarietyJsonExtractor varietyJsonExtractor = new VarietyJsonExtractor();
 
-    //This scan exists because it can attain the capitalized name
+    //This scan exists because it can obtain the capitalized name
     //with special characters. Example: Nidoran♂
     private String findEnglishName(Collection<JsonNode> namesNode) {
         String englishName = "";
@@ -45,7 +46,6 @@ public class PokemonSpeciesJsonExtractor implements PokeApiJsonBodyExtractor<Pok
                 .stream()
                 .map(varietyJsonExtractor::extractFrom)
                 .toList();
-
 
         return new PokemonSpeciesDTO(dexId, hasGenderDifferences, genderRate, name, isLegendary, isMythical, varieties);
     }
