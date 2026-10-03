@@ -3,22 +3,23 @@ package com.github.axodenelcorvus.commands;
 import com.github.axodenelcorvus.commands.exceptions.MissingArgumentException;
 import com.github.axodenelcorvus.commands.exceptions.RepeatedOptionException;
 import com.github.axodenelcorvus.commands.exceptions.UnsupportedOptionException;
+import com.github.axodenelcorvus.extractor.PokeApiFetcher;
+import com.github.axodenelcorvus.model.dto.util.PokeApiJsonParser;
 import com.github.axodenelcorvus.writer.PokemonSqlSeedFilesWriter;
-import com.github.axodenelcorvus.extractor.PokeApiDataExtractor;
 
+import java.net.http.HttpClient;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 public class GeneratorCommandAction implements CoreSubcommandAction {
-    public static final boolean REPEAT_FLAGS = false;
 
     //Supported range of generations
     public static final int FIRST_GENERATION = 1;
     public static final int LATEST_GENERATION = 9;
 
     private String optionalDirectoryDestination;
-    private int generation;
+    private int generationScope;
     private PokemonDataSeedsGenerator pokemonDataSeedsGenerator;
     private boolean hasBeenExhausted;
 
@@ -74,7 +75,7 @@ public class GeneratorCommandAction implements CoreSubcommandAction {
         optionalDirectoryDestination = destinationPath;
     }
 
-    private void setGeneration(String generationFromUser) {
+    private void setGenerationScope(String generationFromUser) {
         int intGeneration;
 
         try { intGeneration = Integer.parseInt(generationFromUser); }
@@ -88,12 +89,12 @@ public class GeneratorCommandAction implements CoreSubcommandAction {
         if (isGenerationInvalid)
             throw new IllegalArgumentException("Specified generation not in supported range %d to %d".formatted(FIRST_GENERATION, LATEST_GENERATION));
 
-        this.generation = intGeneration;
+        this.generationScope = intGeneration;
     }
 
     public String getOptionalDirectoryDestination() { return optionalDirectoryDestination; }
 
-    public int getGeneration() { return generation; }
+    public int getGenerationScope() { return generationScope; }
 
     @Override
     public boolean isSetup() {
@@ -107,25 +108,26 @@ public class GeneratorCommandAction implements CoreSubcommandAction {
 
     @Override
     public void setup(String... args) {
-        //Do not run on multiple calls, silently ignore
         if (this.isSetup())
             return;
 
         if (args.length == 0)
             throw new MissingArgumentException("Required generation in range %d to %d".formatted(FIRST_GENERATION, LATEST_GENERATION));
 
-        this.setGeneration(args[0]);
+        this.setGenerationScope(args[0]);
 
         if (args.length >= 2)
             this.configureWithOptions(Arrays.copyOfRange(args, 1, args.length));
 
 
         //WIRING LOGIC
-        this.pokemonDataSeedsGenerator = new PokemonDataSeedsGenerator(
-                new PokemonSqlSeedFilesWriter(generation, optionalDirectoryDestination),
-                new PokeApiDataExtractor()
-        );
-    }
+        var sqlSeedsFileWriter = new PokemonSqlSeedFilesWriter(generationScope, optionalDirectoryDestination);
+        HttpClient client = HttpClient.newHttpClient();
+        var pokeApiDataFetcher = new PokeApiFetcher(client, new PokeApiJsonParser(), generationScope);
+        this.pokemonDataSeedsGenerator =
+                new PokemonDataSeedsGenerator(sqlSeedsFileWriter, client, pokeApiDataFetcher);
+
+        }
 
     @Override
     public int execute() {
@@ -138,7 +140,7 @@ public class GeneratorCommandAction implements CoreSubcommandAction {
 
         //Call generate files
 
-        hasBeenExhausted = false;
+        hasBeenExhausted = true;
         return 0;
     }
 
