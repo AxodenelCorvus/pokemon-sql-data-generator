@@ -9,15 +9,15 @@ public final class PokemonSpriteEntry implements SqlTupleSerializable {
     private final String staticImgResourcePath;
 
 
-    public PokemonSpriteEntry(int pokemonId, GenderSpriteForm genderForm) {
-        this(pokemonId, genderForm, RegionalForm.STANDARD);
+    public PokemonSpriteEntry(int pokemonId, GenderSpriteForm genderForm, int nationalDexId) {
+        this(pokemonId, genderForm, RegionalForm.STANDARD, nationalDexId);
     }
 
-    public PokemonSpriteEntry(int pokemonId, GenderSpriteForm genderForm, RegionalForm region) {
+    public PokemonSpriteEntry(int pokemonId, GenderSpriteForm genderForm, RegionalForm region, int nationalDexId) {
         String genderFormDescriptor = findGenderDescriptor(genderForm);
         String regionalFormDescriptor = "";
 
-        String[] staticImgResourcePath = { "universal_default", String.valueOf(pokemonId) };
+        String[] staticImgResourcePath = { "universal_default", String.valueOf(nationalDexId) };
 
         if (genderForm.equals(GenderSpriteForm.FEMALE))
             staticImgResourcePath[0] = "female";
@@ -39,6 +39,10 @@ public final class PokemonSpriteEntry implements SqlTupleSerializable {
             case GenderSpriteForm.FEMALE -> "Female";
             case GenderSpriteForm.NONE ->   "Default";
         };
+    }
+
+    public int getForeignKey() {
+        return pokemonId;
     }
 
     public String getSpriteFormDescriptor() {
