@@ -1,5 +1,6 @@
 package com.github.axodenelcorvus.commands;
 
+import com.github.axodenelcorvus.commands.coordinators.SeedsGeneratorCoordinator;
 import com.github.axodenelcorvus.commands.exceptions.MissingArgumentException;
 import com.github.axodenelcorvus.commands.exceptions.RepeatedOptionException;
 import com.github.axodenelcorvus.commands.exceptions.UnsupportedOptionException;
@@ -12,7 +13,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class GeneratorCommandContext implements CoreSubcommandContextualizer {
+public class SeedsGeneratorCommandContext implements CoreSubcommandContextualizer {
 
     //Supported range of generations
     public static final int FIRST_GENERATION = 1;
@@ -21,6 +22,8 @@ public class GeneratorCommandContext implements CoreSubcommandContextualizer {
     private String optionalDirectoryDestination;
     private int generationScope;
     boolean isSetup;
+
+    SeedsGeneratorCommandContext() {}
 
     /*
     Rules for options:
@@ -120,11 +123,11 @@ public class GeneratorCommandContext implements CoreSubcommandContextualizer {
         var pokeApiDataFetcher =
                 new PokeApiFetcher(client, new PokeApiJsonParser(), generationScope);
 
-        PokemonDataSeedsGenerator pokemonDataSeedsGenerator =
-                new PokemonDataSeedsGenerator(sqlSeedsFileWriter, client, pokeApiDataFetcher);
+        SeedsGeneratorCoordinator seedsGeneratorCoordinator =
+                new SeedsGeneratorCoordinator(sqlSeedsFileWriter, client, pokeApiDataFetcher);
 
         isSetup = true;
-        return new GeneratorCommandAction(pokemonDataSeedsGenerator);
+        return new SeedsGeneratorCommandAction(seedsGeneratorCoordinator);
     }
 
 }

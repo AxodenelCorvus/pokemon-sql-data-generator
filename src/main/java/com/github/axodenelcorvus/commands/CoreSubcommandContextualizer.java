@@ -7,7 +7,7 @@ public interface CoreSubcommandContextualizer {
     static Optional<CoreSubcommandContextualizer> supplyContext(String subcommandCandidate) {
 
         if (subcommandCandidate.equals("generate")) {
-            return Optional.of(new GeneratorCommandContext());
+            return Optional.of(new SeedsGeneratorCommandContext());
         }
 
         if (subcommandCandidate.equals("help")) {

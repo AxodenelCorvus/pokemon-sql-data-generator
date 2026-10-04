@@ -1,4 +1,4 @@
-package com.github.axodenelcorvus.commands;
+package com.github.axodenelcorvus.commands.coordinators;
 
 import com.github.axodenelcorvus.fetcher.PokeApiFetcher;
 import com.github.axodenelcorvus.model.entry.PokemonEntriesBundle;
@@ -8,12 +8,12 @@ import java.io.IOException;
 import java.net.http.HttpClient;
 import java.util.List;
 
-public class PokemonDataSeedsGenerator {
+public class SeedsGeneratorCoordinator {
     private final PokemonSqlSeedFilesWriter sqlFilesWriter;
     private final PokeApiFetcher apiFetcher;
     private final HttpClient restClient;
 
-    public PokemonDataSeedsGenerator(PokemonSqlSeedFilesWriter pokemonSqlSeedFilesWriter,
+    public SeedsGeneratorCoordinator(PokemonSqlSeedFilesWriter pokemonSqlSeedFilesWriter,
                                      HttpClient client,
                                      PokeApiFetcher pokeApifetcher) {
         sqlFilesWriter = pokemonSqlSeedFilesWriter;
@@ -23,7 +23,7 @@ public class PokemonDataSeedsGenerator {
 
 
     //TODO
-    public PokemonEntriesBundle extractEntries() throws IOException, InterruptedException {
+    public PokemonEntriesBundle loadEntries() throws IOException, InterruptedException {
         try (restClient) {
             List<String> slugNames = apiFetcher.fetchPokemonSpeciesSlugNames();
 

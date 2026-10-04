@@ -1,6 +1,5 @@
-package com.github.axodenelcorvus;
+package com.github.axodenelcorvus.commands;
 
-import com.github.axodenelcorvus.commands.GeneratorCommandContext;
 import com.github.axodenelcorvus.commands.exceptions.MissingArgumentException;
 import com.github.axodenelcorvus.commands.exceptions.RepeatedOptionException;
 import com.github.axodenelcorvus.commands.exceptions.UnsupportedOptionException;
@@ -15,13 +14,13 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GeneratorCommandActionTests {
-    private final GeneratorCommandContext generatorCommand = new GeneratorCommandContext();
+class SeedsGeneratorCommandContextTests {
+    private final SeedsGeneratorCommandContext generatorCmdContext = new SeedsGeneratorCommandContext();
 
     @Test
     void testWhenNoInput() {
-        assertThrows(MissingArgumentException.class, () -> generatorCommand.setup());
-        assertFalse(generatorCommand.isSetup(),
+        assertThrows(MissingArgumentException.class, () -> generatorCmdContext.setup());
+        assertFalse(generatorCmdContext.isSetup(),
                 "Generator command isSetup is true, when should be false");
     }
 
@@ -29,8 +28,8 @@ class GeneratorCommandActionTests {
     @ValueSource(strings = { "-1", "0", "10", "11" })
     void testGivenOutOfRangeGeneration(String outOfRangeGeneration) {
         assertThrows(IllegalArgumentException.class,
-                () -> generatorCommand.setup(outOfRangeGeneration));
-        assertFalse(generatorCommand.isSetup(),
+                () -> generatorCmdContext.setup(outOfRangeGeneration));
+        assertFalse(generatorCmdContext.isSetup(),
                 "Generator command isSetup is true, when should be false");
     }
 
@@ -38,17 +37,17 @@ class GeneratorCommandActionTests {
     @ValueSource(strings = { "one", "two", "alola", "1 0", "9 ", "generation", "II", "0.1" })
     void testGivenNonParsableGenerationArgument(String incorrectGeneration) {
         assertThrows(IllegalArgumentException.class,
-                () -> generatorCommand.setup(incorrectGeneration));
-        assertFalse(generatorCommand.isSetup(),
+                () -> generatorCmdContext.setup(incorrectGeneration));
+        assertFalse(generatorCmdContext.isSetup(),
                 "Generator command isSetup is true, when should be false");
     }
 
     @Test
     void testSetupWithNoOptions() {
-        generatorCommand.setup("1");
-        assertTrue(generatorCommand.isSetup(),
+        generatorCmdContext.setup("1");
+        assertTrue(generatorCmdContext.isSetup(),
                 "Generator command was not updated to valid runnable state");
-        assertEquals(1, generatorCommand.getGenerationScope());
+        assertEquals(1, generatorCmdContext.getGenerationScope());
     }
 
 
@@ -57,9 +56,9 @@ class GeneratorCommandActionTests {
     void testInvalidOptionFormats(String incorrectlyFormattedOption) {
         IllegalArgumentException iae = assertThrows(
                 IllegalArgumentException.class,
-                () -> generatorCommand.setup("1", incorrectlyFormattedOption));
+                () -> generatorCmdContext.setup("1", incorrectlyFormattedOption));
         assertTrue(iae.getMessage().toLowerCase().contains("invalid"));
-        assertFalse(generatorCommand.isSetup(),
+        assertFalse(generatorCmdContext.isSetup(),
                 "Generator command isSetup is true, when should be false");
     }
 
@@ -69,50 +68,50 @@ class GeneratorCommandActionTests {
     void testGivenUnsupportedOption(String unsupportedOption) {
         assertThrows(
                 UnsupportedOptionException.class,
-                () -> generatorCommand.setup("1", unsupportedOption));
-        assertFalse(generatorCommand.isSetup(),
+                () -> generatorCmdContext.setup("1", unsupportedOption));
+        assertFalse(generatorCmdContext.isSetup(),
                 "Generator command isSetup is true, when should be false");
     }
 
     @Test
     void testToDirOptionWithoutRequiredValue() {
         assertThrows(MissingArgumentException.class,
-                () -> generatorCommand.setup("1", "--to-dir"));
-        assertFalse(generatorCommand.isSetup(),
+                () -> generatorCmdContext.setup("1", "--to-dir"));
+        assertFalse(generatorCmdContext.isSetup(),
                 "Generator command isSetup is true, when should be false");
     }
 
     @Test
     void testToDirOptionRepeatedThrows() {
         assertThrows(RepeatedOptionException.class,
-                () -> generatorCommand.setup("1", "--to-dir", "testDir2000", "--to-dir", "testingDirectory"));
-        assertFalse(generatorCommand.isSetup(),
+                () -> generatorCmdContext.setup("1", "--to-dir", "testDir2000", "--to-dir", "testingDirectory"));
+        assertFalse(generatorCmdContext.isSetup(),
                 "Generator command isSetup is true, when should be false");
     }
 
     static Stream<String> validPokemonGenerationRange() {
         return IntStream
-                .range(GeneratorCommandContext.FIRST_GENERATION, GeneratorCommandContext.LATEST_GENERATION + 1)
+                .range(SeedsGeneratorCommandContext.FIRST_GENERATION, SeedsGeneratorCommandContext.LATEST_GENERATION + 1)
                 .mapToObj(String::valueOf);
     }
 
     @ParameterizedTest
     @MethodSource("validPokemonGenerationRange")
     void testValidSetupWithOptionsForEachGeneration(String generation) {
-        assertFalse(generatorCommand.isSetup());
+        assertFalse(generatorCmdContext.isSetup());
 
-        generatorCommand.setup(generation, "--to-dir", "sql_pokemon");
-        assertTrue(generatorCommand.isSetup());
-        assertEquals("sql_pokemon", generatorCommand.getOptionalDirectoryDestination());
-        assertEquals(Integer.parseInt(generation), generatorCommand.getGenerationScope());
+        generatorCmdContext.setup(generation, "--to-dir", "sql_pokemon");
+        assertTrue(generatorCmdContext.isSetup());
+        assertEquals("sql_pokemon", generatorCmdContext.getOptionalDirectoryDestination());
+        assertEquals(Integer.parseInt(generation), generatorCmdContext.getGenerationScope());
     }
 
     @Test
     @DisplayName("Destination directory != \"to-dir\" when given valid inputs")
     void testDestinationDirectoryNotEqualsToDir() {
-        generatorCommand.setup("1", "--to-dir", "sql_pokemon");
-        assertTrue(generatorCommand.isSetup());
-        assertNotEquals("to-dir", generatorCommand.getOptionalDirectoryDestination());
+        generatorCmdContext.setup("1", "--to-dir", "sql_pokemon");
+        assertTrue(generatorCmdContext.isSetup());
+        assertNotEquals("to-dir", generatorCmdContext.getOptionalDirectoryDestination());
     }
 
 }
