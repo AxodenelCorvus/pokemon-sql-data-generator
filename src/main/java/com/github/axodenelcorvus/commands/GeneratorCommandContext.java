@@ -3,7 +3,7 @@ package com.github.axodenelcorvus.commands;
 import com.github.axodenelcorvus.commands.exceptions.MissingArgumentException;
 import com.github.axodenelcorvus.commands.exceptions.RepeatedOptionException;
 import com.github.axodenelcorvus.commands.exceptions.UnsupportedOptionException;
-import com.github.axodenelcorvus.extractor.PokeApiFetcher;
+import com.github.axodenelcorvus.fetcher.PokeApiFetcher;
 import com.github.axodenelcorvus.model.dto.util.PokeApiJsonParser;
 import com.github.axodenelcorvus.writer.PokemonSqlSeedFilesWriter;
 

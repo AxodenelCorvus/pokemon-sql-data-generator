@@ -1,4 +1,4 @@
-package com.github.axodenelcorvus.extractor;
+package com.github.axodenelcorvus.fetcher;
 
 
 import com.github.axodenelcorvus.model.dto.util.PokeApiJsonParser;

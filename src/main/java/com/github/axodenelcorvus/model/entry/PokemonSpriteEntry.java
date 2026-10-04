@@ -9,20 +9,17 @@ public final class PokemonSpriteEntry implements SqlTupleSerializable {
     private final String staticImgResourcePath;
 
 
-    public PokemonSpriteEntry(int pokemonId, GenderSpriteForm genderForm, int nationalDexId) {
-        this(pokemonId, genderForm, RegionalForm.STANDARD, nationalDexId);
-    }
-
     public PokemonSpriteEntry(int pokemonId, GenderSpriteForm genderForm, RegionalForm region, int nationalDexId) {
         String genderFormDescriptor = findGenderDescriptor(genderForm);
         String regionalFormDescriptor = "";
 
+        //Default static image resource path takes this shape, along with .png extension added later
         String[] staticImgResourcePath = { "universal_default", String.valueOf(nationalDexId) };
 
-        if (genderForm.equals(GenderSpriteForm.FEMALE))
+        if (genderForm == GenderSpriteForm.FEMALE)
             staticImgResourcePath[0] = "female";
 
-        if (!region.equals(RegionalForm.STANDARD)) {
+        if (region != RegionalForm.STANDARD) {
             var regionName = region.name().toLowerCase();
             regionalFormDescriptor = Character.toUpperCase(regionName.charAt(0)) + regionName.substring(1);
             staticImgResourcePath[1] += "_" + regionName;

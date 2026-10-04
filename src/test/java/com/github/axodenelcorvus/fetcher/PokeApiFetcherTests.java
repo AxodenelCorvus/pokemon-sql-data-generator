@@ -1,6 +1,5 @@
-package com.github.axodenelcorvus.api_fetcher;
+package com.github.axodenelcorvus.fetcher;
 
-import com.github.axodenelcorvus.extractor.PokeApiFetcher;
 import com.github.axodenelcorvus.model.dto.util.PokeApiJsonParser;
 import org.junit.jupiter.api.*;
 
