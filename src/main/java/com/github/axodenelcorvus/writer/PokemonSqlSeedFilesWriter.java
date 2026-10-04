@@ -17,8 +17,8 @@ import java.util.Optional;
 //Supports writing and deleting file actions, based on user specified actions
 public class PokemonSqlSeedFilesWriter {
     private Path directoryDestination;
-    private final Path pokemonEntriesInsertionPath;
-    private final Path pokemonSpriteEntriesInsertionPath;
+    private Path pokemonEntriesInsertionPath;
+    private Path pokemonSpriteEntriesInsertionPath;
     public static final String DEFAULT_DIRECTORY_DEST = "generated_sql_files";
 
     public PokemonSqlSeedFilesWriter(int generation) {
@@ -56,6 +56,13 @@ public class PokemonSqlSeedFilesWriter {
             throw new InvalidPathException(dirDestStr, "Only current directory or child directory is acceptable");
     }
 
+    private void resetWithDefaultDirectoryState() {
+        Path currPokemonInsertFile = pokemonEntriesInsertionPath.getFileName();
+        this.pokemonEntriesInsertionPath =  directoryDestination.resolve(currPokemonInsertFile);
+        Path currPokemonSpeciesInsertFile = pokemonSpriteEntriesInsertionPath.getFileName();
+        this.pokemonSpriteEntriesInsertionPath =  directoryDestination.resolve(currPokemonSpeciesInsertFile);
+    }
+
     /**
      * Creates new directory as needed when directory does not exist yet.
      * In addition, to handle cases where specified directory is given, can reset destination directory to default one of this class and
@@ -72,12 +79,12 @@ public class PokemonSqlSeedFilesWriter {
         //These are expected to occur when specified directory is given by end user
         if ((!Files.isWritable(directoryDestination) || Files.isRegularFile(directoryDestination))) {
             directoryDestination = Path.of(DEFAULT_DIRECTORY_DEST);
-            System.out.printf("INFO: Default directory %s was set for use %n", DEFAULT_DIRECTORY_DEST);
+
+            resetWithDefaultDirectoryState();
 
             if (Files.notExists(directoryDestination))
                 return Optional.of(Files.createDirectory(directoryDestination));
         }
-
         return Optional.empty();
     }
 

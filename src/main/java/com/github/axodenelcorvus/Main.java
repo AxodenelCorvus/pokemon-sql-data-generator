@@ -1,10 +1,10 @@
 package com.github.axodenelcorvus;
 
 import com.github.axodenelcorvus.commands.CoreSubcommandAction;
+import com.github.axodenelcorvus.commands.CoreSubcommandContextualizer;
 import com.github.axodenelcorvus.commands.exceptions.MissingArgumentException;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 public class Main {
 
@@ -18,17 +18,19 @@ public class Main {
 
             String subcommandGiven = args[0];
 
-            for (int i = 0; i < args.length; i++) {
-                if (args[i].length() > ARGUMENT_LENGTH_CAP)
+            for (String argument : args) {
+                if (argument.length() > ARGUMENT_LENGTH_CAP)
                     throw new IllegalArgumentException("A given input passed was too long to process");
             }
 
             if (args.length == 1) {
-                runCoreSubcommandAction(subcommandGiven);
+                CoreSubcommandAction action = findCoreSubcommandAction(subcommandGiven);
+                action.activate();
             }
             else {
                 String[] subcommandArguments = Arrays.copyOfRange(args, 1, args.length);
-                runCoreSubcommandAction(subcommandGiven, subcommandArguments);
+                CoreSubcommandAction action = findCoreSubcommandAction(subcommandGiven, subcommandArguments);
+                action.activate();
             }
 
         }
@@ -42,15 +44,11 @@ public class Main {
         }
     }
 
-    private static void runCoreSubcommandAction(String subcommandCandidate, String... withArgs) {
-        Optional<CoreSubcommandAction> subCmdActionFound = CoreSubcommandAction
-                .supplyCoreSubcommand(subcommandCandidate);
+    private static CoreSubcommandAction findCoreSubcommandAction(String subcommandCandidate, String... withArgs) {
+        CoreSubcommandContextualizer subcommandContext = CoreSubcommandContextualizer
+                                            .supplyContext(subcommandCandidate)
+                                            .orElseThrow(() -> new IllegalArgumentException("Unsupported subcommand provided"));
 
-        var subcommandAction = subCmdActionFound.orElseThrow(() ->
-                                new IllegalArgumentException("Unsupported subcommand provided"));
-
-        CoreSubcommandAction
-                .runCoreSubcommandAction(subcommandAction, withArgs);
-
+        return subcommandContext.setup(withArgs);
     }
 }

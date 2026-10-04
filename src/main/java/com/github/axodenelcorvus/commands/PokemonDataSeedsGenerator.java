@@ -1,9 +1,14 @@
 package com.github.axodenelcorvus.commands;
 
 import com.github.axodenelcorvus.extractor.PokeApiFetcher;
+import com.github.axodenelcorvus.model.entry.PokemonEntriesBundle;
 import com.github.axodenelcorvus.writer.PokemonSqlSeedFilesWriter;
 
+import java.io.IOException;
 import java.net.http.HttpClient;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
 
 public class PokemonDataSeedsGenerator {
     private final PokemonSqlSeedFilesWriter sqlFilesWriter;
@@ -20,17 +25,22 @@ public class PokemonDataSeedsGenerator {
 
 
     //TODO
-    public void extractEntries() {
-        var client = HttpClient.newHttpClient();
-        try (client) {
-
+    public PokemonEntriesBundle extractEntries() throws IOException, InterruptedException {
+        try (restClient) {
+            List<String> slugNames = apiFetcher.fetchPokemonSpeciesSlugNames();
 
         }
+
+        //TODO
+        return null;
     }
 
-    //TODO
-    public void generateFiles() {
 
+    //TODO
+    public void generateFiles(PokemonEntriesBundle bundle) throws IOException {
+        sqlFilesWriter.createDestinationDirectoryIfNotExists();
+        sqlFilesWriter.writePokemonRowEntries(bundle.pokemonEntries());
+        sqlFilesWriter.writeSpriteRowEntries(bundle.pokemonSpriteEntries());
     }
 
 }

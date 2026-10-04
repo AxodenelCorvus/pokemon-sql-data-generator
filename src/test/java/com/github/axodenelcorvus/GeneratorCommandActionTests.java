@@ -1,6 +1,6 @@
 package com.github.axodenelcorvus;
 
-import com.github.axodenelcorvus.commands.GeneratorCommandAction;
+import com.github.axodenelcorvus.commands.GeneratorCommandContext;
 import com.github.axodenelcorvus.commands.exceptions.MissingArgumentException;
 import com.github.axodenelcorvus.commands.exceptions.RepeatedOptionException;
 import com.github.axodenelcorvus.commands.exceptions.UnsupportedOptionException;
@@ -16,12 +16,11 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GeneratorCommandActionTests {
-    private final GeneratorCommandAction generatorCommand = new GeneratorCommandAction();
-
+    private final GeneratorCommandContext generatorCommand = new GeneratorCommandContext();
 
     @Test
     void testWhenNoInput() {
-        MissingArgumentException thrown = assertThrows(MissingArgumentException.class, () -> generatorCommand.setup());
+        assertThrows(MissingArgumentException.class, () -> generatorCommand.setup());
         assertFalse(generatorCommand.isSetup(),
                 "Generator command isSetup is true, when should be false");
     }
@@ -93,24 +92,19 @@ class GeneratorCommandActionTests {
 
     static Stream<String> validPokemonGenerationRange() {
         return IntStream
-                .range(GeneratorCommandAction.FIRST_GENERATION, GeneratorCommandAction.LATEST_GENERATION + 1)
+                .range(GeneratorCommandContext.FIRST_GENERATION, GeneratorCommandContext.LATEST_GENERATION + 1)
                 .mapToObj(String::valueOf);
     }
 
     @ParameterizedTest
     @MethodSource("validPokemonGenerationRange")
     void testValidSetupWithOptionsForEachGeneration(String generation) {
-        assertAll("Start state test",
-                () -> assertFalse(generatorCommand.isSetup()),
-                () -> assertFalse(generatorCommand.hasBeenExhausted())
-        );
+        assertFalse(generatorCommand.isSetup());
 
         generatorCommand.setup(generation, "--to-dir", "sql_pokemon");
         assertTrue(generatorCommand.isSetup());
         assertEquals("sql_pokemon", generatorCommand.getOptionalDirectoryDestination());
         assertEquals(Integer.parseInt(generation), generatorCommand.getGenerationScope());
-        assertFalse(generatorCommand.hasBeenExhausted(),
-                "setup changes hasBeenExhausted field inside when it should not");
     }
 
     @Test
