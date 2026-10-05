@@ -23,22 +23,23 @@ class PokemonSpriteEntryFlowTests {
         PokemonSpeciesDTO pokemonSpeciesDTO = dtoSampleProvider
                     .getPokemonSpeciesDTO(ninetalesAlolaSampleId);
 
+        var expectedImgFileEndOfPath = "%d_alola.png".formatted(pokemonSpeciesDTO.dexId());
+
         String[] slugNameSegments =  pokemonDTO.slugName().split("-");
 
 
-        RegionalForm alola = RegionalForm.ALOLA;
         assertEquals("alola", slugNameSegments[1]);
+        RegionalForm alola = RegionalForm.ALOLA;
 
         assertFalse(pokemonSpeciesDTO.hasGenderDifferences());
         GenderSpriteForm none = GenderSpriteForm.NONE;
 
-        assertEquals("alola", slugNameSegments[1]);
 
         PokemonSpriteEntry pokemonSpriteEntry = new PokemonSpriteEntry(ninetalesAlolaSampleId, none, alola, pokemonSpeciesDTO.dexId());
 
         String[] actualFormDescriptorSegments = pokemonSpriteEntry.getSpriteFormDescriptor().split(" ");
-        String[] actualStaticImgResourcePath = pokemonSpriteEntry.getStaticImgResourcePath().split("/");
-        var expectedImgFileEndOfPath = "%d_alola.png".formatted(pokemonSpeciesDTO.dexId());
+        String[] actualStaticImgResourcePath = pokemonSpriteEntry.getStaticImgResourcePath()
+                                                            .substring(1).split("/");
 
         assertEquals(ninetalesAlolaSampleId, pokemonSpriteEntry.getForeignKey());
 
@@ -47,6 +48,7 @@ class PokemonSpriteEntryFlowTests {
         assertEquals(2, actualFormDescriptorSegments.length,
                             "More segments than expected or unexpected whitespace issues for descriptor: %s".formatted(Arrays.toString(actualFormDescriptorSegments)));
 
+        assertEquals('/', pokemonSpriteEntry.getStaticImgResourcePath().charAt(0));
         assertEquals("universal_default", actualStaticImgResourcePath[0]);
         assertEquals(expectedImgFileEndOfPath, actualStaticImgResourcePath[1]);
         assertEquals(2, actualStaticImgResourcePath.length,
@@ -64,6 +66,8 @@ class PokemonSpriteEntryFlowTests {
         PokemonSpeciesDTO pokemonSpeciesDTO = dtoSampleProvider
                 .getPokemonSpeciesDTO(sneaselHisuiSampleId);
 
+        var expectedImgFileEndOfPath = "%d_hisui.png".formatted(pokemonSpeciesDTO.dexId());
+
         String[] slugNameSegments =  pokemonDTO.slugName().split("-");
 
         RegionalForm hisui = RegionalForm.HISUI;
@@ -77,8 +81,8 @@ class PokemonSpriteEntryFlowTests {
         PokemonSpriteEntry pokemonSpriteEntry = new PokemonSpriteEntry(sneaselHisuiSampleId, none, hisui, pokemonSpeciesDTO.dexId());
 
         String[] actualFormDescriptorSegments = pokemonSpriteEntry.getSpriteFormDescriptor().split(" ");
-        String[] actualStaticImgResourcePath = pokemonSpriteEntry.getStaticImgResourcePath().split("/");
-        var expectedImgFileEndOfPath = "%d_hisui.png".formatted(pokemonSpeciesDTO.dexId());
+        String[] actualStaticImgResourcePath = pokemonSpriteEntry.getStaticImgResourcePath()
+                                                            .substring(1).split("/");
 
         assertEquals(sneaselHisuiSampleId, pokemonSpriteEntry.getForeignKey());
 
@@ -87,6 +91,7 @@ class PokemonSpriteEntryFlowTests {
         assertEquals(2, actualFormDescriptorSegments.length,
                         "More segments than expected or unexpected whitespace issues for descriptor: %s".formatted(Arrays.toString(actualFormDescriptorSegments)));
 
+        assertEquals('/', pokemonSpriteEntry.getStaticImgResourcePath().charAt(0));
         assertEquals("female", actualStaticImgResourcePath[0]);
         assertEquals(expectedImgFileEndOfPath, actualStaticImgResourcePath[1]);
         assertEquals(2, actualStaticImgResourcePath.length,

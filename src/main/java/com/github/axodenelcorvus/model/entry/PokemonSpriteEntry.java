@@ -8,26 +8,40 @@ public final class PokemonSpriteEntry implements SqlTupleSerializable {
     private final String spriteFormDescriptor;
     private final String staticImgResourcePath;
 
-
     public PokemonSpriteEntry(int pokemonId, GenderSpriteForm genderForm, RegionalForm region, int nationalDexId) {
-        String genderFormDescriptor = findGenderDescriptor(genderForm);
-        String regionalFormDescriptor = "";
-
         //Default static image resource path takes this shape, along with .png extension added later
-        String[] staticImgResourcePath = { "universal_default", String.valueOf(nationalDexId) };
+        String[] staticImgRsrcPathSegments = { "universal_default", String.valueOf(nationalDexId) };
+        StringBuilder pathStrBuilder = new StringBuilder();
 
+        //BUILD 1st PART OF DESCRIPTOR AND STATIC IMAGE RESOURCE PATH
+        String formDescriptor = findGenderDescriptor(genderForm);
         if (genderForm == GenderSpriteForm.FEMALE)
-            staticImgResourcePath[0] = "female";
-
+            staticImgRsrcPathSegments[0] = "female";
+        
+        //BUILD 2nd PART OF DESCRIPTOR AND STATIC IMAGE RESOURCE PATH (as needed)
         if (region != RegionalForm.STANDARD) {
-            var regionName = region.name().toLowerCase();
-            regionalFormDescriptor = Character.toUpperCase(regionName.charAt(0)) + regionName.substring(1);
-            staticImgResourcePath[1] += "_" + regionName;
+            var regionName = region.getRegionName();
+            formDescriptor = "%s %c%s".formatted(
+                    formDescriptor,
+                    Character.toUpperCase(regionName.charAt(0)),
+                    regionName.substring(1)
+            );
+
+            staticImgRsrcPathSegments[1] += '_' + regionName;
         }
 
+        //BUILD OUTER SEGMENTS TO FORM COMPLETE PATH TO STATIC IMAGE RESOURCE PATH
+        String completeStaticImgResourcePath = pathStrBuilder
+                                .append('/')
+                                .append(staticImgRsrcPathSegments[0])
+                                .append('/')
+                                .append(staticImgRsrcPathSegments[1])
+                                .append(".png")
+                                .toString();
+
         this.pokemonId = pokemonId;
-        this.staticImgResourcePath = String.join("/", staticImgResourcePath) + ".png";
-        this.spriteFormDescriptor = String.join(" ", genderFormDescriptor, regionalFormDescriptor);
+        staticImgResourcePath = completeStaticImgResourcePath;
+        spriteFormDescriptor = formDescriptor;
     }
 
     private String findGenderDescriptor(GenderSpriteForm genderForm) {
@@ -57,9 +71,8 @@ public final class PokemonSpriteEntry implements SqlTupleSerializable {
     public String toSqlTuple(SqlStringResolver sqlStrResolution) {
         return  "(%d, %s, %s)".formatted(
                 pokemonId,
-                spriteFormDescriptor,
-                staticImgResourcePath
+                sqlStrResolution.apply(spriteFormDescriptor),
+                sqlStrResolution.apply(staticImgResourcePath)
         );
     }
-
 }
