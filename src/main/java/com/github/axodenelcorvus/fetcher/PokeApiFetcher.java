@@ -18,8 +18,8 @@ public class PokeApiFetcher {
     private final URI generationURL;
 
     private static final String API_V2_BASE_PATH = "https://pokeapi.co/api/v2";
-    private static final String SPECIES_PATH_FORMATTER = "/pokemon-species/%s/";
     private static final String POKEMON_PATH_FORMATTER = "/pokemon/%s/";
+    private static final String SPECIES_PATH_FORMATTER = "/pokemon-species/%s/";
 
     private final HttpClient client;
     private final PokeApiJsonParser jsonBodyParser;
@@ -41,7 +41,7 @@ public class PokeApiFetcher {
     }
 
     public PokemonDTO fetchPokemon(String slugName) throws IOException,InterruptedException {
-        String requestPath = API_V2_BASE_PATH + SPECIES_PATH_FORMATTER.formatted(slugName);
+        String requestPath = API_V2_BASE_PATH + POKEMON_PATH_FORMATTER.formatted(slugName);
         HttpRequest pokemonRequest = attainRequestToMake(requestPath);
         HttpResponse<String> resp = client.send(pokemonRequest, HttpResponse.BodyHandlers.ofString());
 
@@ -51,7 +51,7 @@ public class PokeApiFetcher {
     }
 
     public PokemonSpeciesDTO fetchPokemonSpecies(String slugName) throws IOException,InterruptedException {
-        String requestPath = API_V2_BASE_PATH + POKEMON_PATH_FORMATTER.formatted(slugName);
+        String requestPath = API_V2_BASE_PATH + SPECIES_PATH_FORMATTER.formatted(slugName);
         HttpRequest speciesRequest = attainRequestToMake(requestPath);
         HttpResponse<String> resp = client.send(speciesRequest, HttpResponse.BodyHandlers.ofString());
 

@@ -17,9 +17,9 @@ public class SeedsGeneratorCommandAction implements CoreSubcommandAction {
         try {
             PokemonEntriesBundle bundle;
 
-            bundle = pokemonSeedsGeneratorCoordinator.loadEntries();
+            bundle = pokemonSeedsGeneratorCoordinator.fetchEntries();
 
-            pokemonSeedsGeneratorCoordinator.generateFiles(bundle);
+            pokemonSeedsGeneratorCoordinator.generateFilesFrom(bundle);
 
         } catch (InterruptedException ie) {
 

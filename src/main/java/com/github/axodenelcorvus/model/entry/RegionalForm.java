@@ -1,5 +1,16 @@
 package com.github.axodenelcorvus.model.entry;
 
+
+/**
+ * <p>Represents the regional forms of Pokemon possible. Some species have
+ * multiple regional forms stemming from their base form.</p>
+ *
+ * <p>A Pokemon should have a STANDARD regional form match for their base form,
+ * which is one their species was first introduced with.</p>
+ *
+ * <p>Ordinal 0, the first constant STANDARD, is promised to remain in its position
+ * as representing a Pokemon whose form orginates from their standard region (their standard form)</p>
+ */
 public enum RegionalForm {
     STANDARD(""),
     GALAR("galar"),
@@ -12,22 +23,28 @@ public enum RegionalForm {
 
     static {
         RegionalForm[] regionalFormValues = RegionalForm.values();
-        int nonStandardFormsSize = regionalFormValues.length - 1;
+        int numRegionalFormVals = regionalFormValues.length;
 
-        nonStandardForms = new RegionalForm[nonStandardFormsSize];
-        regionNames = new String[nonStandardFormsSize];
+        nonStandardForms = new RegionalForm[numRegionalFormVals - 1];
+        regionNames = new String[numRegionalFormVals - 1];
 
-        for (int i = 0; i < nonStandardFormsSize; i++) {
-            nonStandardForms[i] = regionalFormValues[i + 1];
-            regionNames[i] = regionalFormValues[i + 1].getRegionName();
+
+        //Copy each value (constant + region name) from ordinal positions 1 and on (skips STANDARD)
+        //to previous position one behind in nonStandardForms and regionNames
+        //Example of loop:
+        //     1234
+        //    0123
+        //    0123
+        for (int i = 1; i < regionalFormValues.length; i++) {
+            nonStandardForms[i - 1] = regionalFormValues[i];
+            regionNames[i - 1] = regionalFormValues[i].getRegionName();
         }
     }
 
-    public static RegionalForm getRegionBy(String regionName) {
+    public static RegionalForm getRegionBy(String lowercaseRegionName) {
         for (int i = 0; i < regionNames.length; i++) {
-            if (regionNames[i].equals(regionName)) {
+            if (regionNames[i].equals(lowercaseRegionName))
                 return nonStandardForms[i];
-            }
         }
 
         return null;

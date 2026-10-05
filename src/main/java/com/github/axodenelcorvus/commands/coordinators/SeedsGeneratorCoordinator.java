@@ -23,7 +23,7 @@ public class SeedsGeneratorCoordinator {
 
 
     //TODO
-    public PokemonEntriesBundle loadEntries() throws IOException, InterruptedException {
+    public PokemonEntriesBundle fetchEntries() throws IOException, InterruptedException {
         try (restClient) {
             List<String> slugNames = apiFetcher.fetchPokemonSpeciesSlugNames();
 
@@ -35,7 +35,7 @@ public class SeedsGeneratorCoordinator {
 
 
     //TODO
-    public void generateFiles(PokemonEntriesBundle bundle) throws IOException {
+    public void generateFilesFrom(PokemonEntriesBundle bundle) throws IOException {
         sqlFilesWriter.createDestinationDirectoryIfNotExists();
         sqlFilesWriter.writePokemonRowEntries(bundle.pokemonEntries());
         sqlFilesWriter.writeSpriteRowEntries(bundle.pokemonSpriteEntries());

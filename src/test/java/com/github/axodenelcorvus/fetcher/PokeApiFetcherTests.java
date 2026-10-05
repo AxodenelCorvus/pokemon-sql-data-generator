@@ -14,22 +14,20 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag("network")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PokeApiFetcherTests {
-    private static final int GENERATION_TEST_ID = 1;
+    private final int GENERATION_TEST_ID = 1;
+    private final HttpClient TEST_CLIENT = HttpClient.newHttpClient();
     private final PokeApiFetcher fetcher;
-    private final HttpClient clientUsed = HttpClient.newHttpClient();
 
     PokeApiFetcherTests() {
         this.fetcher = new PokeApiFetcher(
-                clientUsed,
+                TEST_CLIENT,
                 new PokeApiJsonParser(),
                 GENERATION_TEST_ID
         );
     }
 
     @AfterAll
-    void close() {
-        clientUsed.close();
-    }
+    void close() { TEST_CLIENT.close(); }
 
     @Test
     @DisplayName("Slug list for generation 1 returns expected slug name samples and exactly 151 names")

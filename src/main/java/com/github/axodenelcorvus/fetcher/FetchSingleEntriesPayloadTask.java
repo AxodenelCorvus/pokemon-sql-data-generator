@@ -6,6 +6,8 @@ import com.github.axodenelcorvus.model.dto.PokemonVarietyDTO;
 import com.github.axodenelcorvus.model.entry.*;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +32,6 @@ public final class FetchSingleEntriesPayloadTask implements Callable<PokemonEntr
     public PokemonEntriesBundle call() throws IOException, InterruptedException {
         PokemonSpeciesDTO pokemonSpeciesDTO = pokeApiFetcher.fetchPokemonSpecies(pokemonSpeciesSlugName);
 
-        //TODO A class that handles what to do based on PokemonSpeciesDTO (gender)
 
         List<PokemonEntry> pokemonEntries = new ArrayList<>();
         List<PokemonSpriteEntry> pokemonSpriteEntries = new ArrayList<>();
@@ -42,8 +43,10 @@ public final class FetchSingleEntriesPayloadTask implements Callable<PokemonEntr
             //In nearly all cases this loop will only execute once, but
             //in edges cases like Sneasel it will create 4 entries across two variants
             for (RegionalForm regionForm : pokemonSlugNamesByRegion.keySet()) {
-                PokemonDTO pokemonDTO = pokeApiFetcher.fetchPokemon(pokemonSlugNamesByRegion.get(regionForm));
-                pokemonEntries.add(PokemonEntry.from(pokemonDTO, pokemonSpeciesDTO));
+                PokemonDTO pokemonDTO = pokeApiFetcher
+                        .fetchPokemon(pokemonSlugNamesByRegion.get(regionForm));
+                pokemonEntries
+                        .add(PokemonEntry.from(pokemonDTO, pokemonSpeciesDTO));
                 pokemonSpriteEntries
                         .add(new PokemonSpriteEntry(pokemonDTO.id(), GenderSpriteForm.MALE, regionForm, pokemonSpeciesDTO.dexId()));
                 pokemonSpriteEntries
@@ -52,7 +55,8 @@ public final class FetchSingleEntriesPayloadTask implements Callable<PokemonEntr
         }
         else {
             for (RegionalForm regionForm : pokemonSlugNamesByRegion.keySet()) {
-                PokemonDTO pokemonDTO = pokeApiFetcher.fetchPokemon(pokemonSlugNamesByRegion.get(regionForm));
+                PokemonDTO pokemonDTO = pokeApiFetcher
+                        .fetchPokemon(pokemonSlugNamesByRegion.get(regionForm));
                 pokemonEntries.add(PokemonEntry.from(pokemonDTO, pokemonSpeciesDTO));
                 pokemonSpriteEntries
                         .add(new PokemonSpriteEntry(pokemonDTO.id(), GenderSpriteForm.NONE, regionForm, pokemonSpeciesDTO.dexId()));
@@ -64,7 +68,7 @@ public final class FetchSingleEntriesPayloadTask implements Callable<PokemonEntr
 
 
     /*
-    Loops through each varietyDTO and splits slugName by dashes '-' into array of strings. The last index typically
+    Loops through each variety DTO and splits slugName by '-' into array of strings. The last index typically
     will contain the region, if any, but not always so search for a regional match starts from end of each array to front. The first segment
     of slug always contains Pokemon's name or first part of their name, so it is omitted from scan.
 
@@ -80,10 +84,9 @@ public final class FetchSingleEntriesPayloadTask implements Callable<PokemonEntr
                 continue;
             }
 
-
             String[] slugNameSegments = varietyDTO.slugName().split("-");
 
-            for (int i = slugNameSegments.length - 1; i > 1; i--) {
+            for (int i = slugNameSegments.length - 1; i > 0; i--) {
                 RegionalForm formFound = RegionalForm.getRegionBy(slugNameSegments[i]);
 
                 if (formFound != null) {
@@ -91,7 +94,6 @@ public final class FetchSingleEntriesPayloadTask implements Callable<PokemonEntr
                     break;
                 }
             }
-
         }
 
         return varietiesByRegion;
