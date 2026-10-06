@@ -39,9 +39,9 @@ class PayloadTaskTests {
 
     @BeforeAll
     void setupTaurosEntries() {
-        //Tauros is male species, so it only has a male sprite. Still
+        //Tauros is all male species, so it only has a male sprite. Still
         //it has no distinct differences between male and female sprites so
-        //it goes to universal_default.
+        //it has Default descriptor.
 
         taurosEntriesSerialized
                 .add("(128, 128, 'Tauros', 0, 'Normal', null, false, false)");
@@ -95,21 +95,20 @@ class PayloadTaskTests {
             String pokemonEntrySerialized = serializableEntry.toSqlTuple(sqlStrResolver);
             assertTrue(
                 taurosEntriesSerialized.remove(pokemonEntrySerialized),
-                "A serialized entry sample does not match one of the expected entry samples or was repeated %nEntry not matched: %s"
+                () -> "A serialized entry sample does not match one of the expected entry samples or was repeated %nEntry not matched: %s"
                         .formatted(pokemonEntrySerialized)
             );
         }
 
         assertTrue(
                 taurosEntriesSerialized.isEmpty(),
-                "These sample entries were not matched: %n%s"
+                () -> "These sample entries were not matched: %n%s"
                         .formatted(taurosEntriesSerialized)
                         .replace("),", "),\n")
         );
     }
 
     @Test
-    @Disabled("TODO")
     void testSneaselEntries() {
 
     }
