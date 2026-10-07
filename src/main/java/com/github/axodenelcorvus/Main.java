@@ -23,6 +23,9 @@ public class Main {
                     throw new IllegalArgumentException("A given input passed was too long to process");
             }
 
+            if (args[0].startsWith("-"))
+                throw new IllegalArgumentException("Expected subcommand but was given option");
+
             if (args.length == 1) {
                 CoreSubcommandAction action = findCoreSubcommandAction(subcommandGiven);
                 action.activate();
