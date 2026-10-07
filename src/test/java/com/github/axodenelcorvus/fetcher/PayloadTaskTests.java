@@ -53,6 +53,8 @@ class PayloadTaskTests {
                 .add("(10250, 'Default Paldea', '/universal_default/128_paldea.png')");
     }
 
+    //6 entries pulled to add to database with 3 total API calls (one to species and then to each variant in the group).
+    //Both regional variants present distinct male and female forms making Sneasel a special case
     @BeforeAll
     void setupSneaselEntries() {
         sneaselEntriesSerialized
@@ -60,16 +62,14 @@ class PayloadTaskTests {
         sneaselEntriesSerialized
                 .add("(10235, 215, 'Sneasel', 4, 'Fighting', 'Poison', false, false)");
 
-        //4 entries pulled to add to database. Both regional variants present distinct
-        //male and female forms making Sneasel a special case
         sneaselEntriesSerialized
-                .add("(215, 'Male', '/universal_default/128.png')");
+                .add("(215, 'Male', '/universal_default/215.png')");
         sneaselEntriesSerialized
-                .add("(215, 'Female', '/female/128.png')");
+                .add("(215, 'Female', '/female/215.png')");
         sneaselEntriesSerialized
-                .add("(10250, 'Male Hisui', '/universal_default/215_hisui.png')");
+                .add("(10235, 'Male Hisui', '/universal_default/215_hisui.png')");
         sneaselEntriesSerialized
-                .add("(10250, 'Female Hisui', '/female/215_hisui.png')");
+                .add("(10235, 'Female Hisui', '/female/215_hisui.png')");
     }
 
 
@@ -109,8 +109,37 @@ class PayloadTaskTests {
     }
 
     @Test
-    void testSneaselEntries() {
+    void testSneaselEntries() throws Exception {
+        Callable<PokemonEntriesBundle> task = new FetchSingleEntriesPayloadTask(fetcher, "sneasel");
+        PokemonEntriesBundle actualBundle = task.call();
 
+        List<SqlTupleSerializable> serializableEntries = new ArrayList<>();
+        serializableEntries.addAll(actualBundle.pokemonEntries());
+        serializableEntries.addAll(actualBundle.pokemonSpriteEntries());
+
+        int actualNumPokemonSpriteEntries = actualBundle.pokemonSpriteEntries().size();
+        int actualNumPokemonEntries = actualBundle.pokemonEntries().size();
+
+        assertEquals(2, actualNumPokemonEntries);
+        assertEquals(4, actualNumPokemonSpriteEntries);
+
+        var sqlStrResolver = new SqlStringResolver();
+
+        for (SqlTupleSerializable serializableEntry : serializableEntries) {
+            String pokemonEntrySerialized = serializableEntry.toSqlTuple(sqlStrResolver);
+            assertTrue(
+                    sneaselEntriesSerialized.remove(pokemonEntrySerialized),
+                    () -> "A serialized entry sample does not match one of the expected entry samples or was repeated %nEntry not matched: %s"
+                            .formatted(pokemonEntrySerialized)
+            );
+        }
+
+        assertTrue(
+                sneaselEntriesSerialized.isEmpty(),
+                () -> "These sample entries were not matched: %n%s"
+                        .formatted(sneaselEntriesSerialized)
+                        .replace("),", "),\n")
+        );
     }
 
 }
