@@ -1,6 +1,6 @@
 package com.github.axodenelcorvus.commands;
 
-public interface HelpUsageDisplayable {
+public interface HelpUsageDisplay {
     /**
      * Returns example format of usage of given subcommand or the application itself.
      * @return String
@@ -14,8 +14,8 @@ public interface HelpUsageDisplayable {
     String getCommandDescription();
 
     /**
-     * Returns possible options and their roles for a given subcommand
-     * @return String[] - Options where each even index represents a single option
+     * Returns possible options and their roles for a given subcommand. All options are expected to be long flagged.
+     * @return String[] - Options where each even index represents a single option's usage format
      * and odd index represents that option's brief description. Empty array returned
      * if no possible options exist
      */

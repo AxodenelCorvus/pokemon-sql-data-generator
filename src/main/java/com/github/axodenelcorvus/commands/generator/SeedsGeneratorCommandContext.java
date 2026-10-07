@@ -1,6 +1,7 @@
-package com.github.axodenelcorvus.commands;
+package com.github.axodenelcorvus.commands.generator;
 
-import com.github.axodenelcorvus.commands.coordinators.SeedsGeneratorCoordinator;
+import com.github.axodenelcorvus.commands.CoreSubcommandAction;
+import com.github.axodenelcorvus.commands.CoreSubcommandContextualizer;
 import com.github.axodenelcorvus.commands.exceptions.MissingArgumentException;
 import com.github.axodenelcorvus.commands.exceptions.RepeatedOptionException;
 import com.github.axodenelcorvus.commands.exceptions.UnsupportedOptionException;
@@ -22,7 +23,7 @@ public class SeedsGeneratorCommandContext implements CoreSubcommandContextualize
     private String optionalDirectoryDestination;
     private int generationScope;
 
-    SeedsGeneratorCommandContext() {}
+    public SeedsGeneratorCommandContext() {}
 
     /*
     Rules for options:
@@ -124,4 +125,8 @@ public class SeedsGeneratorCommandContext implements CoreSubcommandContextualize
         return new SeedsGeneratorCommandAction(seedsGeneratorCoordinator);
     }
 
+    @Override
+    public HelpDisplay getHelpMessageDisplay() {
+        return new HelpDisplay();
+    }
 }

@@ -1,5 +1,7 @@
 package com.github.axodenelcorvus.commands;
 
+import com.github.axodenelcorvus.commands.generator.SeedsGeneratorCommandContext;
+
 import java.util.Optional;
 
 public interface CoreSubcommandContextualizer {
@@ -23,5 +25,7 @@ public interface CoreSubcommandContextualizer {
     }
 
     CoreSubcommandAction setup(String... args);
+
+    HelpUsageDisplay getHelpMessageDisplay();
 
 }

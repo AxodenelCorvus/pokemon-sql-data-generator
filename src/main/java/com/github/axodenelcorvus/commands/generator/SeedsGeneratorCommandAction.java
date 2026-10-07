@@ -1,6 +1,6 @@
-package com.github.axodenelcorvus.commands;
+package com.github.axodenelcorvus.commands.generator;
 
-import com.github.axodenelcorvus.commands.coordinators.SeedsGeneratorCoordinator;
+import com.github.axodenelcorvus.commands.CoreSubcommandAction;
 import com.github.axodenelcorvus.model.entry.PokemonEntriesBundle;
 
 import java.io.IOException;

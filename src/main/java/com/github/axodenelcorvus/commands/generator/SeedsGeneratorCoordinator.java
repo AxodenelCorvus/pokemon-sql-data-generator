@@ -1,4 +1,4 @@
-package com.github.axodenelcorvus.commands.coordinators;
+package com.github.axodenelcorvus.commands.generator;
 
 import com.github.axodenelcorvus.fetcher.PokeApiFetcher;
 import com.github.axodenelcorvus.model.entry.PokemonEntriesBundle;
@@ -13,7 +13,7 @@ public class SeedsGeneratorCoordinator {
     private final PokeApiFetcher apiFetcher;
     private final HttpClient restClient;
 
-    public SeedsGeneratorCoordinator(PokemonSqlSeedFilesWriter pokemonSqlSeedFilesWriter,
+    SeedsGeneratorCoordinator(PokemonSqlSeedFilesWriter pokemonSqlSeedFilesWriter,
                                      HttpClient client,
                                      PokeApiFetcher pokeApifetcher) {
         sqlFilesWriter = pokemonSqlSeedFilesWriter;
