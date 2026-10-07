@@ -21,7 +21,6 @@ public class SeedsGeneratorCommandContext implements CoreSubcommandContextualize
 
     private String optionalDirectoryDestination;
     private int generationScope;
-    boolean isSetup;
 
     SeedsGeneratorCommandContext() {}
 
@@ -98,10 +97,6 @@ public class SeedsGeneratorCommandContext implements CoreSubcommandContextualize
 
     public int getGenerationScope() { return generationScope; }
 
-    @Override
-    public boolean isSetup() {
-        return isSetup;
-    }
 
     @Override
     public CoreSubcommandAction setup(String... args) {
@@ -126,7 +121,6 @@ public class SeedsGeneratorCommandContext implements CoreSubcommandContextualize
         SeedsGeneratorCoordinator seedsGeneratorCoordinator =
                 new SeedsGeneratorCoordinator(sqlSeedsFileWriter, client, pokeApiDataFetcher);
 
-        isSetup = true;
         return new SeedsGeneratorCommandAction(seedsGeneratorCoordinator);
     }
 

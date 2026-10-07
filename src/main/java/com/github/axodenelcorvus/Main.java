@@ -26,15 +26,17 @@ public class Main {
             if (args[0].startsWith("-"))
                 throw new IllegalArgumentException("Expected subcommand but was given option");
 
+            CoreSubcommandAction action;
+
             if (args.length == 1) {
-                CoreSubcommandAction action = findCoreSubcommandAction(subcommandGiven);
-                action.activate();
+                action = findCoreSubcommandAction(subcommandGiven);
             }
             else {
                 String[] subcommandArguments = Arrays.copyOfRange(args, 1, args.length);
-                CoreSubcommandAction action = findCoreSubcommandAction(subcommandGiven, subcommandArguments);
-                action.activate();
+                action = findCoreSubcommandAction(subcommandGiven, subcommandArguments);
             }
+
+            action.activate();
 
         }
         catch (IllegalStateException | IllegalArgumentException e) {

@@ -24,6 +24,4 @@ public interface CoreSubcommandContextualizer {
 
     CoreSubcommandAction setup(String... args);
 
-    boolean isSetup();
-
 }
