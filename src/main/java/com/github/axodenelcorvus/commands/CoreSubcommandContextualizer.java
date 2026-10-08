@@ -26,6 +26,6 @@ public interface CoreSubcommandContextualizer {
 
     CoreSubcommandAction setup(String... args);
 
-    HelpUsageDisplay getHelpMessageDisplay();
+    HelpDisplayable getHelpDisplayable();
 
 }

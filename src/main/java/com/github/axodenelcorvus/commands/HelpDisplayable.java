@@ -1,6 +1,6 @@
 package com.github.axodenelcorvus.commands;
 
-public interface HelpUsageDisplay {
+public interface HelpDisplayable {
     /**
      * Returns example format of usage of given subcommand or the application itself.
      * @return String

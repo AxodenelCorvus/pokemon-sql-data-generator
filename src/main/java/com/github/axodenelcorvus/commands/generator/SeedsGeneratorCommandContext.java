@@ -126,7 +126,7 @@ public class SeedsGeneratorCommandContext implements CoreSubcommandContextualize
     }
 
     @Override
-    public HelpDisplay getHelpMessageDisplay() {
-        return new HelpDisplay();
+    public HelpDisplayer getHelpDisplayable() {
+        return new HelpDisplayer();
     }
 }
