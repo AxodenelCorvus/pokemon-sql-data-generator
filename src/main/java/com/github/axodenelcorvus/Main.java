@@ -3,6 +3,8 @@ package com.github.axodenelcorvus;
 import com.github.axodenelcorvus.commands.CoreSubcommandAction;
 import com.github.axodenelcorvus.commands.CoreSubcommandContextualizer;
 import com.github.axodenelcorvus.commands.exceptions.MissingArgumentException;
+import com.github.axodenelcorvus.commands.help.HelpCommandAction;
+import com.github.axodenelcorvus.commands.help.HelpCommandContext;
 
 import java.util.Arrays;
 
@@ -40,8 +42,10 @@ public class Main {
 
         }
         catch (IllegalStateException | IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            //TODO display aggregate help msg
+            System.out.printf("%s%n%n", e.getMessage());
+            HelpCommandContext helpCommandContext = new HelpCommandContext();
+            helpCommandContext.setup().activate();
+
             System.exit(-1);
         }
         catch (Exception e) {
