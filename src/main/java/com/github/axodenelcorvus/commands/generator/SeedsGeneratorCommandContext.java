@@ -10,6 +10,7 @@ import com.github.axodenelcorvus.model.dto.util.PokeApiJsonParser;
 import com.github.axodenelcorvus.writer.PokemonSqlSeedFilesWriter;
 
 import java.net.http.HttpClient;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -112,7 +113,10 @@ public class SeedsGeneratorCommandContext implements CoreSubcommandContextualize
 
 
         //WIRING LOGIC
-        HttpClient client = HttpClient.newHttpClient();
+        HttpClient client = HttpClient.newBuilder()
+                                .connectTimeout(Duration.ofSeconds(10))
+                                .build();
+
         var sqlSeedsFileWriter =
                 new PokemonSqlSeedFilesWriter(generationScope, optionalDirectoryDestination);
 

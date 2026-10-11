@@ -10,6 +10,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.List;
 
 public class PokeApiFetcher {
@@ -36,6 +37,7 @@ public class PokeApiFetcher {
     private static HttpRequest attainRequestToMake(String pokeApiResourcePath) {
         return HttpRequest.newBuilder()
                 .uri(URI.create(pokeApiResourcePath))
+                .timeout(Duration.ofSeconds(15))
                 .GET()
                 .build();
     }
