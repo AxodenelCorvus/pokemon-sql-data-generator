@@ -124,9 +124,9 @@ public class SeedsGeneratorCommandContext implements CoreSubcommandContextualize
                 new PokeApiFetcher(client, new PokeApiJsonParser(), generationScope);
 
         SeedsGeneratorCoordinator seedsGeneratorCoordinator =
-                new SeedsGeneratorCoordinator(sqlSeedsFileWriter, client, pokeApiDataFetcher);
+                new SeedsGeneratorCoordinator(sqlSeedsFileWriter, pokeApiDataFetcher);
 
-        return new SeedsGeneratorCommandAction(seedsGeneratorCoordinator);
+        return new SeedsGeneratorCommandAction(seedsGeneratorCoordinator, client);
     }
 
     @Override

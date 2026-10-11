@@ -6,8 +6,6 @@ import com.github.axodenelcorvus.model.dto.PokemonVarietyDTO;
 import com.github.axodenelcorvus.model.entry.*;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +14,7 @@ import java.util.concurrent.Callable;
 
 /**
  * Fetches a single Pokemon species DTO on each task's launch, using the state it was initalized with. Then
- * from that it will fetch all the "sepcies" branching regional varieties using the extracted slug names
+ * from that it will fetch all the "species" branching regional varieties using the extracted slug names
  * to make additional fetches to Poke API. Upon return, gives a bundled PokemonEntriesBundle with entries created
  * during task.
  */
@@ -31,7 +29,6 @@ public final class FetchSingleEntriesPayloadTask implements Callable<PokemonEntr
 
     public PokemonEntriesBundle call() throws IOException, InterruptedException {
         PokemonSpeciesDTO pokemonSpeciesDTO = pokeApiFetcher.fetchPokemonSpecies(pokemonSpeciesSlugName);
-
 
         List<PokemonEntry> pokemonEntries = new ArrayList<>();
         List<PokemonSpriteEntry> pokemonSpriteEntries = new ArrayList<>();
@@ -57,7 +54,8 @@ public final class FetchSingleEntriesPayloadTask implements Callable<PokemonEntr
             for (RegionalForm regionForm : pokemonSlugNamesByRegion.keySet()) {
                 PokemonDTO pokemonDTO = pokeApiFetcher
                         .fetchPokemon(pokemonSlugNamesByRegion.get(regionForm));
-                pokemonEntries.add(PokemonEntry.from(pokemonDTO, pokemonSpeciesDTO));
+                pokemonEntries
+                        .add(PokemonEntry.from(pokemonDTO, pokemonSpeciesDTO));
                 pokemonSpriteEntries
                         .add(new PokemonSpriteEntry(pokemonDTO.id(), GenderSpriteForm.NONE, regionForm, pokemonSpeciesDTO.dexId()));
             }

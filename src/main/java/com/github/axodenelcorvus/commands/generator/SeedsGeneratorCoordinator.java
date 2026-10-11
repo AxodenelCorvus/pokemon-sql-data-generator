@@ -11,30 +11,25 @@ import java.util.List;
 public class SeedsGeneratorCoordinator {
     private final PokemonSqlSeedFilesWriter sqlFilesWriter;
     private final PokeApiFetcher apiFetcher;
-    private final HttpClient restClient;
 
     SeedsGeneratorCoordinator(PokemonSqlSeedFilesWriter pokemonSqlSeedFilesWriter,
-                                     HttpClient client,
-                                     PokeApiFetcher pokeApifetcher) {
+                              PokeApiFetcher pokeApifetcher) {
         sqlFilesWriter = pokemonSqlSeedFilesWriter;
-        restClient = client;
         apiFetcher = pokeApifetcher;
+    }
+
+    public List<String> fetchPokemonSpeciesSlugNames() throws IOException, InterruptedException {
+        return apiFetcher.fetchPokemonSpeciesSlugNames();
     }
 
 
     //TODO
-    public PokemonEntriesBundle fetchEntries() throws IOException, InterruptedException {
-        try (restClient) {
-            List<String> slugNames = apiFetcher.fetchPokemonSpeciesSlugNames();
-
-        }
+    public PokemonEntriesBundle fetchEntries(List<String> slugNames) throws IOException, InterruptedException {
 
         //TODO
         return null;
     }
 
-
-    //TODO
     public void generateFilesFrom(PokemonEntriesBundle bundle) throws IOException {
         sqlFilesWriter.createDestinationDirectoryIfNotExists();
         sqlFilesWriter.writePokemonRowEntries(bundle.pokemonEntries());
