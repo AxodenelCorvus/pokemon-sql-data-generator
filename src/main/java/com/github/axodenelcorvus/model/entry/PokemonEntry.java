@@ -3,6 +3,8 @@ package com.github.axodenelcorvus.model.entry;
 import com.github.axodenelcorvus.model.dto.PokemonDTO;
 import com.github.axodenelcorvus.model.dto.PokemonSpeciesDTO;
 
+import java.util.Objects;
+
 public class PokemonEntry implements SqlTupleSerializable {
     private int id;
     private int nationalDexId;
@@ -76,6 +78,7 @@ public class PokemonEntry implements SqlTupleSerializable {
     public static final String TABLE_NAME = "pokemon";
     public static final String COLUMN_LIST = "(id, national_dex_id, name, gender_rate, primary_type, secondary_type, is_mythical, is_legendary)";
 
+    @Override
     public String toSqlTuple(SqlStringResolver sqlStrResolution) {
         return "(%d, %d, %s, %d, %s, %s, %b, %b)".formatted(
                 id,
@@ -88,4 +91,23 @@ public class PokemonEntry implements SqlTupleSerializable {
                 isLegendary
         );
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof PokemonEntry other
+                && id == other.id
+                && nationalDexId == other.nationalDexId
+                && Objects.equals(genderRate, other.genderRate)
+                && Objects.equals(primaryType, other.primaryType)
+                && Objects.equals(secondaryType, other.primaryType)
+                && isMythical == other.isMythical
+                && isLegendary == other.isLegendary;
+    }
+
+    @Override
+    public int hashCode() {
+        //use primary key for hash
+        return Integer.hashCode(id);
+    }
+
 }
