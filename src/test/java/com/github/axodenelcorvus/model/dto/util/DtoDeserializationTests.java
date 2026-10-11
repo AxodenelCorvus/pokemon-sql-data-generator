@@ -22,7 +22,7 @@ class DtoDeserializationTests {
     private final PokeApiJsonParser pokeApiJsonParser =
                                             new PokeApiJsonParser();
 
-    private static Path BASE_PATH = Path.of("src", "test", "resources");
+    private static final Path BASE_PATH = Path.of("src", "test", "resources");
 
     private static String readLinesFromFile(Path pathToSample) throws IOException {
         try (BufferedReader fReader = Files.newBufferedReader(pathToSample)) {
