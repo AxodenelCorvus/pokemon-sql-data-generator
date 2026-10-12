@@ -1,12 +1,18 @@
 {
-  "id": 10173,
-  "name": "corsola-galar",
+  "id": 222,
+  "name": "corsola",
 
   "types": [
     {
       "slot": 1,
       "type": {
-        "name": "ghost"
+        "name": "water"
+      }
+    },
+    {
+      "slot": 2,
+      "type": {
+        "name": "rock"
       }
     }
   ]

@@ -1,0 +1,113 @@
+{
+  "id": 487,
+  "name": "giratina",
+  "gender_rate": -1,
+  "is_legendary": true,
+  "is_mythical": false,
+  "has_gender_differences": false,
+
+  "names": [
+    {
+      "name": "ギラティナ",
+      "language": {
+        "name": "ja-hrkt",
+        "url": "https://pokeapi.co/api/v2/language/1/"
+      }
+    },
+    {
+      "name": "Giratina",
+      "language": {
+        "name": "ja-roma",
+        "url": "https://pokeapi.co/api/v2/language/2/"
+      }
+    },
+    {
+      "name": "기라티나",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      }
+    },
+    {
+      "name": "騎拉帝納",
+      "language": {
+        "name": "zh-hant",
+        "url": "https://pokeapi.co/api/v2/language/4/"
+      }
+    },
+    {
+      "name": "Giratina",
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      }
+    },
+    {
+      "name": "Giratina",
+      "language": {
+        "name": "de",
+        "url": "https://pokeapi.co/api/v2/language/6/"
+      }
+    },
+    {
+      "name": "Giratina",
+      "language": {
+        "name": "es",
+        "url": "https://pokeapi.co/api/v2/language/7/"
+      }
+    },
+    {
+      "name": "Giratina",
+      "language": {
+        "name": "it",
+        "url": "https://pokeapi.co/api/v2/language/8/"
+      }
+    },
+    {
+      "name": "Giratina",
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      }
+    },
+    {
+      "name": "ギラティナ",
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      }
+    },
+    {
+      "name": "骑拉帝纳",
+      "language": {
+        "name": "zh-hans",
+        "url": "https://pokeapi.co/api/v2/language/12/"
+      }
+    },
+    {
+      "name": "Giratina",
+      "language": {
+        "name": "es-419",
+        "url": "https://pokeapi.co/api/v2/language/14/"
+      }
+    }
+  ],
+
+  "varieties": [
+    {
+      "is_default": true,
+      "pokemon": {
+        "name": "giratina-altered",
+        "url": "https://pokeapi.co/api/v2/pokemon/487/"
+      }
+    },
+    {
+      "is_default": false,
+      "pokemon": {
+        "name": "giratina-origin",
+        "url": "https://pokeapi.co/api/v2/pokemon/10007/"
+      }
+    }
+  ]
+
+}

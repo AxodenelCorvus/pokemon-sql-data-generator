@@ -1,0 +1,14 @@
+{
+  "id": 10161,
+  "name": "meowth-galar",
+
+  "types": [
+    {
+      "slot": 1,
+      "type": {
+        "name": "steel",
+        "url": "https://pokeapi.co/api/v2/type/9/"
+      }
+    }
+  ]
+}

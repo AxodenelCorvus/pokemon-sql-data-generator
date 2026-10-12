@@ -1,0 +1,112 @@
+{
+  "id": 74,
+  "name": "geodude",
+  "gender_rate": 4,
+  "has_gender_differences": false,
+
+  "names": [
+    {
+      "name": "イシツブテ",
+      "language": {
+        "name": "ja-hrkt",
+        "url": "https://pokeapi.co/api/v2/language/1/"
+      }
+    },
+    {
+      "name": "Isitsubute",
+      "language": {
+        "name": "ja-roma",
+        "url": "https://pokeapi.co/api/v2/language/2/"
+      }
+    },
+    {
+      "name": "꼬마돌",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      }
+    },
+    {
+      "name": "小拳石",
+      "language": {
+        "name": "zh-hant",
+        "url": "https://pokeapi.co/api/v2/language/4/"
+      }
+    },
+    {
+      "name": "Racaillou",
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      }
+    },
+    {
+      "name": "Kleinstein",
+      "language": {
+        "name": "de",
+        "url": "https://pokeapi.co/api/v2/language/6/"
+      }
+    },
+    {
+      "name": "Geodude",
+      "language": {
+        "name": "es",
+        "url": "https://pokeapi.co/api/v2/language/7/"
+      }
+    },
+    {
+      "name": "Geodude",
+      "language": {
+        "name": "it",
+        "url": "https://pokeapi.co/api/v2/language/8/"
+      }
+    },
+    {
+      "name": "Geodude",
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      }
+    },
+    {
+      "name": "イシツブテ",
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      }
+    },
+    {
+      "name": "小拳石",
+      "language": {
+        "name": "zh-hans",
+        "url": "https://pokeapi.co/api/v2/language/12/"
+      }
+    },
+    {
+      "name": "Geodude",
+      "language": {
+        "name": "es-419",
+        "url": "https://pokeapi.co/api/v2/language/14/"
+      }
+    }
+  ],
+
+  "varieties": [
+    {
+      "is_default": true,
+      "pokemon": {
+        "name": "geodude",
+        "url": "https://pokeapi.co/api/v2/pokemon/74/"
+      }
+    },
+    {
+      "is_default": false,
+      "pokemon": {
+        "name": "geodude-alola",
+        "url": "https://pokeapi.co/api/v2/pokemon/10109/"
+      }
+    }
+  ]
+
+}
+

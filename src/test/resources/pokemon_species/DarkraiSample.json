@@ -1,0 +1,113 @@
+{
+    "id": 491,
+    "name": "darkrai",
+    "gender_rate": -1,
+    "has_gender_differences": false,
+    "is_legendary": false,
+    "is_mythical": true,
+
+    "names": [
+        {
+            "name": "ダークライ",
+            "language": {
+                "name": "ja-hrkt",
+                "url": "https://pokeapi.co/api/v2/language/1/"
+            }
+        },
+        {
+            "name": "Darkrai",
+            "language": {
+                "name": "ja-roma",
+                "url": "https://pokeapi.co/api/v2/language/2/"
+            }
+        },
+        {
+            "name": "다크라이",
+            "language": {
+                "name": "ko",
+                "url": "https://pokeapi.co/api/v2/language/3/"
+            }
+        },
+        {
+            "name": "達克萊伊",
+            "language": {
+                "name": "zh-hant",
+                "url": "https://pokeapi.co/api/v2/language/4/"
+            }
+        },
+        {
+            "name": "Darkrai",
+            "language": {
+                "name": "fr",
+                "url": "https://pokeapi.co/api/v2/language/5/"
+            }
+        },
+        {
+            "name": "Darkrai",
+            "language": {
+                "name": "de",
+                "url": "https://pokeapi.co/api/v2/language/6/"
+            }
+        },
+        {
+            "name": "Darkrai",
+            "language": {
+                "name": "es",
+                "url": "https://pokeapi.co/api/v2/language/7/"
+            }
+        },
+        {
+            "name": "Darkrai",
+            "language": {
+                "name": "it",
+                "url": "https://pokeapi.co/api/v2/language/8/"
+            }
+        },
+        {
+            "name": "Darkrai",
+            "language": {
+                "name": "en",
+                "url": "https://pokeapi.co/api/v2/language/9/"
+            }
+        },
+        {
+            "name": "ダークライ",
+            "language": {
+                "name": "ja",
+                "url": "https://pokeapi.co/api/v2/language/11/"
+            }
+        },
+        {
+            "name": "达克莱伊",
+            "language": {
+                "name": "zh-hans",
+                "url": "https://pokeapi.co/api/v2/language/12/"
+            }
+        },
+        {
+            "name": "Darkrai",
+            "language": {
+                "name": "es-419",
+                "url": "https://pokeapi.co/api/v2/language/14/"
+            }
+        }
+    ],
+
+    "varieties": [
+        {
+            "is_default": true,
+            "pokemon": {
+                "name": "darkrai",
+                "url": "https://pokeapi.co/api/v2/pokemon/491/"
+            }
+        },
+        {
+            "is_default": false,
+            "pokemon": {
+                "name": "darkrai-mega",
+                "url": "https://pokeapi.co/api/v2/pokemon/10312/"
+            }
+        }
+    ]
+
+}
