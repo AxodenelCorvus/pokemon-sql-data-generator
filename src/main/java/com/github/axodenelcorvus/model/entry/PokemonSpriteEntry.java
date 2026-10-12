@@ -95,4 +95,11 @@ public final class PokemonSpriteEntry implements SqlTupleSerializable {
         return Objects.hash(pokemonId, staticImgResourcePath);
     }
 
+    @Override
+    public String toString() {
+        return "pokemonId={" + pokemonId +
+                ", spriteFormDescriptor=\"" + spriteFormDescriptor + '\"' +
+                ", staticImgResourcePath=\"" + staticImgResourcePath + '\"' +
+                '}';
+    }
 }

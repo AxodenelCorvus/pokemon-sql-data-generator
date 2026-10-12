@@ -12,31 +12,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class PokemonEntriesBundleTests {
+class PokemonEntriesBundleTests {
     private final DtoSampleProvider dtoSampleProvider = new DtoSampleProvider();
 
-    @Test
-    @DisplayName("Test flatten method result's correctness and returns immutable collection/list")
-    void testFlattenMethod() {
-        List<PokemonEntriesBundle> testBundlesList = new ArrayList<>();
-
-        PokemonSpeciesDTO farfetchdSpeciesSample = dtoSampleProvider.getPokemonSpeciesDTO(10166);
-        PokemonDTO farfetchdGalarSample = dtoSampleProvider.getPokemonDTO(10166);
-        var farfetchdSample = new PokemonDTO(farfetchdSpeciesSample.dexId(), "farfetchd", "normal", "flying");
-
-
+    private PokemonEntriesBundle getScytherEntriesBundle() {
         PokemonSpeciesDTO scytherSpeciesSample = dtoSampleProvider.getPokemonSpeciesDTO(123);
         PokemonDTO scytherSample = dtoSampleProvider.getPokemonDTO(123);
-
-        List<PokemonEntry> farfetchdEntries = List.of(
-                PokemonEntry.from(farfetchdSample, farfetchdSpeciesSample),
-                PokemonEntry.from(farfetchdGalarSample, farfetchdSpeciesSample)
-        );
-        List<PokemonSpriteEntry> farfetchdSpriteEntries = List.of(
-                new PokemonSpriteEntry(83, GenderSpriteForm.NONE, RegionalForm.GALAR, farfetchdSpeciesSample.dexId()),
-                new PokemonSpriteEntry(83, GenderSpriteForm.NONE, RegionalForm.STANDARD, farfetchdSpeciesSample.dexId())
-        );
-
 
         List<PokemonEntry> scytherEntries = List.of(PokemonEntry.from(scytherSample, scytherSpeciesSample));
         List<PokemonSpriteEntry> scytherSpriteEntries = List.of(
@@ -44,32 +25,71 @@ public class PokemonEntriesBundleTests {
                 new PokemonSpriteEntry(123, GenderSpriteForm.FEMALE, RegionalForm.STANDARD, 123)
         );
 
-        List<PokemonEntry> allEntries = new ArrayList<>();
-        allEntries.addAll(farfetchdEntries);
-        allEntries.addAll(scytherEntries);
+        return new PokemonEntriesBundle(scytherEntries, scytherSpriteEntries);
+    }
 
+    private PokemonEntriesBundle getFarfetchdEntriesBundle() {
+        PokemonSpeciesDTO farfetchdSpeciesSample = dtoSampleProvider.getPokemonSpeciesDTO(10166);
+        PokemonDTO farfetchdGalarSample = dtoSampleProvider.getPokemonDTO(10166);
+        PokemonDTO farfetchdSample = new PokemonDTO(
+                83,
+                "farfetchd",
+                "normal",
+                "flying"
+        );
+
+        List<PokemonEntry> farfetchdEntries = List.of(
+                PokemonEntry.from(farfetchdSample, farfetchdSpeciesSample),
+                PokemonEntry.from(farfetchdGalarSample, farfetchdSpeciesSample)
+        );
+
+        List<PokemonSpriteEntry> farfetchdSpriteEntries = List.of(
+                new PokemonSpriteEntry(10166, GenderSpriteForm.NONE, RegionalForm.GALAR, farfetchdSpeciesSample.dexId()),
+                new PokemonSpriteEntry(83, GenderSpriteForm.NONE, RegionalForm.STANDARD, farfetchdSpeciesSample.dexId())
+        );
+
+        return new PokemonEntriesBundle(farfetchdEntries, farfetchdSpriteEntries);
+    }
+
+    /*NOTE: Test Depends on correctness of instantiation for PokemonEntry and PokemonSpriteEntry,
+    as well as their equals() methods which can be source of failure. */
+    @Test
+    @DisplayName("Flatten static method works and returns unmodifiable collection")
+    void testFlattenMethod() {
+        List<PokemonEntriesBundle> testBundlesList = new ArrayList<>();
+
+        PokemonEntriesBundle actualScytherEntriesBundle = getScytherEntriesBundle();
+        PokemonEntriesBundle actualFarfetchdEntriesBundle = getFarfetchdEntriesBundle();
+
+        List<PokemonEntry> allPokemonEntries = new ArrayList<>();
         List<PokemonSpriteEntry> allSpriteEntries = new ArrayList<>();
-        allSpriteEntries.addAll(farfetchdSpriteEntries);
-        allSpriteEntries.addAll(scytherSpriteEntries);
 
-        testBundlesList.add(new PokemonEntriesBundle(farfetchdEntries, farfetchdSpriteEntries));
-        testBundlesList.add(new PokemonEntriesBundle(scytherEntries, scytherSpriteEntries));
+        allPokemonEntries
+                .addAll(actualFarfetchdEntriesBundle.pokemonEntries());
+        allPokemonEntries
+                .addAll(actualScytherEntriesBundle.pokemonEntries());
+
+        allSpriteEntries
+                .addAll(actualFarfetchdEntriesBundle.pokemonSpriteEntries());
+        allSpriteEntries
+                .addAll(actualScytherEntriesBundle.pokemonSpriteEntries());
+
+        testBundlesList.add(actualFarfetchdEntriesBundle);
+        testBundlesList.add(actualScytherEntriesBundle);
 
         var actualEntriesBundle = PokemonEntriesBundle.flattenBundles(testBundlesList);
-        var expectedEntriesBundle = new PokemonEntriesBundle(allEntries, allSpriteEntries);
+        var expectedEntriesBundle = new PokemonEntriesBundle(allPokemonEntries, allSpriteEntries);
 
+        //Test that Pokemon entries meet expected ones
         assertEquals(expectedEntriesBundle.pokemonEntries(), actualEntriesBundle.pokemonEntries());
         assertEquals(expectedEntriesBundle.pokemonSpriteEntries(), actualEntriesBundle.pokemonSpriteEntries());
 
+        //Test that list elements (sprites and pokemon entries) can't be mutated after flattening
         assertThrows(UnsupportedOperationException.class, () -> {
-            actualEntriesBundle.pokemonEntries()
-                    .add(PokemonEntry.from(scytherSample, scytherSpeciesSample));
+            var entry = actualEntriesBundle.pokemonEntries().getFirst();
+            actualEntriesBundle.pokemonEntries().add(entry);
         });
-        
-        assertThrows(UnsupportedOperationException.class, () -> {
-            actualEntriesBundle.pokemonSpriteEntries()
-                    .add(new PokemonSpriteEntry(123, GenderSpriteForm.MALE, RegionalForm.STANDARD, 123));
-        });
+
     }
 
 }

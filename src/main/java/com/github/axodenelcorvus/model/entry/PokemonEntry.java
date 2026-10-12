@@ -110,4 +110,20 @@ public class PokemonEntry implements SqlTupleSerializable {
         return Integer.hashCode(id);
     }
 
+    @Override
+    public String toString() {
+        char mythicalToChar = isMythical ? 'T' : 'F';
+        char legendaryToChar = isLegendary ? 'T' : 'F';
+
+        return "PokemonEntry{" +
+                "id=" + id +
+                ", natDexId=" + nationalDexId +
+                ", name=\"" + name + '\"' +
+                ", genderRate=" + genderRate +
+                ", primaryType=\"" + primaryType + '\"' +
+                ", secondaryType=\"" + secondaryType + '\"' +
+                ", isMythical=" + mythicalToChar +
+                ", isLegendary=" + legendaryToChar +
+                '}';
+    }
 }
