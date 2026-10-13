@@ -1,27 +1,19 @@
 package com.github.axodenelcorvus.commands;
 
 import com.github.axodenelcorvus.commands.generator.SeedsGeneratorCommandContext;
+import com.github.axodenelcorvus.commands.help.HelpCommandContext;
 
 import java.util.Optional;
 
 public interface CoreSubcommandContextualizer {
 
     static Optional<CoreSubcommandContextualizer> supplyContext(String subcommandCandidate) {
-
-        if (subcommandCandidate.equals("generate")) {
-            return Optional.of(new SeedsGeneratorCommandContext());
-        }
-
-        if (subcommandCandidate.equals("help")) {
-            //Add body later
-        }
-
-        if (subcommandCandidate.equals("wipe")) {
-            //Add body later
-        }
-
-
-        return Optional.empty();
+        return switch(subcommandCandidate) {
+            case ("generate")    -> Optional.of(new SeedsGeneratorCommandContext());
+            case ("help")        -> Optional.of(new HelpCommandContext());
+            case ("wipe")        -> Optional.empty();  //TODO of
+            default -> Optional.empty();
+        };
     }
 
     CoreSubcommandAction setup(String... args);
