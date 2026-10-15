@@ -9,6 +9,7 @@ import org.junit.jupiter.api.*;
 import java.net.http.HttpClient;
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,11 +20,33 @@ class FetchThenCompileBundleEntriesTaskTests {
     private final int GENERATION_TEST_ID = 1;
     private final HttpClient TEST_CLIENT = HttpClient.newHttpClient();
     private final PokeApiFetcher fetcher;
+
+
     private Set<String> taurosEntriesSerialized = new HashSet<>();
     private Set<String> sneaselEntriesSerialized = new HashSet<>();
     private Set<String> genFourSingleAltFormEntriesSerialized = new HashSet<>();
+
     private final String MORE_ENTRIES_THAN_EXPECTED_MSG =
             "More entries than expected, possible duplicate entries *may* be present as well";
+
+    private void assertAllEntriesMatched(Set<String> setOfRemainingPokemonEntries) {
+        assertTrue(
+                setOfRemainingPokemonEntries.isEmpty(),
+                () -> "%d sample entries were not matched: %n%s"
+                        .formatted(setOfRemainingPokemonEntries.size(),
+                                setOfRemainingPokemonEntries)
+                        .replace("),", "),\n")
+        );
+    }
+
+    private Supplier<String> noEntryMatchInExpectedSetMsg(String serializedEntryNotMatched) {
+        return () -> """
+                %nA serialized Pokemon entry sample doesn't match one of
+                the expected entry samples or was repeated
+                _______________________________________________________
+                Entry not matched: %s
+                """.formatted(serializedEntryNotMatched);
+    }
 
     FetchThenCompileBundleEntriesTaskTests() {
         this.fetcher = new PokeApiFetcher(
@@ -131,18 +154,11 @@ class FetchThenCompileBundleEntriesTaskTests {
             String pokemonEntrySerialized = serializableEntry.toSqlTuple(sqlStrResolver);
             assertTrue(
                 taurosEntriesSerialized.remove(pokemonEntrySerialized),
-                () -> "A serialized entry sample does not match one of the expected entry samples or was repeated %nEntry not matched: %s"
-                        .formatted(pokemonEntrySerialized)
+                    noEntryMatchInExpectedSetMsg(pokemonEntrySerialized)
             );
         }
 
-        assertTrue(
-                taurosEntriesSerialized.isEmpty(),
-                () -> "%d sample entries were not matched: %n%s"
-                        .formatted(taurosEntriesSerialized.size(),
-                                    taurosEntriesSerialized)
-                        .replace("),", "),\n")
-        );
+        assertAllEntriesMatched(taurosEntriesSerialized);
     }
 
     @Test
@@ -167,18 +183,11 @@ class FetchThenCompileBundleEntriesTaskTests {
             String pokemonEntrySerialized = serializableEntry.toSqlTuple(sqlStrResolver);
             assertTrue(
                     sneaselEntriesSerialized.remove(pokemonEntrySerialized),
-                    () -> "A serialized entry sample does not match one of the expected entry samples or was repeated %nEntry not matched: %s"
-                            .formatted(pokemonEntrySerialized)
+                    noEntryMatchInExpectedSetMsg(pokemonEntrySerialized)
             );
         }
 
-        assertTrue(
-                sneaselEntriesSerialized.isEmpty(),
-                () -> "%d sample entries were not matched: %n%s"
-                        .formatted(sneaselEntriesSerialized.size(),
-                                    sneaselEntriesSerialized)
-                        .replace("),", "),\n")
-        );
+        assertAllEntriesMatched(sneaselEntriesSerialized);
     }
 
     @Test
@@ -213,18 +222,11 @@ class FetchThenCompileBundleEntriesTaskTests {
             String pokemonEntrySerialized = serializableEntry.toSqlTuple(sqlStrResolver);
             assertTrue(
                     genFourSingleAltFormEntriesSerialized.remove(pokemonEntrySerialized),
-                    () -> "A serialized entry sample does not match one of the expected entry samples or was repeated %nEntry not matched: %s"
-                            .formatted(pokemonEntrySerialized)
+                    noEntryMatchInExpectedSetMsg(pokemonEntrySerialized)
             );
         }
 
-        assertTrue(
-                genFourSingleAltFormEntriesSerialized.isEmpty(),
-                () -> "%d sample entries were not matched: %n%s"
-                        .formatted(genFourSingleAltFormEntriesSerialized.size(),
-                                genFourSingleAltFormEntriesSerialized)
-                        .replace("),", "),\n")
-        );
+        assertAllEntriesMatched(genFourSingleAltFormEntriesSerialized);
     }
 
 }
