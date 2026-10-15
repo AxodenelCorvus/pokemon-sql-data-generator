@@ -12,6 +12,9 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- By default, exclude network tests for making packaging JAR file faster for this simpler application and
+        for running test that focus more on tests that don't integrate with PokeAPI.-->
+        <excludedGroups>network</excludedGroups>
     </properties>
 
     <dependencyManagement>
@@ -51,9 +54,6 @@
                             junit.jupiter.execution.timeout.test.method.default = 32s
                         </configurationParameters>
                     </properties>
-                    <!-- By default, exclude network tests for making packaging JAR file faster for this simpler application and
-                    for running test that focus more on tests that don't integrate with PokeAPI.-->
-                    <excludedGroups>network</excludedGroups>
                 </configuration>
             </plugin>
         </plugins>
