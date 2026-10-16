@@ -5,7 +5,7 @@ import com.github.axodenelcorvus.model.dto.PokemonSpeciesDTO;
 
 import java.util.Objects;
 
-public class PokemonEntry implements SqlTupleSerializable {
+public final class PokemonEntry implements SqlTupleSerializable {
     private int id;
     private int nationalDexId;
     private String name;
