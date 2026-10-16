@@ -47,7 +47,7 @@ class DtoDeserializationTests {
     @Test
     @DisplayName("PokemonDTO deserializes correctly when 2nd type is absent")
     void testDeserializeAbsentSecondaryType() throws IOException {
-        Path endPath = Path.of("pokemon", "CorsolaGalarSample.json");
+        Path endPath = Path.of("pokemon", "GalarCorsolaSample.json");
         String corsolaSampleJSON = readLinesFromFile(BASE_PATH.resolve(endPath));
         PokemonDTO actualDTO = pokeApiJsonParser.parsePokemonBody(corsolaSampleJSON);
 
