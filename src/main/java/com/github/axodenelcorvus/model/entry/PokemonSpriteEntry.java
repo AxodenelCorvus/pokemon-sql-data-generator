@@ -10,15 +10,15 @@ public final class PokemonSpriteEntry implements SqlTupleSerializable {
     private final String spriteFormDescriptor;
     private final String staticImgResourcePath;
 
-    public PokemonSpriteEntry (int pokemonId, String singleAltSpriteFormDescriptor, int nationalDexId) {
-        this.pokemonId = pokemonId;
+    public PokemonSpriteEntry(int nationalDexId, String singleAltSpriteFormDescriptor) {
+        this.pokemonId = nationalDexId;
         this.spriteFormDescriptor = singleAltSpriteFormDescriptor;
 
         staticImgResourcePath = "/universal_default/%d_alt_form.png"
                                                 .formatted(nationalDexId);
     }
 
-    public PokemonSpriteEntry (int pokemonId, GenderSpriteForm genderForm, RegionalForm region, int nationalDexId) {
+    public PokemonSpriteEntry(int pokemonId, GenderSpriteForm genderForm, RegionalForm region, int nationalDexId) {
         //Default static image resource path takes this shape, along with .png extension added later
         String[] staticImgRsrcPathSegments = { "universal_default", String.valueOf(nationalDexId) };
         StringBuilder pathStrBuilder = new StringBuilder();

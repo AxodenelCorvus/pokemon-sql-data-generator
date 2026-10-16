@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("network")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class FetchThenCompileBundleEntriesTaskTests {
+class FetchDataThenBundleEntriesTaskTests {
     private final int GENERATION_TEST_ID = 1;
     private final HttpClient TEST_CLIENT = HttpClient.newHttpClient();
     private final PokeApiFetcher fetcher;
@@ -48,7 +48,7 @@ class FetchThenCompileBundleEntriesTaskTests {
                 """.formatted(serializedEntryNotMatched);
     }
 
-    FetchThenCompileBundleEntriesTaskTests() {
+    FetchDataThenBundleEntriesTaskTests() {
         this.fetcher = new PokeApiFetcher(
                 TEST_CLIENT,
                 new PokeApiJsonParser(),
@@ -135,7 +135,7 @@ class FetchThenCompileBundleEntriesTaskTests {
     @Test
     @DisplayName("Tauros entries fetch task")
     void testTaurosEntries() throws Exception {
-        Callable<PokemonEntriesBundle> task = new FetchThenCompileBundleEntriesTask(fetcher, "tauros", Map.of());
+        Callable<PokemonEntriesBundle> task = new FetchDataThenBundleEntriesTask(fetcher, "tauros", Map.of());
         PokemonEntriesBundle actualBundle = task.call();
 
         List<SqlTupleSerializable> serializableEntries = new ArrayList<>();
@@ -164,7 +164,7 @@ class FetchThenCompileBundleEntriesTaskTests {
     @Test
     @DisplayName("Sneasel entries fetch task")
     void testSneaselEntries() throws Exception {
-        Callable<PokemonEntriesBundle> task = new FetchThenCompileBundleEntriesTask(fetcher, "sneasel", Map.of());
+        Callable<PokemonEntriesBundle> task = new FetchDataThenBundleEntriesTask(fetcher, "sneasel", Map.of());
         PokemonEntriesBundle actualBundle = task.call();
 
         List<SqlTupleSerializable> serializableEntries = new ArrayList<>();
@@ -200,7 +200,7 @@ class FetchThenCompileBundleEntriesTaskTests {
 
         for (String slugName : slugNamesForTasks) {
             Callable<PokemonEntriesBundle> fetchTaskForCurrPokemonEntries =
-                    new FetchThenCompileBundleEntriesTask(fetcher, slugName, singleAltFormDescriptorsById);
+                    new FetchDataThenBundleEntriesTask(fetcher, slugName, singleAltFormDescriptorsById);
             entriesBundles.add(fetchTaskForCurrPokemonEntries.call());
         }
 

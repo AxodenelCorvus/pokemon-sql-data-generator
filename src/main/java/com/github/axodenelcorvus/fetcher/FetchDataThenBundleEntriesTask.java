@@ -6,26 +6,23 @@ import com.github.axodenelcorvus.model.dto.PokemonVarietyDTO;
 import com.github.axodenelcorvus.model.entry.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 /**
  * Fetches a single Pokemon species DTO on each task's launch, using the state it was initalized with. Then
- * from that it will fetch all the required "species" variants, if any. Then compiles/bundles the required Pokemon entries and Pokemon sprite entries
+ * from that it will fetch all the required "species" variants, if any. Then bundles the required Pokemon record entries and Pokemon sprite record entries
  * for return.</br></br>
  * It will also will create the alternative form of the base/default
  * Pokemon entries in special cases where there is only a single stemming alternative form (non-regional) from the base one. These sprites are ones
  * that are deemed significant or regconizable for database used.
  */
-public final class FetchThenCompileBundleEntriesTask implements Callable<PokemonEntriesBundle> {
+public final class FetchDataThenBundleEntriesTask implements Callable<PokemonEntriesBundle> {
     private final PokeApiFetcher pokeApiFetcher;
     private final String pokemonSpeciesSlugName;
     private final Map<Integer, String> singleAltFormDescriptorsById;
 
-    public FetchThenCompileBundleEntriesTask(PokeApiFetcher pokeApiFetcher, String pokemonSpeciesSlugName, Map<Integer, String> singleAltFormDescriptorsById) {
+    public FetchDataThenBundleEntriesTask(PokeApiFetcher pokeApiFetcher, String pokemonSpeciesSlugName, Map<Integer, String> singleAltFormDescriptorsById) {
         this.pokeApiFetcher = pokeApiFetcher;
         this.pokemonSpeciesSlugName = pokemonSpeciesSlugName;
         this.singleAltFormDescriptorsById = singleAltFormDescriptorsById;
@@ -42,29 +39,11 @@ public final class FetchThenCompileBundleEntriesTask implements Callable<Pokemon
     }
 
     private PokemonEntriesBundle fetchStandardEntries(PokemonSpeciesDTO speciesDTO) throws IOException, InterruptedException {
-        List<PokemonEntry> pokemonEntries = new ArrayList<>();
-        List<PokemonSpriteEntry> pokemonSpriteEntries = new ArrayList<>();
+        EnumMap<RegionalForm, PokemonDTO> pokemonByRegion;
 
-        Map<RegionalForm, String> pokemonSlugNamesByRegion = pullVarietySlugsByRegion(speciesDTO.varieties());
+        pokemonByRegion = fetchPokemonByRegion(speciesDTO.varieties());
 
-        for (RegionalForm regionForm : pokemonSlugNamesByRegion.keySet()) {
-            PokemonDTO pokemonDTO = pokeApiFetcher
-                    .fetchPokemon(pokemonSlugNamesByRegion.get(regionForm));
-            pokemonEntries
-                    .add(PokemonEntry.from(pokemonDTO, speciesDTO));
-
-            if (speciesDTO.hasGenderDifferences()) {
-                pokemonSpriteEntries
-                        .add(new PokemonSpriteEntry(pokemonDTO.id(), GenderSpriteForm.MALE, regionForm, speciesDTO.dexId()));
-                pokemonSpriteEntries
-                        .add(new PokemonSpriteEntry(pokemonDTO.id(), GenderSpriteForm.FEMALE, regionForm, speciesDTO.dexId()));
-            } else {
-                pokemonSpriteEntries
-                        .add(new PokemonSpriteEntry(pokemonDTO.id(), GenderSpriteForm.NONE, regionForm, speciesDTO.dexId()));
-            }
-        }
-
-        return new PokemonEntriesBundle(pokemonEntries, pokemonSpriteEntries);
+        return PokemonEntriesBundle.fromSpecies(speciesDTO, pokemonByRegion);
     }
 
     /*
@@ -72,15 +51,21 @@ public final class FetchThenCompileBundleEntriesTask implements Callable<Pokemon
     will contain the region, if any, but not always (for example Tauros) so search for a regional match starts from end of each array to front. The first segment
     of slug always contains Pokemon's name or first part of their name, so it is omitted from scan.
 
-    Tauros, and other possible Pokemon in the future, have more than one regional variety tied to a single regional variant but the map is only
-    populated with the first instance of each region. The rest of such an edge case will be handled through manual entry since few Pokemon are like this.
+    Tauros, and other possible Pokemon in the future, have more than one regional variety tied to a single regional variant, like a regional variant group
+    instead of a single pokemon. A map is used to only populate with the first instance of each region, while
+    any special cases with a regional variant grouping like Tauros will be handled through manual entry since Pokemon are rarely
+    like this.
      */
-    private Map<RegionalForm, String> pullVarietySlugsByRegion(List<PokemonVarietyDTO> variantDTOs) {
-        Map<RegionalForm, String> varietiesByRegion = new HashMap<>();
+    private EnumMap<RegionalForm, PokemonDTO> fetchPokemonByRegion(List<PokemonVarietyDTO> variantDTOs)
+            throws IOException, InterruptedException {
+
+        EnumMap<RegionalForm, PokemonDTO> pokemonByRegion = new EnumMap<>(RegionalForm.class);
 
         for (PokemonVarietyDTO varietyDTO : variantDTOs) {
             if (varietyDTO.isDefault()) {
-                varietiesByRegion.put(RegionalForm.STANDARD, varietyDTO.slugName());
+                PokemonDTO defaultPokemonOfSpecies = pokeApiFetcher
+                        .fetchPokemon(varietyDTO.slugName());
+                pokemonByRegion.put(RegionalForm.STANDARD, defaultPokemonOfSpecies);
                 continue;
             }
 
@@ -90,13 +75,15 @@ public final class FetchThenCompileBundleEntriesTask implements Callable<Pokemon
                 RegionalForm formFound = RegionalForm.getRegionBy(slugNameSegments[i]);
 
                 if (formFound != null) {
-                    varietiesByRegion.putIfAbsent(formFound, varietyDTO.slugName());
+                    PokemonDTO regionalFormOfSpecies = pokeApiFetcher
+                            .fetchPokemon(varietyDTO.slugName());
+                    pokemonByRegion.putIfAbsent(formFound, regionalFormOfSpecies);
                     break;
                 }
             }
         }
 
-        return varietiesByRegion;
+        return pokemonByRegion;
     }
 
     private PokemonEntriesBundle fetchSingleAltFormEntries(PokemonSpeciesDTO speciesDTO) throws IOException, InterruptedException {
@@ -116,7 +103,7 @@ public final class FetchThenCompileBundleEntriesTask implements Callable<Pokemon
         String altFormDescriptor = singleAltFormDescriptorsById.get(pokemonId);
 
         var defaultSpriteEntry = new PokemonSpriteEntry(pokemonId, GenderSpriteForm.NONE, RegionalForm.STANDARD, speciesDTO.dexId());
-        var altSpriteEntry = new PokemonSpriteEntry(pokemonId, altFormDescriptor, speciesDTO.dexId());
+        var altSpriteEntry = new PokemonSpriteEntry(speciesDTO.dexId(), altFormDescriptor);
 
         pokemonSpriteEntries.add(altSpriteEntry);
         pokemonSpriteEntries.add(defaultSpriteEntry);
