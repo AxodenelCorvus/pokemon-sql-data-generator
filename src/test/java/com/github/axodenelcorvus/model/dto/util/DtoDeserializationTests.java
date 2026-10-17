@@ -33,7 +33,7 @@ class DtoDeserializationTests {
     @Test
     @DisplayName("PokemonDTO deserializes correctly using JsonNode from Jackson dependency")
     void testDeserialize() throws IOException {
-        Path endPath = Path.of("pokemon", "BulbasaurSample.json");
+        Path endPath = Path.of("dto_collection_samples/pokemon", "BulbasaurSample.json");
         String bulbasaurSampleJSON = readLinesFromFile(BASE_PATH.resolve(endPath));
 
         PokemonDTO actualDTO = pokeApiJsonParser.parsePokemonBody(bulbasaurSampleJSON);
@@ -47,7 +47,7 @@ class DtoDeserializationTests {
     @Test
     @DisplayName("PokemonDTO deserializes correctly when 2nd type is absent")
     void testDeserializeAbsentSecondaryType() throws IOException {
-        Path endPath = Path.of("pokemon", "GalarCorsolaSample.json");
+        Path endPath = Path.of("dto_collection_samples/pokemon", "GalarCorsolaSample.json");
         String corsolaSampleJSON = readLinesFromFile(BASE_PATH.resolve(endPath));
         PokemonDTO actualDTO = pokeApiJsonParser.parsePokemonBody(corsolaSampleJSON);
 
@@ -60,7 +60,7 @@ class DtoDeserializationTests {
     @Test
     @DisplayName("Deserialize Sneasel JSON sample")
     void deserializeSneaselSample() throws IOException {
-        Path endPath = Path.of("pokemon_species", "SneaselSample.json");
+        Path endPath = Path.of("dto_collection_samples/pokemon_species", "SneaselSample.json");
         String sneaselSampleJSON = readLinesFromFile(BASE_PATH.resolve(endPath));
         PokemonSpeciesDTO actualDTO = pokeApiJsonParser.parsePokemonSpeciesBody(sneaselSampleJSON);
 

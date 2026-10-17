@@ -23,9 +23,6 @@ public record PokemonEntriesBundle(
      * @return The records entries bundled.
      */
     public static PokemonEntriesBundle fromSpecies(PokemonSpeciesDTO baseSpecies, EnumMap<RegionalForm, PokemonDTO> subSpeciesByRegion) {
-
-        //NOTE: Null safety checks through this method exist mainly to help catch errors faster in tests
-
         Objects.requireNonNull(baseSpecies);
         Objects.requireNonNull(subSpeciesByRegion);
 

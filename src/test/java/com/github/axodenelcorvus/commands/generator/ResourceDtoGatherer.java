@@ -3,92 +3,105 @@ package com.github.axodenelcorvus.commands.generator;
 import com.github.axodenelcorvus.model.dto.PokemonDTO;
 import com.github.axodenelcorvus.model.dto.PokemonSpeciesDTO;
 import com.github.axodenelcorvus.model.dto.util.PokeApiJsonParser;
+import com.github.axodenelcorvus.model.entry.RegionalForm;
 
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assumptions.abort;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 class ResourceDtoGatherer extends SimpleFileVisitor<Path> {
     private final PokeApiJsonParser pokeParser;
-    private List<PokemonDTO> rsrcPokemonDtos = new ArrayList<>();
     private List<PokemonSpeciesDTO> rsrcPokemonSpecies = new ArrayList<>();
+    private List<TaggedPokemonDTO> rsrcPokemon = new ArrayList<>();
 
-    private final Path rootRsrcDir;
-    private final Path[] targetDirs;
+    public static final Path RESOURCES_ROOT_DIR = Path.of(
+            "src", "test", "resources", "dto_collection_samples"
+    );
+
+    public static final int MAX_TARGET_DIRS = 2;
+    private static final Path TRGT_POKEMON_DIR =
+                                RESOURCES_ROOT_DIR.resolve("pokemon");
+    private static final Path TRGT_POKEMON_SPECIES_DIR =
+                                RESOURCES_ROOT_DIR.resolve("pokemon_species");
     private int targetDirsVisited = 0;
 
-    ResourceDtoGatherer(PokeApiJsonParser pokeParser, Path rootRsrcDir, Path[] targetDirs) {
+    private static final Pattern TARGET_FILE_PATTERN =
+            Pattern.compile("(Galar|Alola|Hisui|Paldea)?[A-Z][A-Za-z0-9_-]+Sample\\.json");
+
+    ResourceDtoGatherer(PokeApiJsonParser pokeParser) {
         this.pokeParser = pokeParser;
-        this.rootRsrcDir = rootRsrcDir;
-        this.targetDirs = targetDirs;
     }
 
-    public List<PokemonDTO> getRsrcPokemonDtos() {
-        return List.copyOf(rsrcPokemonDtos);
-    }
-
-    public List<PokemonSpeciesDTO> getRsrcPokemonSpeciesDtos() {
+    public List<PokemonSpeciesDTO> getSampleResourcePokemonSpecies() {
         return List.copyOf(rsrcPokemonSpecies);
     }
 
-    @Override
-    public FileVisitResult preVisitDirectory(Path currDir, BasicFileAttributes ignored) {
-        if (targetDirsVisited == targetDirs.length)
-            return FileVisitResult.TERMINATE;
-
-        if (currDir.equals(rootRsrcDir))
-            return FileVisitResult.CONTINUE;
-
-        for (Path targetDir : targetDirs) {
-            if (currDir.equals(targetDir)) {
-                targetDirsVisited++;
-                return FileVisitResult.CONTINUE;
-            }
-        }
-
-        return FileVisitResult.SKIP_SUBTREE;
+    public List<TaggedPokemonDTO> getSampleResourcePokemon() {
+        return List.copyOf(rsrcPokemon);
     }
 
+
     @Override
-    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-        if (exc != null)
-            abort(exc.getMessage());
+    public FileVisitResult preVisitDirectory(Path currDir, BasicFileAttributes ignored) throws IOException {
+        if (targetDirsVisited == MAX_TARGET_DIRS)
+            return FileVisitResult.TERMINATE;
 
-        targetDirsVisited++;
+        if (currDir.equals(RESOURCES_ROOT_DIR))
+            return FileVisitResult.CONTINUE;
 
-        return FileVisitResult.TERMINATE;
+        if (currDir.equals(TRGT_POKEMON_DIR) || currDir.equals(TRGT_POKEMON_SPECIES_DIR)) {
+            targetDirsVisited++;
+            return FileVisitResult.CONTINUE;
+        }
+
+        throw new FileSystemException(currDir.toString(), null, "Unexpected nested directory not supported for DTO Sample gathering");
     }
 
     @Override
     public FileVisitResult visitFile(Path testJsonFile,
                                      BasicFileAttributes fileAttrs) throws IOException {
-        if (!fileAttrs.isRegularFile())
-            return FileVisitResult.CONTINUE;
 
         String fileName = testJsonFile.getFileName().toString();
 
-        if (!fileName.endsWith("Sample.json"))
+        Matcher matcher = TARGET_FILE_PATTERN.matcher(fileName);
+
+
+        if (!matcher.matches())
             return FileVisitResult.CONTINUE;
 
-        List<String> lines = Files.readAllLines(testJsonFile);
-
-        String jsonBody = lines
+        String jsonBody = Files
+                .readAllLines(testJsonFile)
                 .stream()
                 .reduce("", (currBody, currLine) -> currBody + currLine);
 
-        String parentName = testJsonFile.getParent().toString();
+        Path parent = testJsonFile.getParent();
 
-        if (parentName.equals("pokemon"))
-            rsrcPokemonDtos.add(pokeParser.parsePokemonBody(jsonBody));
-        else
+        if (parent.endsWith("pokemon_species"))
             rsrcPokemonSpecies.add(pokeParser.parsePokemonSpeciesBody(jsonBody));
 
+        if (parent.endsWith("pokemon")) {
+            PokemonDTO pokemonDTO = pokeParser.parsePokemonBody(jsonBody);
+
+            String regionCandidateFromPrefix = matcher.group(1);
+
+            RegionalForm regionalFormTag = switch(regionCandidateFromPrefix) {
+                case("Galar")  -> RegionalForm.GALAR;
+                case("Alola")  -> RegionalForm.ALOLA;
+                case("Hisui")  -> RegionalForm.HISUI;
+                case("Paldea") -> RegionalForm.PALDEA;
+                case null      -> RegionalForm.STANDARD;
+                default        -> RegionalForm.STANDARD;
+            };
+
+            rsrcPokemon.add(new TaggedPokemonDTO(pokemonDTO, regionalFormTag));
+        }
+
         return FileVisitResult.CONTINUE;
+
     }
 
 }
