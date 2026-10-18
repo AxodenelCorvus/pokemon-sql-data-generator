@@ -121,7 +121,7 @@ public class PokemonSqlSeedFilesWriter {
      */
     private String getFileSuffix() {
         var currTime = LocalDateTime.now();
-        var fileFriendlyDateTimeSegmentFormatter = DateTimeFormatter.ofPattern("_yy_MM-dd__nnnnnnnnn");
+        var fileFriendlyDateTimeSegmentFormatter = DateTimeFormatter.ofPattern("_yy-MM-dd__nnnnnnnnn");
         String fileFriendlyDateTimeSegment = currTime.format(fileFriendlyDateTimeSegmentFormatter);
 
         return fileFriendlyDateTimeSegment + ".sql";
