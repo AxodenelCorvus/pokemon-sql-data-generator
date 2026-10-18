@@ -1,0 +1,33 @@
+{
+  "id": 10092,
+  "name": "raticate-alola",
+
+  "sprites": {
+    "other": {
+      "home": {
+        "front_shiny": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/shiny/10092.png",
+        "front_female": null,
+        "front_default": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/10092.png",
+        "front_shiny_female": null
+      }
+    }
+  },
+
+  "types": [
+    {
+      "slot": 1,
+      "type": {
+        "name": "dark",
+        "url": "https://pokeapi.co/api/v2/type/17/"
+      }
+    },
+    {
+      "slot": 2,
+      "type": {
+        "name": "normal",
+        "url": "https://pokeapi.co/api/v2/type/1/"
+      }
+    }
+  ]
+
+}

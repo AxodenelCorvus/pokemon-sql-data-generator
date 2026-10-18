@@ -1,0 +1,120 @@
+{
+  "id": 20,
+  "name": "raticate",
+  "gender_rate": 4,
+  "is_legendary": false,
+  "is_mythical": false,
+  "has_gender_differences": true,
+
+  "names": [
+    {
+      "name": "ラッタ",
+      "language": {
+        "name": "ja-hrkt",
+        "url": "https://pokeapi.co/api/v2/language/1/"
+      }
+    },
+    {
+      "name": "Ratta",
+      "language": {
+        "name": "ja-roma",
+        "url": "https://pokeapi.co/api/v2/language/2/"
+      }
+    },
+    {
+      "name": "레트라",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      }
+    },
+    {
+      "name": "拉達",
+      "language": {
+        "name": "zh-hant",
+        "url": "https://pokeapi.co/api/v2/language/4/"
+      }
+    },
+    {
+      "name": "Rattatac",
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      }
+    },
+    {
+      "name": "Rattikarl",
+      "language": {
+        "name": "de",
+        "url": "https://pokeapi.co/api/v2/language/6/"
+      }
+    },
+    {
+      "name": "Raticate",
+      "language": {
+        "name": "es",
+        "url": "https://pokeapi.co/api/v2/language/7/"
+      }
+    },
+    {
+      "name": "Raticate",
+      "language": {
+        "name": "it",
+        "url": "https://pokeapi.co/api/v2/language/8/"
+      }
+    },
+    {
+      "name": "Raticate",
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      }
+    },
+    {
+      "name": "ラッタ",
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      }
+    },
+    {
+      "name": "拉达",
+      "language": {
+        "name": "zh-hans",
+        "url": "https://pokeapi.co/api/v2/language/12/"
+      }
+    },
+    {
+      "name": "Raticate",
+      "language": {
+        "name": "es-419",
+        "url": "https://pokeapi.co/api/v2/language/14/"
+      }
+    }
+  ],
+
+  "varieties": [
+    {
+      "is_default": true,
+      "pokemon": {
+        "name": "raticate",
+        "url": "https://pokeapi.co/api/v2/pokemon/20/"
+      }
+    },
+    {
+      "is_default": false,
+      "pokemon": {
+        "name": "raticate-alola",
+        "url": "https://pokeapi.co/api/v2/pokemon/10092/"
+      }
+    },
+    {
+      "is_default": false,
+      "pokemon": {
+        "name": "raticate-totem-alola",
+        "url": "https://pokeapi.co/api/v2/pokemon/10093/"
+      }
+    }
+  ]
+
+}

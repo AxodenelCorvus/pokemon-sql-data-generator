@@ -29,21 +29,33 @@ public class DtoSampleProvider {
         List<PokemonVarietyDTO> emptyList = List.of();
 
         pokemonDtoById
-                .put(37, new PokemonDTO(37, "vulpix", "fire", null));
+                .put(37, new PokemonDTO(37, "vulpix", "fire", null, null));
         pokemonDtoById
-                .put(10104, new PokemonDTO(10104, "ninetales-alola", "ice", "fairy"));
+                .put(10104, new PokemonDTO(10104, "ninetales-alola", "ice", "fairy", null));
         pokemonDtoById
-                .put(80, new PokemonDTO(80, "slowbro","water", "psychic"));
+                .put(80, new PokemonDTO(80, "slowbro","water", "psychic", null));
         pokemonDtoById
-                .put(146, new PokemonDTO(146, "moltres", "fire", null));
+                .put(146, new PokemonDTO(146, "moltres", "fire", null, null));
         pokemonDtoById
-                .put(10166, new PokemonDTO(10166, "farfetchd-galar", "fighting", null));
+                .put(10166, new PokemonDTO(10166, "farfetchd-galar", "fighting", null, null));
         pokemonDtoById
-                .put(151, new PokemonDTO(151, "mew", "psychic", null));
-        pokemonDtoById
-                .put(10235, new PokemonDTO(10235, "sneasel-hisui", "fighting", "poison"));
-        pokemonDtoById
-                .put(123, new PokemonDTO(123, "scyther", "bug", "flying"));
+                .put(151, new PokemonDTO(151, "mew", "psychic", null, null));
+
+        var hisuiSneaselDTO = new PokemonDTO(
+                10235,
+                "sneasel-hisui",
+                "fighting", "poison",
+                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/female/10235.png"
+        );
+        var scytherDTO = new PokemonDTO(
+                123,
+                "scyther",
+                "bug", "flying",
+                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/female/123.png"
+        );
+
+        pokemonDtoById.put(10235, hisuiSneaselDTO);
+        pokemonDtoById.put(123, scytherDTO);
 
         pokemonSpeciesDtoById
                 .put(37, new PokemonSpeciesDTO(37, false, 6, "Vulpix", false, false, emptyList));

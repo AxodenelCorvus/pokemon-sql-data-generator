@@ -42,6 +42,7 @@ class DtoDeserializationTests {
         assertEquals("bulbasaur", actualDTO.slugName());
         assertEquals("grass", actualDTO.primaryType());
         assertEquals("poison", actualDTO.secondaryType());
+        assertNull(actualDTO.femaleSpriteLink());
     }
 
     @Test
@@ -55,6 +56,7 @@ class DtoDeserializationTests {
         assertEquals("corsola-galar", actualDTO.slugName());
         assertEquals("ghost", actualDTO.primaryType());
         assertNull(actualDTO.secondaryType());
+        assertNull(actualDTO.femaleSpriteLink());
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.github.axodenelcorvus.writer;
 
 
+import com.github.axodenelcorvus.commands.generator.SeedsGeneratorCommandContext;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
@@ -30,12 +31,10 @@ class PokemonSqlSeedFilesWriterTests {
                 "pokemonSpriteEntriesInsertionFile does not hold correct directory name in relative path");
     }
 
-
     static IntStream validPokemonGenerationRange() {
         return IntStream
-                .range(1, 10);
+                .range(SeedsGeneratorCommandContext.FIRST_GENERATION, SeedsGeneratorCommandContext.LATEST_GENERATION + 1);
     }
-
 
     @ParameterizedTest
     @DisplayName("General format rules being met for PokemonSqlSeedFilesWriter Path objects")

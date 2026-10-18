@@ -35,7 +35,8 @@ class PokemonEntriesBundleTests {
                 83,
                 "farfetchd",
                 "normal",
-                "flying"
+                "flying",
+                null
         );
 
         List<PokemonEntry> farfetchdEntries = List.of(

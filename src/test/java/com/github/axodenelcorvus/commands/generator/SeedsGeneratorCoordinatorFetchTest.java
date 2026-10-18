@@ -30,15 +30,18 @@ class SeedsGeneratorCoordinatorFetchTest {
 
     private PokemonEntriesBundle expectedPokemonEntriesBundle;
     private PokemonEntriesBundle actualPokemonEntriesBundle;
+    private Set<PokemonSpriteEntry> actualPokemonSpriteEntriesSet;
 
     private final List<String> speciesToFetch = List.of(
             "bulbasaur",
             "charizard",
+            "blissey",
             "corsola",
             "darkrai",
             "geodude",
             "giratina",
             "ho-oh",
+            "raticate",
             "meowth",
             "pikachu",
             "sneasel"
@@ -216,12 +219,39 @@ class SeedsGeneratorCoordinatorFetchTest {
                 .pokemonSpriteEntries()
                 .stream()
                 .collect(Collectors.toUnmodifiableSet());
-        Set<PokemonSpriteEntry> actualPokemonSpriteEntriesSet = actualPokemonEntriesBundle
+
+        actualPokemonSpriteEntriesSet = actualPokemonEntriesBundle
                 .pokemonSpriteEntries()
                 .stream()
                 .collect(Collectors.toUnmodifiableSet());
 
         assertEquals(expectedPokemonSpriteEntriesSet, actualPokemonSpriteEntriesSet);
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("Alolan Raticate entries do NOT contain false entries")
+    void testActualAlolaRaticateEntries() {
+        Set<PokemonSpriteEntry> invalidGenderEntries = Set.of(
+                new PokemonSpriteEntry(10092, GenderSpriteForm.FEMALE, RegionalForm.ALOLA, 25),
+                new PokemonSpriteEntry(10092, GenderSpriteForm.MALE, RegionalForm.ALOLA, 25)
+        );
+
+        assertFalse(actualPokemonSpriteEntriesSet.containsAll(invalidGenderEntries),
+                "Invalid sprite entries found for Alolan Raticate: Male & Female entries present");
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("Standard Raticate entries are correct")
+    void testActualStandardRaticateEntries() {
+        Set<PokemonSpriteEntry> validGenderEntries = Set.of(
+                new PokemonSpriteEntry(25, GenderSpriteForm.FEMALE, RegionalForm.STANDARD, 25),
+                new PokemonSpriteEntry(25, GenderSpriteForm.MALE, RegionalForm.STANDARD, 25)
+        );
+
+        assertTrue(actualPokemonSpriteEntriesSet.containsAll(validGenderEntries),
+                () -> "Missing these sprite entries for standard Raticate: " + validGenderEntries);
     }
 
 }

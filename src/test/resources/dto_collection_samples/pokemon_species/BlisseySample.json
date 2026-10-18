@@ -1,0 +1,105 @@
+{
+  "id": 242,
+  "name": "blissey",
+  "gender_rate": 8,
+  "is_legendary": false,
+  "is_mythical": false,
+  "has_gender_differences": false,
+
+  "names": [
+    {
+      "name": "ハピナス",
+      "language": {
+        "name": "ja-hrkt",
+        "url": "https://pokeapi.co/api/v2/language/1/"
+      }
+    },
+    {
+      "name": "Happinas",
+      "language": {
+        "name": "ja-roma",
+        "url": "https://pokeapi.co/api/v2/language/2/"
+      }
+    },
+    {
+      "name": "해피너스",
+      "language": {
+        "name": "ko",
+        "url": "https://pokeapi.co/api/v2/language/3/"
+      }
+    },
+    {
+      "name": "幸福蛋",
+      "language": {
+        "name": "zh-hant",
+        "url": "https://pokeapi.co/api/v2/language/4/"
+      }
+    },
+    {
+      "name": "Leuphorie",
+      "language": {
+        "name": "fr",
+        "url": "https://pokeapi.co/api/v2/language/5/"
+      }
+    },
+    {
+      "name": "Heiteira",
+      "language": {
+        "name": "de",
+        "url": "https://pokeapi.co/api/v2/language/6/"
+      }
+    },
+    {
+      "name": "Blissey",
+      "language": {
+        "name": "es",
+        "url": "https://pokeapi.co/api/v2/language/7/"
+      }
+    },
+    {
+      "name": "Blissey",
+      "language": {
+        "name": "it",
+        "url": "https://pokeapi.co/api/v2/language/8/"
+      }
+    },
+    {
+      "name": "Blissey",
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      }
+    },
+    {
+      "name": "ハピナス",
+      "language": {
+        "name": "ja",
+        "url": "https://pokeapi.co/api/v2/language/11/"
+      }
+    },
+    {
+      "name": "幸福蛋",
+      "language": {
+        "name": "zh-hans",
+        "url": "https://pokeapi.co/api/v2/language/12/"
+      }
+    },
+    {
+      "name": "Blissey",
+      "language": {
+        "name": "es-419",
+        "url": "https://pokeapi.co/api/v2/language/14/"
+      }
+    }
+  ],
+
+  "varieties": [
+    {
+      "is_default": true,
+      "pokemon": {
+        "name": "blissey",
+        "url": "https://pokeapi.co/api/v2/pokemon/242/"
+      }
+    }
+  ]
+}

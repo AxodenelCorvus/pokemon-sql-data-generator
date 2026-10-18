@@ -2,6 +2,17 @@
   "id": 215,
   "name": "sneasel",
 
+  "sprites": {
+    "other": {
+      "home": {
+        "front_shiny": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/shiny/215.png",
+        "front_female": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/female/215.png",
+        "front_default": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/215.png",
+        "front_shiny_female": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/shiny/female/215.png"
+      }
+    }
+  },
+
   "types": [
     {
       "slot": 1,
