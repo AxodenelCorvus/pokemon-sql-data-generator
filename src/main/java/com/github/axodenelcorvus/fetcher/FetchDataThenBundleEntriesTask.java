@@ -72,8 +72,13 @@ public final class FetchDataThenBundleEntriesTask implements Callable<PokemonEnt
             String[] slugNameSegments = varietyDTO.slugName().split("-");
 
             for (int i = slugNameSegments.length - 1; i > 0; i--) {
-                RegionalForm formFound = RegionalForm.getRegionBy(slugNameSegments[i]);
+                String currNameSegment = slugNameSegments[i];
 
+                //This handles edge case of pikachu-alola-cap
+                if (currNameSegment.equals("cap"))
+                    break;
+
+                RegionalForm formFound = RegionalForm.getRegionBy(slugNameSegments[i]);
                 if (formFound != null) {
                     PokemonDTO regionalFormOfSpecies = pokeApiFetcher
                             .fetchPokemon(varietyDTO.slugName());
