@@ -99,7 +99,7 @@ public final class PokemonEntry implements SqlTupleSerializable {
                 && nationalDexId == other.nationalDexId
                 && Objects.equals(genderRate, other.genderRate)
                 && Objects.equals(primaryType, other.primaryType)
-                && Objects.equals(secondaryType, other.primaryType)
+                && Objects.equals(secondaryType, other.secondaryType)
                 && isMythical == other.isMythical
                 && isLegendary == other.isLegendary;
     }
