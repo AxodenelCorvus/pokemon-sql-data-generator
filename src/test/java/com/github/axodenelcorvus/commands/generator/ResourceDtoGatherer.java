@@ -73,10 +73,7 @@ class ResourceDtoGatherer extends SimpleFileVisitor<Path> {
         if (!matcher.matches())
             return FileVisitResult.CONTINUE;
 
-        String jsonBody = Files
-                .readAllLines(testJsonFile)
-                .stream()
-                .reduce("", (currBody, currLine) -> currBody + currLine);
+        String jsonBody = Files.readString(testJsonFile);
 
         Path parent = testJsonFile.getParent();
 

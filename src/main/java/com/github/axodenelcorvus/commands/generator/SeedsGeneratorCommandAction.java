@@ -11,6 +11,7 @@ import java.net.http.HttpConnectTimeoutException;
 import java.net.http.HttpTimeoutException;
 import java.nio.file.FileSystemException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class SeedsGeneratorCommandAction implements CoreSubcommandAction {
     private final SeedsGeneratorCoordinator pokemonSeedsGeneratorCoordinator;
@@ -31,8 +32,7 @@ public class SeedsGeneratorCommandAction implements CoreSubcommandAction {
             generationEntriesBundled = pokemonSeedsGeneratorCoordinator.fetchEntries(pokemonSpeciesSlugNames);
 
             pokemonSeedsGeneratorCoordinator.generateFilesFrom(generationEntriesBundled);
-        }
-        catch (InterruptedException ignored) { }
+        } catch (InterruptedException ignored) { }
         /*These exceptions aren't result of bad input, but some external failure or issue (networking issues, API provider down, etc)
         in this case we will handle them by printing message and not showing help for any commands*/
         catch (HttpConnectTimeoutException e) {
@@ -45,7 +45,7 @@ public class SeedsGeneratorCommandAction implements CoreSubcommandAction {
             if (e.getFile() != null)
                 System.err.printf("Issue using file %s%n", e.getFile());
             e.printStackTrace();
-        } catch (IOException e) {
+        } catch (IOException | ExecutionException e) {
             e.printStackTrace();
         }
     }

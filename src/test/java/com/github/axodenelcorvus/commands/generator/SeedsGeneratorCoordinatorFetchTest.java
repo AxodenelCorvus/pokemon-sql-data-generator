@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.http.HttpClient;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import static com.github.axodenelcorvus.commands.generator.ResourceDtoGatherer.RESOURCES_ROOT_DIR;
@@ -191,9 +192,36 @@ class SeedsGeneratorCoordinatorFetchTest {
 
     @Test
     @Order(1)
-    @Disabled
-    void todo() {
-        //TODO
+    @DisplayName("Pokemon record entries fetched and compiled match expected entries")
+    void testPokemonEntriesFormed() throws IOException, ExecutionException, InterruptedException {
+        actualPokemonEntriesBundle = generatorCoordinator.fetchEntries(speciesToFetch);
+
+        Set<PokemonEntry> expectedPokemonEntriesSet = expectedPokemonEntriesBundle
+                .pokemonEntries()
+                .stream()
+                .collect(Collectors.toUnmodifiableSet());
+        Set<PokemonEntry> actualPokemonEntriesSet = actualPokemonEntriesBundle
+                .pokemonEntries()
+                .stream()
+                .collect(Collectors.toUnmodifiableSet());
+
+        assertEquals(expectedPokemonEntriesSet, actualPokemonEntriesSet);
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("Pokemon sprite record entries fetched and compiled match expected entries")
+    void testPokemonSpriteEntriesFormed() {
+        Set<PokemonSpriteEntry> expectedPokemonSpriteEntriesSet = expectedPokemonEntriesBundle
+                .pokemonSpriteEntries()
+                .stream()
+                .collect(Collectors.toUnmodifiableSet());
+        Set<PokemonSpriteEntry> actualPokemonSpriteEntriesSet = actualPokemonEntriesBundle
+                .pokemonSpriteEntries()
+                .stream()
+                .collect(Collectors.toUnmodifiableSet());
+
+        assertEquals(expectedPokemonSpriteEntriesSet, actualPokemonSpriteEntriesSet);
     }
 
 }
