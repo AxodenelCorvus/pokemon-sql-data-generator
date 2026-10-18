@@ -4,7 +4,7 @@
   "gender_rate": 4,
   "has_gender_differences": false,
   "is_legendary": false,
-  "is_mythical": true,
+  "is_mythical": false,
 
   "names": [
     {

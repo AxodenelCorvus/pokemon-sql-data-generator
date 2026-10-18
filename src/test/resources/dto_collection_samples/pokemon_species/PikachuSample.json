@@ -182,6 +182,13 @@
     {
       "is_default": false,
       "pokemon": {
+        "name": "pikachu-alola-cap",
+        "url": "https://pokeapi.co/api/v2/pokemon/10099/"
+      }
+    },
+    {
+      "is_default": false,
+      "pokemon": {
         "name": "pikachu-partner-cap",
         "url": "https://pokeapi.co/api/v2/pokemon/10148/"
       }
