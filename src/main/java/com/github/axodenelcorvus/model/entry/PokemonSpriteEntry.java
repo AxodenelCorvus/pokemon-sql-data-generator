@@ -76,7 +76,7 @@ public final class PokemonSpriteEntry implements SqlTupleSerializable {
 
 
     public static String TABLE_NAME = "significant_sprite_forms";
-    public static String COLUMN_LIST = "(pokemon_id, name, static_img_resource_path)";
+    public static String COLUMN_LIST = "(pokemon_id, descriptor, static_img_resource_path)";
 
     @Override
     public String toSqlTuple(SqlStringResolver sqlStrResolution) {
