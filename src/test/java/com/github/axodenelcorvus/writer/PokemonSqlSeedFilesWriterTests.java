@@ -25,10 +25,14 @@ class PokemonSqlSeedFilesWriterTests {
         assertNotNull(newTestSeedsFilesWriter.getPokemonEntriesInsertionPath());
         assertNotNull(newTestSeedsFilesWriter.getPokemonSpriteEntriesInsertionPath());
 
-        assertTrue(newTestSeedsFilesWriter.getPokemonEntriesInsertionPath().startsWith(PokemonSqlSeedFilesWriter.DEFAULT_DIRECTORY_DEST),
-                "pokemonEntriesInsertionFile does not hold correct directory name in relative path");
-        assertTrue(newTestSeedsFilesWriter.getPokemonSpriteEntriesInsertionPath().startsWith(PokemonSqlSeedFilesWriter.DEFAULT_DIRECTORY_DEST),
-                "pokemonSpriteEntriesInsertionFile does not hold correct directory name in relative path");
+        assertTrue(
+                newTestSeedsFilesWriter.getPokemonEntriesInsertionPath().startsWith(PokemonSqlSeedFilesWriter.getDefaultDestination()),
+                "pokemonEntriesInsertionFile does not hold correct directory name in relative path"
+        );
+        assertTrue(
+                newTestSeedsFilesWriter.getPokemonSpriteEntriesInsertionPath().startsWith(PokemonSqlSeedFilesWriter.getDefaultDestination()),
+                "pokemonSpriteEntriesInsertionFile does not hold correct directory name in relative path"
+        );
     }
 
     static IntStream validPokemonGenerationRange() {
@@ -40,7 +44,8 @@ class PokemonSqlSeedFilesWriterTests {
     @DisplayName("General format rules being met for PokemonSqlSeedFilesWriter Path objects")
     @MethodSource("validPokemonGenerationRange")
     void testPathObjectsHaveCorrectFormats(int generation) {
-        var newTestSeedsFilesWriter = new PokemonSqlSeedFilesWriter(generation, "testDir2000");
+        var newTestSeedsFilesWriter =
+                new PokemonSqlSeedFilesWriter(generation, Path.of("testDir2000"));
 
         String pokemonEntriesFileTest = newTestSeedsFilesWriter
                 .getPokemonEntriesInsertionPath().getFileName().toString();
@@ -51,7 +56,7 @@ class PokemonSqlSeedFilesWriterTests {
         assertTrue(pokemonEntriesFileFullPath.startsWith("testDir2000"),
                 "Expected %s directory not found in relative file path %s".formatted("testDir2000", pokemonEntriesFileFullPath.toString()));
 
-        assertTrue(pokemonEntriesFileTest.startsWith("insert_gen" + generation + "pokemon"),
+        assertTrue(pokemonEntriesFileTest.startsWith("insert_gen" + generation + "_pokemon"),
                 "The insert file does not begin with correct generation or suffix");
 
         assertTrue(pokemonEntriesFileTest.matches("^.*__\\d+\\.sql$"),
@@ -62,11 +67,11 @@ class PokemonSqlSeedFilesWriterTests {
     @DisplayName("Construction disallows parent and levels down more than one from current working directory")
     void testDestinationDirectoryRules() {
         assertThrows(InvalidPathException.class,
-                () -> new PokemonSqlSeedFilesWriter(1, ".."));
+                () -> new PokemonSqlSeedFilesWriter(1,  Path.of("..")));
         assertThrows(InvalidPathException.class,
-                () -> new PokemonSqlSeedFilesWriter(1, "testDir2000/lvl1"));
+                () -> new PokemonSqlSeedFilesWriter(1, Path.of("testDir2000/lvl1")));
         assertThrows(InvalidPathException.class,
-                () -> new PokemonSqlSeedFilesWriter(1, "testDir2000/lvl2/lvl3"));
+                () -> new PokemonSqlSeedFilesWriter(1, Path.of("testDir2000/lvl2/lvl3")));
     }
 
     @Test
@@ -74,7 +79,7 @@ class PokemonSqlSeedFilesWriterTests {
     @DisplayName("Check if absolute path disallowed when constructing with one")
     void testAbsolutePathDisallowedInConstruction() {
         assertThrows(InvalidPathException.class,
-                () -> new PokemonSqlSeedFilesWriter(1, "/testDir2000"));
+                () -> new PokemonSqlSeedFilesWriter(1, Path.of("/testDir2000")));
     }
 
 

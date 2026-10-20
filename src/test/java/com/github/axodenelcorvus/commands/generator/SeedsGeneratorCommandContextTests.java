@@ -1,9 +1,8 @@
-package com.github.axodenelcorvus.commands;
+package com.github.axodenelcorvus.commands.generator;
 
 import com.github.axodenelcorvus.commands.exceptions.MissingArgumentException;
 import com.github.axodenelcorvus.commands.exceptions.RepeatedOptionException;
 import com.github.axodenelcorvus.commands.exceptions.UnsupportedOptionException;
-import com.github.axodenelcorvus.commands.generator.SeedsGeneratorCommandContext;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -84,7 +83,7 @@ class SeedsGeneratorCommandContextTests {
     @MethodSource("validPokemonGenerationRange")
     void testValidSetupWithOptionsForEachGeneration(String generation) {
         generatorCmdContext.setup(generation, "--to-dir", "sql_pokemon");
-        assertEquals("sql_pokemon", generatorCmdContext.getOptionalDirectoryDestination());
+        assertEquals("sql_pokemon", generatorCmdContext.getOptionalDirectoryDestination().toString());
         assertEquals(Integer.parseInt(generation), generatorCmdContext.getGenerationScope());
     }
 
@@ -92,7 +91,7 @@ class SeedsGeneratorCommandContextTests {
     @DisplayName("Destination directory != \"to-dir\" when given valid inputs")
     void testDestinationDirectoryNotEqualsToDir() {
         generatorCmdContext.setup("1", "--to-dir", "sql_pokemon");
-        assertNotEquals("to-dir", generatorCmdContext.getOptionalDirectoryDestination());
+        assertNotEquals("to-dir", generatorCmdContext.getOptionalDirectoryDestination().toString());
     }
 
 }

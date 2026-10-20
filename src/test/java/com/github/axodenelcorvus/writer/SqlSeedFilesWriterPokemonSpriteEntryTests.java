@@ -1,21 +1,21 @@
 package com.github.axodenelcorvus.writer;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.abort;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class SqlSeedFilesWriterPokemonSpriteEntryTests {
-    private final String TEST_DIR = "testDir";
+    private final Path TEST_DIR = Path.of("testDir");
     private final int GENERATION = 1;
 
     private final PokemonSqlSeedFilesWriter testSeedsFilesWriter =
             new PokemonSqlSeedFilesWriter(GENERATION, TEST_DIR);
 
     @Test
+    @DisplayName("Sprites entries file path suffix matches expected format")
     void testSpriteEntriesFilePathSuffixMatchesExpectedFormat() {
 
         String pokemonSpriteEntriesFile = testSeedsFilesWriter
@@ -33,7 +33,5 @@ class SqlSeedFilesWriterPokemonSpriteEntryTests {
                 "%s does not begin with correct suffix expected %s".formatted(pokemonSpriteEntriesFile, expectedSuffix));
 
     }
-
-
 
 }

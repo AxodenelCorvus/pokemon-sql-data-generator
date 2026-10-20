@@ -11,6 +11,7 @@ import com.github.axodenelcorvus.model.dto.util.PokeApiJsonParser;
 import com.github.axodenelcorvus.writer.PokemonSqlSeedFilesWriter;
 
 import java.net.http.HttpClient;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -23,7 +24,7 @@ public class SeedsGeneratorCommandContext implements CoreSubcommandContextualize
     public static final int FIRST_GENERATION = 1;
     public static final int LATEST_GENERATION = 9;
 
-    private String optionalDirectoryDestination;
+    private Path optionalDirectoryDestination;
     private int generationScope;
 
     public SeedsGeneratorCommandContext() {}
@@ -77,7 +78,7 @@ public class SeedsGeneratorCommandContext implements CoreSubcommandContextualize
     }
 
     private void setOptionalDirectoryDestination(String destinationPath) {
-        optionalDirectoryDestination = destinationPath;
+        optionalDirectoryDestination = Path.of(destinationPath);
     }
 
     private void setGenerationScope(String generationFromUser) {
@@ -97,7 +98,7 @@ public class SeedsGeneratorCommandContext implements CoreSubcommandContextualize
         this.generationScope = intGeneration;
     }
 
-    public String getOptionalDirectoryDestination() { return optionalDirectoryDestination; }
+    public Path getOptionalDirectoryDestination() { return optionalDirectoryDestination; }
 
     public int getGenerationScope() { return generationScope; }
 
