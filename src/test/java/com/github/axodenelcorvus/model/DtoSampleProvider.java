@@ -25,9 +25,18 @@ public class DtoSampleProvider {
     private final Map<Integer, PokemonDTO> pokemonDtoById = new HashMap<>();
     private final Map<Integer, PokemonSpeciesDTO>  pokemonSpeciesDtoById = new HashMap<>();
 
-    public DtoSampleProvider() {
-        List<PokemonVarietyDTO> emptyList = List.of();
+    //Since the actual character values of female sprite link do not matter, will use empty string to save some memory and writing
+    private final String SUBBED_FEMALE_URL = "";
 
+    //The variety list for tests that use DtoSampleProvider should not need to use this list, so it is empty to save memory
+    private final List<PokemonVarietyDTO> DUMMY_VARIETY_LIST = List.of();
+
+    public DtoSampleProvider() {
+        this.addGenerationOneDtos();
+        this.addGenerationTwoDtos();
+    }
+
+    private void addGenerationOneDtos() {
         pokemonDtoById
                 .put(37, new PokemonDTO(37, "vulpix", "fire", null, null));
         pokemonDtoById
@@ -40,42 +49,45 @@ public class DtoSampleProvider {
                 .put(10166, new PokemonDTO(10166, "farfetchd-galar", "fighting", null, null));
         pokemonDtoById
                 .put(151, new PokemonDTO(151, "mew", "psychic", null, null));
+        pokemonDtoById
+                .put(123, new PokemonDTO(123, "scyther", "bug", "flying", SUBBED_FEMALE_URL));
 
-        var hisuiSneaselDTO = new PokemonDTO(
-                10235,
-                "sneasel-hisui",
-                "fighting", "poison",
-                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/female/10235.png"
-        );
-        var scytherDTO = new PokemonDTO(
-                123,
-                "scyther",
-                "bug", "flying",
-                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/female/123.png"
-        );
-
-        pokemonDtoById.put(10235, hisuiSneaselDTO);
-        pokemonDtoById.put(123, scytherDTO);
 
         pokemonSpeciesDtoById
-                .put(37, new PokemonSpeciesDTO(37, false, 6, "Vulpix", false, false, emptyList));
+                .put(37, new PokemonSpeciesDTO(37, false, 6, "Vulpix", false, false, DUMMY_VARIETY_LIST));
         pokemonSpeciesDtoById
-                .put(10104, new PokemonSpeciesDTO(38, false, 6, "Ninetales", false, false, emptyList));
+                .put(10104, new PokemonSpeciesDTO(38, false, 6, "Ninetales", false, false, DUMMY_VARIETY_LIST));
         pokemonSpeciesDtoById
-                .put(80, new PokemonSpeciesDTO(80, false, 4, "Slowbro", false, false, emptyList));
+                .put(80, new PokemonSpeciesDTO(80, false, 4, "Slowbro", false, false, DUMMY_VARIETY_LIST));
         pokemonSpeciesDtoById
-                .put(146, new PokemonSpeciesDTO(146, false, -1, "Moltres", true, false, emptyList));
+                .put(146, new PokemonSpeciesDTO(146, false, -1, "Moltres", true, false, DUMMY_VARIETY_LIST));
         pokemonSpeciesDtoById
-                .put(10166, new PokemonSpeciesDTO(83, false, 4, "Farfetch'd", false, false, emptyList));
+                .put(10166, new PokemonSpeciesDTO(83, false, 4, "Farfetch'd", false, false, DUMMY_VARIETY_LIST));
         pokemonSpeciesDtoById
-                .put(151, new PokemonSpeciesDTO(151, false, -1, "Mew", false, true, emptyList));
+                .put(151, new PokemonSpeciesDTO(151, false, -1, "Mew", false, true, DUMMY_VARIETY_LIST));
         pokemonSpeciesDtoById
-                .put(10235, new PokemonSpeciesDTO(10235, true, 4, "Sneasel", false, false, emptyList));
-        pokemonSpeciesDtoById
-                .put(123, new PokemonSpeciesDTO(123, true, 4, "Scyther", false, false, emptyList));
-
+                .put(123, new PokemonSpeciesDTO(123, true, 4, "Scyther", false, false, DUMMY_VARIETY_LIST));
     }
 
+    private void addGenerationTwoDtos() {
+        pokemonDtoById
+                .put(152, new PokemonDTO(152, "chikorita", "grass", null, null));
+        pokemonDtoById
+                .put(10235, new PokemonDTO(10235, "sneasel-hisui", "fighting", "poison", SUBBED_FEMALE_URL));
+        pokemonDtoById
+                .put(214, new PokemonDTO(214, "heracross", "bug", "fighting", SUBBED_FEMALE_URL));
+        pokemonDtoById
+                .put(243, new PokemonDTO(243, "raikou", "electric", null, null));
+
+        pokemonSpeciesDtoById
+                .put(152, new PokemonSpeciesDTO(152, false, 1, "Chikorita", false, false, DUMMY_VARIETY_LIST));
+        pokemonSpeciesDtoById
+                .put(10235, new PokemonSpeciesDTO(215, true, 4, "Sneasel", false, false, DUMMY_VARIETY_LIST));
+        pokemonSpeciesDtoById
+                .put(214, new PokemonSpeciesDTO(214, true, 4, "Heracross", false, false, DUMMY_VARIETY_LIST));
+        pokemonSpeciesDtoById
+                .put(243, new PokemonSpeciesDTO(243, false, -1, "Raikou", true, false, DUMMY_VARIETY_LIST));
+    }
 
     public PokemonDTO getPokemonDTO(int pokemonIdKey) {
         return pokemonDtoById.get(pokemonIdKey);
