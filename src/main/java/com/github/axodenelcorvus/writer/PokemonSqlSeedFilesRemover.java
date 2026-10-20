@@ -43,7 +43,8 @@ public class PokemonSqlSeedFilesRemover extends SimpleFileVisitor<Path> {
     }
 
     @Override
-    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes basicFileAttributes) {
+    public FileVisitResult preVisitDirectory(Path dir,
+                                             BasicFileAttributes basicFileAttributes) {
         if (dir.equals(filesContext.getDirectoryDestination()))
             return FileVisitResult.CONTINUE;
         else  //Silently skip any nested directories,

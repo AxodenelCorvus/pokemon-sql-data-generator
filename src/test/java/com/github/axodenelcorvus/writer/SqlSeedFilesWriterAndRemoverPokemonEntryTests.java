@@ -27,6 +27,7 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
     private final Path TEST_DIR = Path.of("testDir");
     private final int GENERATION_ONE = 1;
     private final int GENERATION_TWO = 2;
+    private final int GENERATION_THREE = 3;
 
     private final DtoSampleProvider dtoProvider = new DtoSampleProvider();
 
@@ -34,9 +35,16 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
                 new PokemonSqlSeedFilesWriter(GENERATION_ONE, TEST_DIR);
     private final PokemonSqlSeedFilesWriter testSeedsFilesWriterTwo =
                 new PokemonSqlSeedFilesWriter(GENERATION_TWO, TEST_DIR);
+    private final PokemonSqlSeedFilesWriter testSeedsFilesWriterThree =
+                new PokemonSqlSeedFilesWriter(GENERATION_THREE, TEST_DIR);
 
     private final PokemonSqlSeedFilesRemover testSeedsFileRemover =
-                new PokemonSqlSeedFilesRemover(GENERATION_ONE, GENERATION_TWO, TEST_DIR);
+                new PokemonSqlSeedFilesRemover(GENERATION_TWO, GENERATION_THREE, TEST_DIR);
+
+    private enum TableInsertStatementDML {
+        SIGNIFICANT_SPRITE_FORMS,
+        POKEMON
+    }
 
     @BeforeEach
     void assumeTestDirectoryIsWritable() {
@@ -47,6 +55,22 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
         } catch (IOException e) {
             abort("Error occurred in creating or checking " + TEST_DIR + " | " + e.getMessage());
         }
+    }
+
+    private static void assertCorrectInsertStatement(BufferedReader readerUsed, TableInsertStatementDML tableInsertStatementTested) {
+        if (tableInsertStatementTested == TableInsertStatementDML.POKEMON)
+            assertAll("Header of DML statement",
+                    () -> assertEquals("INSERT INTO pokemon", readerUsed.readLine()),
+                    () -> assertEquals("\t(id, national_dex_id, name, gender_rate, primary_type, secondary_type, is_mythical, is_legendary)",
+                            readerUsed.readLine()),
+                    () -> assertEquals("VALUES", readerUsed.readLine())
+            );
+        else
+            assertAll("Header of DML statement",
+                    () -> assertEquals("INSERT INTO significant_sprite_forms", readerUsed.readLine()),
+                    () -> assertEquals("\t(pokemon_id, descriptor, static_img_resource_path)", readerUsed.readLine()),
+                    () -> assertEquals("VALUES", readerUsed.readLine())
+            );
     }
 
     //Supplies all Pokemon introduced in generation one, but also including variant forms (produced later)
@@ -96,20 +120,60 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
         );
     }
 
+    private List<PokemonEntry> supplyPokemonEntriesGenerationThree() {
+        return List.of(
+                //Altaria
+                PokemonEntry.from(dtoProvider.getPokemonDTO(334), dtoProvider.getPokemonSpeciesDTO(334)),
+                //Shroomish
+                PokemonEntry.from(dtoProvider.getPokemonDTO(285), dtoProvider.getPokemonSpeciesDTO(285))
+        );
+    }
+
+    private List<PokemonSpriteEntry> supplyPokemonSpriteEntriesGenerationThree() {
+        return List.of(
+                new PokemonSpriteEntry(334, GenderSpriteForm.NONE, RegionalForm.STANDARD, 334),
+                new PokemonSpriteEntry(285, GenderSpriteForm.NONE, RegionalForm.STANDARD, 285)
+        );
+    }
+
     @Test
     @Order(1)
-    @DisplayName("Test writePokemonRowEntries throws expected IOException when called without directory created")
+    @DisplayName("Write methods throw expected IOException when called without directory created")
     void testRowEntryWritingThrowsIOException() {
-        var newTestSeedsFilesWriter = new PokemonSqlSeedFilesWriter(2, Path.of("testDir1236"));
+        var newTestSeedsFilesWriter = new PokemonSqlSeedFilesWriter(GENERATION_ONE, Path.of("testDir1236"));
 
         assertThrows(NoSuchFileException.class, () -> {
                     newTestSeedsFilesWriter.writePokemonRowEntries(supplyPokemonEntriesGenerationOne());
+                }
+        );
+        assertThrows(NoSuchFileException.class, () -> {
+                    newTestSeedsFilesWriter.writeSpriteRowEntries(supplyPokemonSpriteEntriesGenerationOne());
                 }
         );
     }
 
     @Test
     @Order(1)
+    @DisplayName("Removal file count starts at 0 for remover instance")
+    void testSeedsFileRemoverRemovedFileCountInitialValue() {
+        assertEquals(0, testSeedsFileRemover.getRemovalCount(),
+                "Incorrect removal count initial state, this will throw off future tests in suite");
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("Prefix pattern targeted for removal is correct")
+    void testSeedsFileRemoverPattern() {
+        String expectedPatternStr = "^insert_gen[2-3]_";
+
+        String actualPatternStr = testSeedsFileRemover.getPrefixPatternTargeted().pattern();
+
+        assertEquals(expectedPatternStr, testSeedsFileRemover.getPrefixPatternTargeted().pattern(),
+            () -> "Incorrect prefix pattern targeted for files targeted for removal, got actual pattern: " + actualPatternStr);
+    }
+
+    @Test
+    @Order(2)
     @DisplayName("Generation one SQL file for pokemon table is created, readable, and contents are correct")
     void testGenOneEntryInsertionStatementWrite() throws IOException {
         List<PokemonEntry> testEntries = supplyPokemonEntriesGenerationOne();
@@ -117,11 +181,7 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
         testSeedsFilesWriterOne.writePokemonRowEntries(testEntries);
 
         try (BufferedReader reader = Files.newBufferedReader(testSeedsFilesWriterOne.getPokemonEntriesInsertionPath())) {
-            assertAll("Header of DML statement",
-                    () -> assertEquals("INSERT INTO pokemon", reader.readLine()),
-                    () -> assertEquals("\t(id, national_dex_id, name, gender_rate, primary_type, secondary_type, is_mythical, is_legendary)", reader.readLine()),
-                    () -> assertEquals("VALUES", reader.readLine())
-            );
+            assertCorrectInsertStatement(reader, TableInsertStatementDML.POKEMON);
 
             var closeLineFailMsg = "Issue in closing line of file (line 7)";
 
@@ -137,7 +197,7 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
     }
 
     @Test
-    @Order(2)
+    @Order(3)
     @DisplayName("Generation one SQL file for significant_sprite_forms table is created, readable, and contents are correct")
     void testGenOneEntrySpritesInsertionStatementWrite() throws IOException {
         List<PokemonSpriteEntry> testEntries = supplyPokemonSpriteEntriesGenerationOne();
@@ -145,11 +205,7 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
         testSeedsFilesWriterOne.writeSpriteRowEntries(testEntries);
 
         try (BufferedReader reader = Files.newBufferedReader(testSeedsFilesWriterOne.getPokemonSpriteEntriesInsertionPath())) {
-            assertAll("Header of DML statement",
-                    () -> assertEquals("INSERT INTO significant_sprite_forms", reader.readLine()),
-                    () -> assertEquals("\t(pokemon_id, descriptor, static_img_resource_path)", reader.readLine()),
-                    () -> assertEquals("VALUES", reader.readLine())
-            );
+            assertCorrectInsertStatement(reader, TableInsertStatementDML.SIGNIFICANT_SPRITE_FORMS);
 
             var closeLineFailMsg = "Issue in closing line of file (line 7)";
 
@@ -165,7 +221,7 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     @DisplayName("Generation two SQL file for pokemon table is created, readable, and contents are correct")
     void testGenTwoEntryInsertionStatementWrite() throws IOException {
         List<PokemonEntry> testEntries = supplyPokemonEntriesGenerationTwo();
@@ -173,11 +229,7 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
         testSeedsFilesWriterTwo.writePokemonRowEntries(testEntries);
 
         try (BufferedReader reader = Files.newBufferedReader(testSeedsFilesWriterTwo.getPokemonEntriesInsertionPath())) {
-            assertAll("Header of DML statement",
-                    () -> assertEquals("INSERT INTO pokemon", reader.readLine()),
-                    () -> assertEquals("\t(id, national_dex_id, name, gender_rate, primary_type, secondary_type, is_mythical, is_legendary)", reader.readLine()),
-                    () -> assertEquals("VALUES", reader.readLine())
-            );
+            assertCorrectInsertStatement(reader, TableInsertStatementDML.POKEMON);
 
             var closeLineFailMsg = "Issue in closing line of file (line 7)";
 
@@ -193,7 +245,7 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     @DisplayName("Generation two SQL file for significant_sprite_forms table is created, readable, and contents are correct")
     void testGenTwoEntrySpritesInsertionStatementWrite() throws IOException {
         List<PokemonSpriteEntry> testEntries = supplyPokemonSpriteEntriesGenerationTwo();
@@ -201,11 +253,7 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
         testSeedsFilesWriterTwo.writeSpriteRowEntries(testEntries);
 
         try (BufferedReader reader = Files.newBufferedReader(testSeedsFilesWriterTwo.getPokemonSpriteEntriesInsertionPath())) {
-            assertAll("Test header of DML statement",
-                    () -> assertEquals("INSERT INTO significant_sprite_forms", reader.readLine()),
-                    () -> assertEquals("\t(pokemon_id, descriptor, static_img_resource_path)", reader.readLine()),
-                    () -> assertEquals("VALUES", reader.readLine())
-            );
+            assertCorrectInsertStatement(reader, TableInsertStatementDML.SIGNIFICANT_SPRITE_FORMS);
 
             var closeLineFailMsg = "Issue in closing line of file (line 9)";
 
@@ -216,6 +264,50 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
                     () -> assertEquals("\t(214, 'Male', '/universal_default/214.png'),", reader.readLine()),
                     () -> assertEquals("\t(214, 'Female', '/female/214.png'),", reader.readLine()),
                     () -> assertEquals("\t(243, 'Default', '/universal_default/243.png');", reader.readLine(), closeLineFailMsg)
+            );
+
+            assertNull(reader.readLine(), "More lines written than expected");
+        }
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("Generation three SQL file for pokemon table is created, readable, and contents are correct")
+    void testGenThreeEntryInsertionStatementWrite() throws IOException {
+        List<PokemonEntry> testEntries = supplyPokemonEntriesGenerationThree();
+
+        testSeedsFilesWriterThree.writePokemonRowEntries(testEntries);
+
+        try (BufferedReader reader = Files.newBufferedReader(testSeedsFilesWriterThree.getPokemonEntriesInsertionPath())) {
+            assertCorrectInsertStatement(reader, TableInsertStatementDML.POKEMON);
+
+            var closeLineFailMsg = "Issue in closing line of file (line 5)";
+
+            assertAll("Row constructors",
+                    () -> assertEquals("\t(334, 334, 'Altaria', 4, 'Dragon', 'Flying', false, false),", reader.readLine()),
+                    () -> assertEquals("\t(285, 285, 'Shroomish', 4, 'Grass', null, false, false);", reader.readLine(), closeLineFailMsg)
+            );
+
+            assertNull(reader.readLine(), "More lines written than expected");
+        }
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("Generation three SQL file for significant_sprite_forms table is created, readable, and contents are correct")
+    void testGenThreeEntrySpritesInsertionStatementWrite() throws IOException {
+        List<PokemonSpriteEntry> testEntries = supplyPokemonSpriteEntriesGenerationThree();
+
+        testSeedsFilesWriterThree.writeSpriteRowEntries(testEntries);
+
+        try (BufferedReader reader = Files.newBufferedReader(testSeedsFilesWriterThree.getPokemonSpriteEntriesInsertionPath())) {
+            assertCorrectInsertStatement(reader, TableInsertStatementDML.SIGNIFICANT_SPRITE_FORMS);
+
+            var closeLineFailMsg = "Issue in closing line of file (line 5)";
+
+            assertAll("Test row constructors",
+                    () -> assertEquals("\t(334, 'Default', '/universal_default/334.png'),", reader.readLine()),
+                    () -> assertEquals("\t(285, 'Default', '/universal_default/285.png');", reader.readLine(), closeLineFailMsg)
             );
 
             assertNull(reader.readLine(), "More lines written than expected");
