@@ -14,12 +14,6 @@ public class DtoSampleProvider {
     The keys of each map will be the Pokemon's ID (from Poke API), but not dex ID.
     For example, 10104 is ID of Pokemon belonging to Ninetales "species" with dex ID of 38.
 
-    Using the Pokemon ID we can return both the Pokemon Species DTO, which contains more general info across different Pokemon of same form,
-    and the more specific Pokemon DTO that contains more detailed specific information not across the species, mainly their type and region type (from slugName).
-
-    The Pokemon ID and Dex ID only overlap for the base Pokemon representation, which occurs for most Pokemon that will be entered. Those ID's that
-    don't overlap are made distinct by being in vastly distant ranges that don't risk overlapping
-
     Both Map's should share same keys and to help prevent confusion only one Pokemon from each species will be in sample sets.
      */
     private final Map<Integer, PokemonDTO> pokemonDtoById = new HashMap<>();
@@ -34,6 +28,7 @@ public class DtoSampleProvider {
     public DtoSampleProvider() {
         this.addGenerationOneDtos();
         this.addGenerationTwoDtos();
+        this.addGenerationThreeDtos();
     }
 
     private void addGenerationOneDtos() {
@@ -87,6 +82,18 @@ public class DtoSampleProvider {
                 .put(214, new PokemonSpeciesDTO(214, true, 4, "Heracross", false, false, DUMMY_VARIETY_LIST));
         pokemonSpeciesDtoById
                 .put(243, new PokemonSpeciesDTO(243, false, -1, "Raikou", true, false, DUMMY_VARIETY_LIST));
+    }
+
+    private void addGenerationThreeDtos() {
+        pokemonDtoById
+                .put(334, new PokemonDTO(334, "altaria", "dragon", "flying", null));
+        pokemonDtoById
+                .put(285, new PokemonDTO(285, "shroomish", "grass", null, null));
+
+        pokemonSpeciesDtoById
+                .put(334, new PokemonSpeciesDTO(334, false, 4, "Altaria", false, false, DUMMY_VARIETY_LIST));
+        pokemonSpeciesDtoById
+                .put(285, new PokemonSpeciesDTO(285, false, 4, "Shroomish", false, false, DUMMY_VARIETY_LIST));
     }
 
     public PokemonDTO getPokemonDTO(int pokemonIdKey) {
