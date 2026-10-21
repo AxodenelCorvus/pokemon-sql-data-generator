@@ -86,7 +86,7 @@ public class PokemonSqlSeedFilesWriter {
 
             //Will need to regrab updated directory from context
             if (Files.notExists(directoryDestination))
-                return Optional.of(filesContext.getDirectoryDestination());
+                return Optional.of(Files.createDirectory(filesContext.getDirectoryDestination()));
         }
         return Optional.empty();
     }
