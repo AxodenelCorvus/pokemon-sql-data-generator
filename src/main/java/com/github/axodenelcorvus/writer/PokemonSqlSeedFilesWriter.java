@@ -52,7 +52,7 @@ public class PokemonSqlSeedFilesWriter {
         );
     }
 
-    public static Path getDefaultDestination() {
+    public static Path getDefaultDirDestination() {
         return SqlSeedFilesContext.DEFAULT_DIRECTORY_DEST;
     }
 

@@ -26,11 +26,13 @@ class PokemonSqlSeedFilesWriterTests {
         assertNotNull(newTestSeedsFilesWriter.getPokemonSpriteEntriesInsertionPath());
 
         assertTrue(
-                newTestSeedsFilesWriter.getPokemonEntriesInsertionPath().startsWith(PokemonSqlSeedFilesWriter.getDefaultDestination()),
+                newTestSeedsFilesWriter.getPokemonEntriesInsertionPath()
+                            .startsWith(PokemonSqlSeedFilesWriter.getDefaultDirDestination()),
                 "pokemonEntriesInsertionFile does not hold correct directory name in relative path"
         );
         assertTrue(
-                newTestSeedsFilesWriter.getPokemonSpriteEntriesInsertionPath().startsWith(PokemonSqlSeedFilesWriter.getDefaultDestination()),
+                newTestSeedsFilesWriter.getPokemonSpriteEntriesInsertionPath()
+                            .startsWith(PokemonSqlSeedFilesWriter.getDefaultDirDestination()),
                 "pokemonSpriteEntriesInsertionFile does not hold correct directory name in relative path"
         );
     }
