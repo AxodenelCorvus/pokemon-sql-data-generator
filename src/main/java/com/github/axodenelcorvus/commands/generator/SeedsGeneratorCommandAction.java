@@ -36,11 +36,11 @@ public class SeedsGeneratorCommandAction implements CoreSubcommandAction {
         /*These exceptions aren't result of bad input, but some external failure or issue (networking issues, API provider down, etc)
         in this case we will handle them by printing message and not showing help for any commands*/
         catch (HttpConnectTimeoutException e) {
-            System.out.println("Connection Timeout: A connection with server was not established in enough time");
+            System.err.println("Connection Timeout: A connection with server was not established in enough time");
         } catch (HttpTimeoutException e) {
-            System.out.println("Response Timeout: A response could not be fulfilled and timed out");
+            System.err.println("Response Timeout: A response could not be fulfilled and timed out");
         } catch (ConnectException | UnknownHostException e) {
-            System.out.println("Server could not be reached");
+            System.err.println("Server could not be reached");
         } catch (FileSystemException e) {
             if (e.getFile() != null)
                 System.err.printf("Issue using file %s%n", e.getFile());
