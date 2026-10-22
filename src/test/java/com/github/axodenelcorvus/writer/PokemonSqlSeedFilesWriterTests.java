@@ -56,7 +56,7 @@ class PokemonSqlSeedFilesWriterTests {
         assertTrue(pokemonEntriesFileFullPath.startsWith("testDir2000"),
                 "Expected %s directory not found in relative file path %s".formatted("testDir2000", pokemonEntriesFileFullPath.toString()));
 
-        assertTrue(pokemonEntriesFileTest.startsWith("insert_gen" + generation + "_pokemon"),
+        assertTrue(pokemonEntriesFileTest.startsWith("insert_gen%02d_pokemon".formatted(generation)),
                 "The insert file does not begin with correct generation or suffix");
 
         assertTrue(pokemonEntriesFileTest.matches("^.*__\\d+\\.sql$"),

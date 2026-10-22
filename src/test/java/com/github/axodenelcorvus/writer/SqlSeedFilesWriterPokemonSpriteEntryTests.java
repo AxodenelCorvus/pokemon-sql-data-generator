@@ -24,7 +24,7 @@ class SqlSeedFilesWriterPokemonSpriteEntryTests {
         Path pokemonSpriteEntriesFileFullPath = testSeedsFilesWriter
                 .getPokemonSpriteEntriesInsertionPath();
 
-        var expectedSuffix = "insert_gen%d_significant_pokemon_sprites".formatted(GENERATION);
+        var expectedSuffix = "insert_gen%02d_significant_pokemon_sprites".formatted(GENERATION);
 
         assertTrue(pokemonSpriteEntriesFileFullPath.startsWith(TEST_DIR),
                 "Expected %s directory not found in relative file path %s".formatted("testDir2000", pokemonSpriteEntriesFileFullPath.toString()));

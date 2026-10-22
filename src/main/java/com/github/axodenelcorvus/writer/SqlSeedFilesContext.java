@@ -4,14 +4,18 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.regex.Pattern;
 
 final class SqlSeedFilesContext {
     private Path directoryTargeted;
 
     public static final Path DEFAULT_DIRECTORY_DEST = Path.of("generated_sql_files");
 
-    public static final String SQL_FILE_PREFIX_FORMAT = "insert_gen%d_";
-    public static final String SQL_FILE_PREFIX_REMOVAL_TARGET_PATTERN = "^insert_gen[%d-%d]_";
+    //Since future generations will be in double digits, will go ahead and adjust for this
+    public static final String SQL_FILE_PREFIX_FORMAT = "insert_gen%02d";
+
+    //This value should be the segment before 1st  %  specifier in SQL_FILE_PREFIX_FORMAT above, regardless of changes to that field
+    public static final String SHARED_FIXED_PREFIX_SEGMENT = "insert_gen";
 
     public SqlSeedFilesContext(Path dirTargeted) {
         //TODO Review if null check defaulting behavior needed later

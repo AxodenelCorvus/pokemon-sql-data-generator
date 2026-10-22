@@ -39,7 +39,7 @@ public class PokemonSqlSeedFilesWriter {
     private String buildPokemonInsertFileName(String suffix) {
         return "%s%s%s".formatted(
                 SqlSeedFilesContext.SQL_FILE_PREFIX_FORMAT.formatted(generation),
-                "pokemon",
+                "_pokemon",
                 suffix
         );
     }
@@ -47,7 +47,7 @@ public class PokemonSqlSeedFilesWriter {
     private String buildPokemonSpriteInsertFileName(String suffix) {
         return "%s%s%s".formatted(
                 SqlSeedFilesContext.SQL_FILE_PREFIX_FORMAT.formatted(generation),
-                "significant_pokemon_sprites",
+                "_significant_pokemon_sprites",
                 suffix
         );
     }
