@@ -1,5 +1,6 @@
 package com.github.axodenelcorvus.commands.generator;
 
+import com.github.axodenelcorvus.SupportedGameGenerationRange;
 import com.github.axodenelcorvus.commands.exceptions.MissingArgumentException;
 import com.github.axodenelcorvus.commands.exceptions.RepeatedOptionException;
 import com.github.axodenelcorvus.commands.exceptions.UnsupportedOptionException;
@@ -75,7 +76,7 @@ class SeedsGeneratorCommandContextTests {
 
     static Stream<String> validPokemonGenerationRange() {
         return IntStream
-                .range(SeedsGeneratorCommandContext.FIRST_GENERATION, SeedsGeneratorCommandContext.LATEST_GENERATION + 1)
+                .range(SupportedGameGenerationRange.FIRST_GEN, SupportedGameGenerationRange.LATEST_GEN + 1)
                 .mapToObj(String::valueOf);
     }
 

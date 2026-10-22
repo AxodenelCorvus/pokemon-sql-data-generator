@@ -5,7 +5,7 @@ import com.github.axodenelcorvus.fetcher.SingleAlternativeFormMapProvider;
 import com.github.axodenelcorvus.model.dto.PokemonDTO;
 import com.github.axodenelcorvus.model.dto.PokemonSpeciesDTO;
 import com.github.axodenelcorvus.model.dto.PokemonVarietyDTO;
-import com.github.axodenelcorvus.model.dto.util.PokeApiJsonParser;
+import com.github.axodenelcorvus.model.dto.parser.PokeApiJsonParser;
 import com.github.axodenelcorvus.model.entry.*;
 import org.junit.jupiter.api.*;
 

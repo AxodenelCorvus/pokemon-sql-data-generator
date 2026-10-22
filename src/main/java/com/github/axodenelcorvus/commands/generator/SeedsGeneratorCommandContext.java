@@ -1,5 +1,6 @@
 package com.github.axodenelcorvus.commands.generator;
 
+import com.github.axodenelcorvus.SupportedGameGenerationRange;
 import com.github.axodenelcorvus.commands.CoreSubcommandAction;
 import com.github.axodenelcorvus.commands.CoreSubcommandContextualizer;
 import com.github.axodenelcorvus.commands.exceptions.MissingArgumentException;
@@ -7,7 +8,7 @@ import com.github.axodenelcorvus.commands.exceptions.RepeatedOptionException;
 import com.github.axodenelcorvus.commands.exceptions.UnsupportedOptionException;
 import com.github.axodenelcorvus.fetcher.PokeApiFetcher;
 import com.github.axodenelcorvus.fetcher.SingleAlternativeFormMapProvider;
-import com.github.axodenelcorvus.model.dto.util.PokeApiJsonParser;
+import com.github.axodenelcorvus.model.dto.parser.PokeApiJsonParser;
 import com.github.axodenelcorvus.writer.PokemonSqlSeedFilesWriter;
 
 import java.net.http.HttpClient;
@@ -19,10 +20,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class SeedsGeneratorCommandContext implements CoreSubcommandContextualizer {
-
-    //Supported range of generations
-    public static final int FIRST_GENERATION = 1;
-    public static final int LATEST_GENERATION = 9;
 
     private Path optionalDirectoryDestination;
     private int generationScope;
@@ -86,14 +83,13 @@ public class SeedsGeneratorCommandContext implements CoreSubcommandContextualize
 
         try { intGeneration = Integer.parseInt(generationFromUser); }
         catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Generation could not be understood |" +
-                    " Specified generation not in supported range %d to %d".formatted(FIRST_GENERATION, LATEST_GENERATION));
+            throw new IllegalArgumentException("Generation given could not be understood | %s"
+                    .formatted(SupportedGameGenerationRange.getOutOfRangeErrMsg()));
         }
 
-        boolean isGenerationInvalid = intGeneration < FIRST_GENERATION || intGeneration > LATEST_GENERATION;
 
-        if (isGenerationInvalid)
-            throw new IllegalArgumentException("Specified generation not in supported range %d to %d".formatted(FIRST_GENERATION, LATEST_GENERATION));
+        if (!SupportedGameGenerationRange.isValidGeneration(intGeneration))
+            throw new IllegalArgumentException(SupportedGameGenerationRange.getOutOfRangeErrMsg());
 
         this.generationScope = intGeneration;
     }
@@ -107,7 +103,7 @@ public class SeedsGeneratorCommandContext implements CoreSubcommandContextualize
     public CoreSubcommandAction setup(String... args) {
 
         if (args.length == 0)
-            throw new MissingArgumentException("Required generation in range %d to %d".formatted(FIRST_GENERATION, LATEST_GENERATION));
+            throw new MissingArgumentException("Required generation value, but none received");
 
         this.setGenerationScope(args[0]);
 

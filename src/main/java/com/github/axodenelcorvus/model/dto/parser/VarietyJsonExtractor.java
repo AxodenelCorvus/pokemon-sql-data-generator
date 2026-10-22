@@ -1,4 +1,4 @@
-package com.github.axodenelcorvus.model.dto.util;
+package com.github.axodenelcorvus.model.dto.parser;
 
 import com.github.axodenelcorvus.model.dto.PokemonVarietyDTO;
 import tools.jackson.databind.JsonNode;

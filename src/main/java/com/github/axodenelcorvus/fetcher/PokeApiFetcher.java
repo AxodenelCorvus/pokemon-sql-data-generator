@@ -1,7 +1,7 @@
 package com.github.axodenelcorvus.fetcher;
 
 
-import com.github.axodenelcorvus.model.dto.util.PokeApiJsonParser;
+import com.github.axodenelcorvus.model.dto.parser.PokeApiJsonParser;
 import com.github.axodenelcorvus.model.dto.PokemonDTO;
 import com.github.axodenelcorvus.model.dto.PokemonSpeciesDTO;
 
