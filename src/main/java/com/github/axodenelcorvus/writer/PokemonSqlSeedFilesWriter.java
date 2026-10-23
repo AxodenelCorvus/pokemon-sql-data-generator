@@ -29,25 +29,21 @@ public class PokemonSqlSeedFilesWriter {
 
         String sharedSuffix = SqlSeedFilesContext.provideFileSuffixUsing(LocalDateTime.now());
 
-        pokemonEntriesInsertionPath = filesContext.getDirectoryDestination()
-                            .resolve(Path.of(buildPokemonInsertFileName(sharedSuffix)));
+        Path dirDest = filesContext.getDirectoryDestination();
 
-        pokemonSpriteEntriesInsertionPath = filesContext.getDirectoryDestination()
-                            .resolve(Path.of(buildPokemonSpriteInsertFileName(sharedSuffix)));
-    }
+        pokemonEntriesInsertionPath = dirDest.resolve(
+                Path.of(buildSqlInsertionFileName(sharedSuffix, "_pokemon"))
+        );
 
-    private String buildPokemonInsertFileName(String suffix) {
-        return "%s%s%s".formatted(
-                SqlSeedFilesContext.SQL_FILE_PREFIX_FORMAT.formatted(generation),
-                "_pokemon",
-                suffix
+        pokemonSpriteEntriesInsertionPath = dirDest.resolve(
+                Path.of(buildSqlInsertionFileName(sharedSuffix, "_significant_pokemon_sprites"))
         );
     }
 
-    private String buildPokemonSpriteInsertFileName(String suffix) {
+    private String buildSqlInsertionFileName(String suffix, String body) {
         return "%s%s%s".formatted(
                 SqlSeedFilesContext.SQL_FILE_PREFIX_FORMAT.formatted(generation),
-                "_significant_pokemon_sprites",
+                body,
                 suffix
         );
     }
@@ -85,8 +81,10 @@ public class PokemonSqlSeedFilesWriter {
             this.resetWithDefaultDirectoryState();
 
             //Will need to regrab updated directory from context
-            if (Files.notExists(directoryDestination))
-                return Optional.of(Files.createDirectory(filesContext.getDirectoryDestination()));
+            Path updatedDirectoryDestination = filesContext.getDirectoryDestination();
+
+            if (Files.notExists(updatedDirectoryDestination))
+                return Optional.of(Files.createDirectory(updatedDirectoryDestination));
         }
         return Optional.empty();
     }
