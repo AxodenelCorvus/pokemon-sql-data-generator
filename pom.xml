@@ -12,7 +12,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- By default, exclude network tests for making packaging JAR file faster for this simpler application and
+        <!-- By default, exclude network tests for packaging JAR file faster for this simpler application and
         for running test that focus more on tests that don't integrate with PokeAPI.-->
         <excludedGroups>network</excludedGroups>
     </properties>
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>3.1.0</version>
+            <version>3.2.3</version>
         </dependency>
     </dependencies>
 
