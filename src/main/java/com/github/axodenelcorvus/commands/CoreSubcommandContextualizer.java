@@ -11,7 +11,6 @@ public interface CoreSubcommandContextualizer {
         return switch(subcommandCandidate) {
             case ("generate")    -> Optional.of(new SeedsGeneratorCommandContext());
             case ("help")        -> Optional.of(new HelpCommandContext());
-            case ("wipe")        -> Optional.empty();  //TODO of
             default -> Optional.empty();
         };
     }
