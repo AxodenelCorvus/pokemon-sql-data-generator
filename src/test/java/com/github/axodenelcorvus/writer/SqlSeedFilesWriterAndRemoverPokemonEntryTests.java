@@ -6,12 +6,6 @@ import com.github.axodenelcorvus.model.entry.PokemonEntry;
 import com.github.axodenelcorvus.model.entry.PokemonSpriteEntry;
 import com.github.axodenelcorvus.model.entry.RegionalForm;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-
-import static org.junit.jupiter.api.Named.named;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -21,11 +15,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.util.EnumSet;
 import java.util.List;
-import java.util.stream.Stream;
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -40,13 +35,12 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
 
     private final PokemonSqlSeedFilesWriter testSeedFilesWriterOne =
                 new PokemonSqlSeedFilesWriter(GENERATION_ONE, TEST_DIR);
+
     private final PokemonSqlSeedFilesWriter testSeedFilesWriterTwo =
                 new PokemonSqlSeedFilesWriter(GENERATION_TWO, TEST_DIR);
+
     private final PokemonSqlSeedFilesWriter testSeedFilesWriterThree =
                 new PokemonSqlSeedFilesWriter(GENERATION_THREE, TEST_DIR);
-
-    private final PokemonSqlSeedFilesRemover testSeedFilesRemover =
-                new PokemonSqlSeedFilesRemover(GENERATION_TWO, GENERATION_THREE, TEST_DIR);
 
     private enum TableInsertStatementDML {
         SIGNIFICANT_SPRITE_FORMS,
@@ -58,26 +52,27 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
         try {
             testSeedFilesWriterOne.createDestinationDirectoryIfNotExists();
             assumeTrue(Files.isWritable(TEST_DIR));
-            assumeTrue(TEST_DIR.equals(testSeedFilesRemover.getTargetedDirectory()));
         } catch (IOException e) {
             abort("Error occurred in creating or checking " + TEST_DIR + " | " + e.getMessage());
         }
     }
 
-    private static void assertCorrectInsertStatement(BufferedReader readerUsed, TableInsertStatementDML tableInsertStatementTested) {
-        if (tableInsertStatementTested == TableInsertStatementDML.POKEMON)
-            assertAll("Header of DML statement",
-                    () -> assertEquals("INSERT INTO pokemon", readerUsed.readLine()),
-                    () -> assertEquals("\t(id, national_dex_id, name, gender_rate, primary_type, secondary_type, is_mythical, is_legendary)",
-                            readerUsed.readLine()),
-                    () -> assertEquals("VALUES", readerUsed.readLine())
-            );
-        else
-            assertAll("Header of DML statement",
-                    () -> assertEquals("INSERT INTO significant_sprite_forms", readerUsed.readLine()),
-                    () -> assertEquals("\t(pokemon_id, descriptor, static_img_resource_path)", readerUsed.readLine()),
-                    () -> assertEquals("VALUES", readerUsed.readLine())
-            );
+    @AfterAll
+    void cleanupFiles() throws IOException {
+        //Only visit children of root directory, skip over any nested directory subtrees
+        int maxDepth = 1;
+        int expectedNumberOfFilesRemoved = 6; //All files should be removed
+        var remover = new GeneratedSqlSeedFilesRemover();
+
+        Files.walkFileTree(
+                TEST_DIR,
+                EnumSet.noneOf(FileVisitOption.class),
+                maxDepth,
+                remover
+        );
+
+        assertEquals(expectedNumberOfFilesRemoved, remover.getRemovalCount(),
+                "Not all SQL generated files in used test directory were removed for cleanup");
     }
 
     //Supplies all Pokemon introduced in generation one, but also including variant forms (produced later)
@@ -143,20 +138,29 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
         );
     }
 
-    private Stream<Arguments> providePathsToSqlFilesUsed() {
-        return Stream.of(
-                arguments(named("Gen 2 Pokemon SQL File Path", testSeedFilesWriterTwo.getPokemonEntriesInsertionPath())),
-                arguments(named("Gen 2 Sprite SQL File Path", testSeedFilesWriterTwo.getPokemonSpriteEntriesInsertionPath())),
-                arguments(named("Gen 3 Pokemon SQL File Path", testSeedFilesWriterThree.getPokemonEntriesInsertionPath())),
-                arguments(named("Gen 3 Sprite SQL File Path", testSeedFilesWriterThree.getPokemonSpriteEntriesInsertionPath()))
-        );
+
+    private static void assertCorrectInsertStatement(BufferedReader readerUsed, TableInsertStatementDML tableInsertStatementTested) {
+        if (tableInsertStatementTested == TableInsertStatementDML.POKEMON)
+            assertAll("Header of DML statement",
+                    () -> assertEquals("INSERT INTO pokemon", readerUsed.readLine()),
+                    () -> assertEquals("\t(id, national_dex_id, name, gender_rate, primary_type, secondary_type, is_mythical, is_legendary)",
+                            readerUsed.readLine()),
+                    () -> assertEquals("VALUES", readerUsed.readLine())
+            );
+        else
+            assertAll("Header of DML statement",
+                    () -> assertEquals("INSERT INTO significant_sprite_forms", readerUsed.readLine()),
+                    () -> assertEquals("\t(pokemon_id, descriptor, static_img_resource_path)", readerUsed.readLine()),
+                    () -> assertEquals("VALUES", readerUsed.readLine())
+            );
     }
 
     @Test
     @Order(1)
     @DisplayName("Write methods throw expected IOException when called without directory created")
     void testRowEntryWritingThrowsIOException() {
-        var newTestSeedsFilesWriter = new PokemonSqlSeedFilesWriter(GENERATION_ONE, Path.of("testDir1236"));
+        int generation = 4;
+        var newTestSeedsFilesWriter = new PokemonSqlSeedFilesWriter(generation, Path.of("testDir1236"));
 
         assertThrows(NoSuchFileException.class, () -> {
                     newTestSeedsFilesWriter.writePokemonRowEntries(supplyPokemonEntriesGenerationOne());
@@ -168,21 +172,6 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
         );
     }
 
-    @Test
-    @Order(1)
-    @DisplayName("Removal file count starts at 0 for remover instance")
-    void testSeedsFileRemoverRemovedFileCountInitialValue() {
-        assertEquals(0, testSeedFilesRemover.getRemovalCount(),
-                "Incorrect removal count initial state, this will throw off future tests in suite");
-    }
-
-    @Test
-    @Order(1)
-    @DisplayName("Range of remover is correct (inclusive ends)")
-    void testSeedsFileRemoverRangeCorrectness() {
-        assertEquals(GENERATION_TWO, testSeedFilesRemover.getGenerationTargetedRemovalRangeStart(), "Incorrect start range value");
-        assertEquals(GENERATION_THREE, testSeedFilesRemover.getGenerationTargetedRemovalRangeEnd(), "Incorrect end range value");
-    }
 
     @Test
     @Order(2)
@@ -209,7 +198,7 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
     }
 
     @Test
-    @Order(3)
+    @Order(2)
     @DisplayName("Generation one SQL file for significant_sprite_forms table is created, readable, and contents are correct")
     void testGenOneEntrySpritesInsertionStatementWrite() throws IOException {
         List<PokemonSpriteEntry> testEntries = supplyPokemonSpriteEntriesGenerationOne();
@@ -233,7 +222,7 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
     }
 
     @Test
-    @Order(4)
+    @Order(2)
     @DisplayName("Generation two SQL file for pokemon table is created, readable, and contents are correct")
     void testGenTwoEntryInsertionStatementWrite() throws IOException {
         List<PokemonEntry> testEntries = supplyPokemonEntriesGenerationTwo();
@@ -257,7 +246,7 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
     }
 
     @Test
-    @Order(5)
+    @Order(2)
     @DisplayName("Generation two SQL file for significant_sprite_forms table is created, readable, and contents are correct")
     void testGenTwoEntrySpritesInsertionStatementWrite() throws IOException {
         List<PokemonSpriteEntry> testEntries = supplyPokemonSpriteEntriesGenerationTwo();
@@ -283,7 +272,7 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
     }
 
     @Test
-    @Order(6)
+    @Order(2)
     @DisplayName("Generation three SQL file for pokemon table is created, readable, and contents are correct")
     void testGenThreeEntryInsertionStatementWrite() throws IOException {
         List<PokemonEntry> testEntries = supplyPokemonEntriesGenerationThree();
@@ -305,7 +294,7 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
     }
 
     @Test
-    @Order(7)
+    @Order(2)
     @DisplayName("Generation three SQL file for significant_sprite_forms table is created, readable, and contents are correct")
     void testGenThreeEntrySpritesInsertionStatementWrite() throws IOException {
         List<PokemonSpriteEntry> testEntries = supplyPokemonSpriteEntriesGenerationThree();
@@ -324,48 +313,6 @@ class SqlSeedFilesWriterAndRemoverPokemonEntryTests {
 
             assertNull(reader.readLine(), "More lines written than expected");
         }
-    }
-
-    @Test
-    @Order(8)
-    @DisplayName("Expected number of files deleted matches number relayed/reported by remover")
-    void testFilesRemoval() throws IOException {
-        testSeedFilesRemover.removeAllTargetedSqlSeedFiles();
-
-        int actualNumOfFilesReportedRemoved = testSeedFilesRemover.getRemovalCount();
-
-        assertEquals(4, actualNumOfFilesReportedRemoved,
-                () -> "Expected %d files removed, but remover reported file count was: %d"
-                                            .formatted(4, actualNumOfFilesReportedRemoved));
-    }
-
-    @Test
-    @Order(9)
-    @DisplayName("Gen one SQL files not unexpectedly deleted")
-    void testNoUnexpectedFilesDeleted() {
-
-        Path generationOneSpriteSqlFP = testSeedFilesWriterOne.getPokemonSpriteEntriesInsertionPath();
-        Path generationOnePokemonSqlFP = testSeedFilesWriterOne.getPokemonEntriesInsertionPath();
-
-        assertTrue(
-                Files.exists(generationOneSpriteSqlFP),
-                () -> "%s was deleted when it should not have been, OR never created to begin with when it should have been"
-                                        .formatted(generationOneSpriteSqlFP)
-        );
-        assertTrue(
-                Files.exists(generationOnePokemonSqlFP),
-                () -> "%s was deleted when it should not have been, OR never created to begin with when it should have been"
-                                        .formatted(generationOnePokemonSqlFP)
-        );
-    }
-
-
-    @Order(9)
-    @ParameterizedTest
-    @DisplayName("SQL files for Pokemon from generation two and three removed")
-    @MethodSource("providePathsToSqlFilesUsed")
-    void testAllTargetedFilesOfRemoverActuiallyRemoved(Path insertionSqlFilePath) {
-        assertFalse(Files.exists(insertionSqlFilePath), "Expected file removed is actually not");
     }
 
 }

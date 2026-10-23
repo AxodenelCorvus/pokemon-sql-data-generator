@@ -14,9 +14,6 @@ final class SqlSeedFilesContext {
     //Since future generations will be in double digits, will go ahead and adjust for this
     public static final String SQL_FILE_PREFIX_FORMAT = "insert_gen%02d";
 
-    //This value should be the segment before 1st  %  specifier in SQL_FILE_PREFIX_FORMAT above, regardless of changes to that field
-    public static final String SHARED_FIXED_PREFIX_SEGMENT = "insert_gen";
-
     public SqlSeedFilesContext(Path dirTargeted) {
         //TODO Review if null check defaulting behavior needed later
         if (dirTargeted == null) {
