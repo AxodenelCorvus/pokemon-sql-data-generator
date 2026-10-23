@@ -34,11 +34,11 @@ final class SqlSeedFilesContext {
 
     /*
     This method makes it so writes occur to a new distinct SQL file for SQL files created per each call to generator command
-    and do not overwrite existing ones. This is due to nanoseconds block at end of suffix.
+    and do not overwrite existing ones. This is due to nanoseconds of day block at end of suffix.
     */
     public static String provideFileSuffixUsing(LocalDateTime currTime) {
-        var fileFriendlyDateTimeSuffixFormatter = DateTimeFormatter.ofPattern("_yy-MM-dd__nnnnnnnnn");
-        return currTime.format(fileFriendlyDateTimeSuffixFormatter) + ".sql";
+        var fileDateTimeSuffixFormatter = DateTimeFormatter.ofPattern("_yy-MM-dd__NNNNNNNNNN");
+        return currTime.format(fileDateTimeSuffixFormatter) + ".sql";
     }
 
     public void updateDirDestinationToDefault() {
