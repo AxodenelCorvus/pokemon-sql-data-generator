@@ -48,6 +48,10 @@ public class PokemonSqlSeedFilesWriter {
         );
     }
 
+    public Path getDirectoryDestination() {
+        return filesContext.getDirectoryDestination();
+    }
+
     public static Path getDefaultDirDestination() {
         return SqlSeedFilesContext.DEFAULT_DIRECTORY_DEST;
     }

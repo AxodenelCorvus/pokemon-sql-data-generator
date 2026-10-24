@@ -46,12 +46,7 @@ final class SqlSeedFilesContext {
     }
 
 
-    public Path getTargetDestination() {
+    public Path getDirectoryDestination() {
         return directoryTargeted;
     }
-
-    public Path getDirectoryDestination() {
-        return this.getTargetDestination();
-    }
-
 }

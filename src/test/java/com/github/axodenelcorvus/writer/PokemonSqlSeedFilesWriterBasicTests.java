@@ -20,18 +20,20 @@ class PokemonSqlSeedFilesWriterBasicTests {
     @Test
     @DisplayName("Path object for default directory created correctly when correlating constructor called")
     void testConstructorSetsDefaultDirectory() {
-        var newTestSeedsFilesWriter = new PokemonSqlSeedFilesWriter(1);
+        var testSeedsFilesWriter = new PokemonSqlSeedFilesWriter(1);
 
-        assertNotNull(newTestSeedsFilesWriter.getPokemonEntriesInsertionPath());
-        assertNotNull(newTestSeedsFilesWriter.getPokemonSpriteEntriesInsertionPath());
+        assertEquals(
+                PokemonSqlSeedFilesWriter.getDefaultDirDestination(),
+                testSeedsFilesWriter.getDirectoryDestination()
+        );
 
         assertTrue(
-                newTestSeedsFilesWriter.getPokemonEntriesInsertionPath()
+                testSeedsFilesWriter.getPokemonEntriesInsertionPath()
                             .startsWith(PokemonSqlSeedFilesWriter.getDefaultDirDestination()),
                 "pokemonEntriesInsertionFile does not hold correct directory name in relative path"
         );
         assertTrue(
-                newTestSeedsFilesWriter.getPokemonSpriteEntriesInsertionPath()
+                testSeedsFilesWriter.getPokemonSpriteEntriesInsertionPath()
                             .startsWith(PokemonSqlSeedFilesWriter.getDefaultDirDestination()),
                 "pokemonSpriteEntriesInsertionFile does not hold correct directory name in relative path"
         );
