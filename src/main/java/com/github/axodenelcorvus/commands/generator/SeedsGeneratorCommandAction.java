@@ -23,7 +23,9 @@ public class SeedsGeneratorCommandAction implements CoreSubcommandAction {
     }
 
     @Override
-    public void activate() {
+    public int activate() {
+        int generatorStatusResult = 0;
+
         try (client) {
             PokemonEntriesBundle generationEntriesBundled;
 
@@ -32,21 +34,29 @@ public class SeedsGeneratorCommandAction implements CoreSubcommandAction {
             generationEntriesBundled = pokemonSeedsGeneratorCoordinator.fetchEntries(pokemonSpeciesSlugNames);
 
             pokemonSeedsGeneratorCoordinator.generateFilesFrom(generationEntriesBundled);
+
         } catch (InterruptedException ignored) { }
         /*These exceptions aren't result of bad input, but some external failure or issue (networking issues, API provider down, etc)
         in this case we will handle them by printing message and not showing help for any commands*/
         catch (HttpConnectTimeoutException e) {
             System.err.println("Connection Timeout: A connection with server was not established in enough time");
+            generatorStatusResult = 1;
         } catch (HttpTimeoutException e) {
             System.err.println("Response Timeout: A response could not be fulfilled and timed out");
+            generatorStatusResult = 1;
         } catch (ConnectException | UnknownHostException e) {
             System.err.println("Server could not be reached");
+            generatorStatusResult = 1;
         } catch (FileSystemException e) {
             if (e.getFile() != null)
                 System.err.printf("Issue using file %s%n", e.getFile());
             e.printStackTrace();
+            generatorStatusResult = 1;
         } catch (IOException | ExecutionException e) {
             e.printStackTrace();
+            generatorStatusResult = 1;
         }
+
+        return generatorStatusResult;
     }
 }

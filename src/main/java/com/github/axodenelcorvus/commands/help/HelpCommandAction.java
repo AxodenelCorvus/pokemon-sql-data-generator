@@ -10,12 +10,14 @@ public class HelpCommandAction implements CoreSubcommandAction {
     HelpCommandAction() { }
 
     @Override
-    public void activate() {
+    public int activate() {
         List<Supplier<String>> helpDisplayMessages = AggregateHelpMessageProvider.supplyDisplayMessages();
 
         for (Supplier<String> helpDisplay : helpDisplayMessages) {
             System.out.println(helpDisplay.get());
         }
+        
+        return 0;
     }
 
 }

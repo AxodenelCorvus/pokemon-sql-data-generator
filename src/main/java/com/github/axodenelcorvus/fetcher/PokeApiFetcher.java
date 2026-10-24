@@ -73,10 +73,10 @@ public class PokeApiFetcher {
     }
 
     private static void validateResponse(HttpResponse<String> resp) {
-        if (resp.statusCode() != OK_STATUS){
+        if (resp.statusCode() != OK_STATUS) {
             var errorMsg = "An unexpected issue occurred " +
                     "communicating with server using %s ".formatted(resp.uri().getPath());
-            throw new HttpResponseException(errorMsg, resp.statusCode());
+            throw new BadHttpResponseException(errorMsg, resp.statusCode());
         }
     }
 
