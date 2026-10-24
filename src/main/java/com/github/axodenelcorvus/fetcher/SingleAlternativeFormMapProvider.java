@@ -4,6 +4,8 @@ import java.util.Map;
 
 public final class SingleAlternativeFormMapProvider {
 
+    private SingleAlternativeFormMapProvider() {}
+
     /**
      * Provides the necessary immutable Map to assist in building sprite record entries for Pokemon that have a single non-regional alternative
      * sprite stemming off thier base form. Not all Pokemon that have a single alternative sprite are included in possible maps per
@@ -14,7 +16,7 @@ public final class SingleAlternativeFormMapProvider {
      */
     public static Map<Integer, String> from(int generationScope) {
         return switch(generationScope) {
-                                     //Correlating name of each ID
+                                     //Correlating Pokemon name of each descriptor's key ID
             case (1) -> Map.of();
             case (2) -> Map.of();
             case (3) -> Map.of(
