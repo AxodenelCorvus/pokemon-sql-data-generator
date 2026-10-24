@@ -31,6 +31,7 @@ public class SeedsGeneratorCoordinator {
     }
 
     public PokemonEntriesBundle fetchEntries(List<String> slugNames) throws IOException, InterruptedException, ExecutionException {
+        System.out.println("Fetching Data...");
 
         List<PokemonEntriesBundle> pokemonEntriesBundleList =
                                     new ArrayList<>(slugNames.size());
@@ -39,19 +40,22 @@ public class SeedsGeneratorCoordinator {
 
         ExecutorService executorService = Executors.newFixedThreadPool(12);
 
+        int countOfFetchedPokemon = 0;
+        int totalNumToBeFetched = slugNames.size();
+
         try {
             for (String pokemonSlugName : slugNames) {
                 FetchDataThenBundleEntriesTask currFetchTaskForPokemon =
                         new FetchDataThenBundleEntriesTask(apiFetcher, pokemonSlugName, singleAltFormDescriptorsByPokemonId);
 
                 bundledFutures.add(executorService.submit(currFetchTaskForPokemon));
+                countOfFetchedPokemon++;
 
-                if (bundledFutures.size() == BATCH_CAPACITY)
+                if (bundledFutures.size() == BATCH_CAPACITY || countOfFetchedPokemon == totalNumToBeFetched) {
                     unloadCurrentBatch(bundledFutures, pokemonEntriesBundleList);
+                    printOutFetchProgressReport(countOfFetchedPokemon, totalNumToBeFetched);
+                }
             }
-
-            unloadCurrentBatch(bundledFutures, pokemonEntriesBundleList);
-
         } catch (ExecutionException e) {
             switch (e.getCause()) {
                 case Error err -> throw err;
@@ -66,6 +70,17 @@ public class SeedsGeneratorCoordinator {
         return PokemonEntriesBundle.flattenBundles(pokemonEntriesBundleList);
     }
 
+    private void printOutFetchProgressReport(double countOfFetchedPokemon, double totalNumToBeFetched) {
+        String progressMsg = "* Entries Fetched and Compiled: %3.0f%% *".formatted(
+                (countOfFetchedPokemon / totalNumToBeFetched) * 100
+        );
+        String borderWrap = "*".repeat(progressMsg.length());
+
+        System.out.println('\t' + borderWrap);
+        System.out.println('\t' + progressMsg);
+        System.out.println('\t' + borderWrap);
+    }
+
     private void unloadCurrentBatch(
             List<Future<PokemonEntriesBundle>> fromFutures,
             List<PokemonEntriesBundle> toBundles) throws InterruptedException, ExecutionException
@@ -77,9 +92,24 @@ public class SeedsGeneratorCoordinator {
     }
 
     public void generateFilesFrom(PokemonEntriesBundle entriesBundled) throws IOException {
-        sqlFilesWriter.createDestinationDirectoryIfNotExists();
+        System.out.println("Preparing Directory and Writing New Files...");
+
+        sqlFilesWriter.createDestinationDirectoryIfNotExists()
+                .ifPresent((dir) -> System.out.printf("\tCreated Directory: %s%n", dir));
+
         sqlFilesWriter.writePokemonRowEntries(entriesBundled.pokemonEntries());
         sqlFilesWriter.writeSpriteRowEntries(entriesBundled.pokemonSpriteEntries());
+
+        System.out.printf(
+                "\tGenerated File: ./%s/%s %n",
+                sqlFilesWriter.getDirectoryDestination(),
+                sqlFilesWriter.getPokemonEntriesInsertionPath().getFileName()
+        );
+        System.out.printf(
+                "\tGenerated File: ./%s/%s %n",
+                sqlFilesWriter.getDirectoryDestination(),
+                sqlFilesWriter.getPokemonEntriesInsertionPath().getFileName()
+        );
     }
 
 }
