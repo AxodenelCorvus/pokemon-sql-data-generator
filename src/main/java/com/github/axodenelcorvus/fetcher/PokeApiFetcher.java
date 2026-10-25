@@ -27,10 +27,10 @@ public class PokeApiFetcher {
     private static final int OK_STATUS = 200;
 
 
-    public PokeApiFetcher(HttpClient httpClient, PokeApiJsonParser jsonParser, int generationResourcePathValue) {
+    public PokeApiFetcher(HttpClient httpClient, PokeApiJsonParser jsonParser, int generationResourceId) {
         client = httpClient;
         jsonBodyParser = jsonParser;
-        String generationPath = API_V2_BASE_PATH + "/generation/%d/".formatted(generationResourcePathValue);
+        String generationPath = API_V2_BASE_PATH + "/generation/%d/".formatted(generationResourceId);
         generationURL = URI.create(generationPath);
     }
 
