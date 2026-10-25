@@ -31,11 +31,17 @@ public final class FetchDataThenBundleEntriesTask implements Callable<PokemonEnt
     @Override
     public PokemonEntriesBundle call() throws IOException, InterruptedException {
         PokemonSpeciesDTO pokemonSpeciesDTO = pokeApiFetcher.fetchPokemonSpecies(pokemonSpeciesSlugName);
+        PokemonEntriesBundle resultsBundled;
 
         if (singleAltFormDescriptorsById.containsKey(pokemonSpeciesDTO.dexId()))
-            return fetchSingleAltFormEntries(pokemonSpeciesDTO);
+            resultsBundled = fetchSingleAltFormEntries(pokemonSpeciesDTO);
         else
-            return fetchStandardEntries(pokemonSpeciesDTO);
+            resultsBundled = fetchStandardEntries(pokemonSpeciesDTO);
+
+        for (PokemonEntry pokemonEntry : resultsBundled.pokemonEntries())
+            System.out.println('\t' + PokemonEntryFetchDisplayFormatter.formatDisplayFrom(pokemonEntry));
+
+        return resultsBundled;
     }
 
     private PokemonEntriesBundle fetchStandardEntries(PokemonSpeciesDTO speciesDTO) throws IOException, InterruptedException {
@@ -115,5 +121,4 @@ public final class FetchDataThenBundleEntriesTask implements Callable<PokemonEnt
 
         return new PokemonEntriesBundle(pokemonEntries, pokemonSpriteEntries);
     }
-
 }
