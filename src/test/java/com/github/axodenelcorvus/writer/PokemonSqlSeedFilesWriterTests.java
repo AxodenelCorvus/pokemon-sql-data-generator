@@ -1,10 +1,7 @@
 package com.github.axodenelcorvus.writer;
 
 import com.github.axodenelcorvus.model.DtoSampleProvider;
-import com.github.axodenelcorvus.model.entry.GenderSpriteForm;
-import com.github.axodenelcorvus.model.entry.PokemonEntry;
-import com.github.axodenelcorvus.model.entry.PokemonSpriteEntry;
-import com.github.axodenelcorvus.model.entry.RegionalForm;
+import com.github.axodenelcorvus.model.entry.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -82,15 +79,17 @@ class PokemonSqlSeedFilesWriterTests {
 
     //Supplies all Pokemon introduced in generation one, but also including variant forms (produced later)
     private List<PokemonEntry> supplyPokemonEntriesGenerationOne() {
+        FossilPokemonChecker genOneFossilChecker = new FossilPokemonChecker(1);
+
         return List.of(
                 //Vulpix
-                PokemonEntry.from(dtoProvider.getPokemonDTO(37), dtoProvider.getPokemonSpeciesDTO(37)),
+                PokemonEntry.from(dtoProvider.getPokemonDTO(37), dtoProvider.getPokemonSpeciesDTO(37), genOneFossilChecker),
                 //Alolan Ninetales
-                PokemonEntry.from(dtoProvider.getPokemonDTO(10104), dtoProvider.getPokemonSpeciesDTO(10104)),
+                PokemonEntry.from(dtoProvider.getPokemonDTO(10104), dtoProvider.getPokemonSpeciesDTO(10104), genOneFossilChecker),
                 //Slowbro
-                PokemonEntry.from(dtoProvider.getPokemonDTO(80), dtoProvider.getPokemonSpeciesDTO(80)),
+                PokemonEntry.from(dtoProvider.getPokemonDTO(80), dtoProvider.getPokemonSpeciesDTO(80), genOneFossilChecker),
                 //Moltres
-                PokemonEntry.from(dtoProvider.getPokemonDTO(146), dtoProvider.getPokemonSpeciesDTO(146))
+                PokemonEntry.from(dtoProvider.getPokemonDTO(146), dtoProvider.getPokemonSpeciesDTO(146), genOneFossilChecker)
         );
     }
 
@@ -104,15 +103,17 @@ class PokemonSqlSeedFilesWriterTests {
     }
 
     private List<PokemonEntry> supplyPokemonEntriesGenerationTwo() {
+        FossilPokemonChecker genTwoFossilChecker = new FossilPokemonChecker(2);
+
         return List.of(
                 //Chikorita
-                PokemonEntry.from(dtoProvider.getPokemonDTO(152), dtoProvider.getPokemonSpeciesDTO(152)),
+                PokemonEntry.from(dtoProvider.getPokemonDTO(152), dtoProvider.getPokemonSpeciesDTO(152), genTwoFossilChecker),
                 //Hisusian Sneasel
-                PokemonEntry.from(dtoProvider.getPokemonDTO(10235), dtoProvider.getPokemonSpeciesDTO(10235)),
+                PokemonEntry.from(dtoProvider.getPokemonDTO(10235), dtoProvider.getPokemonSpeciesDTO(10235), genTwoFossilChecker),
                 //Heracross
-                PokemonEntry.from(dtoProvider.getPokemonDTO(214), dtoProvider.getPokemonSpeciesDTO(214)),
+                PokemonEntry.from(dtoProvider.getPokemonDTO(214), dtoProvider.getPokemonSpeciesDTO(214), genTwoFossilChecker),
                 //Raikou
-                PokemonEntry.from(dtoProvider.getPokemonDTO(243), dtoProvider.getPokemonSpeciesDTO(243))
+                PokemonEntry.from(dtoProvider.getPokemonDTO(243), dtoProvider.getPokemonSpeciesDTO(243), genTwoFossilChecker)
         );
     }
 
@@ -128,11 +129,13 @@ class PokemonSqlSeedFilesWriterTests {
     }
 
     private List<PokemonEntry> supplyPokemonEntriesGenerationThree() {
+        FossilPokemonChecker genThreeFossilChecker = new FossilPokemonChecker(3);
+
         return List.of(
                 //Altaria
-                PokemonEntry.from(dtoProvider.getPokemonDTO(334), dtoProvider.getPokemonSpeciesDTO(334)),
+                PokemonEntry.from(dtoProvider.getPokemonDTO(334), dtoProvider.getPokemonSpeciesDTO(334), genThreeFossilChecker),
                 //Shroomish
-                PokemonEntry.from(dtoProvider.getPokemonDTO(285), dtoProvider.getPokemonSpeciesDTO(285))
+                PokemonEntry.from(dtoProvider.getPokemonDTO(285), dtoProvider.getPokemonSpeciesDTO(285), genThreeFossilChecker)
         );
     }
 
@@ -142,8 +145,7 @@ class PokemonSqlSeedFilesWriterTests {
                 new PokemonSpriteEntry(285, GenderSpriteForm.NONE, RegionalForm.STANDARD, 285)
         );
     }
-
-
+    
     private final List<Arguments> writerSqlInsertionEntriesFilePaths = List.of(
             arguments(
                     named("Gen 1 Pokemon SQL File", testSeedFilesWriterOne.getPokemonEntriesInsertionPath()),
@@ -161,7 +163,7 @@ class PokemonSqlSeedFilesWriterTests {
         if (tableInsertStatementTested == TableInsertStatementDML.POKEMON)
             assertAll("Header of DML statement",
                     () -> assertEquals("INSERT INTO pokemon", readerUsed.readLine()),
-                    () -> assertEquals("\t(id, national_dex_id, name, gender_rate, primary_type, secondary_type, is_mythical, is_legendary)",
+                    () -> assertEquals("\t(id, national_dex_id, name, gender_rate, primary_type, secondary_type, is_mythical, is_legendary, is_fossil)",
                             readerUsed.readLine()),
                     () -> assertEquals("VALUES", readerUsed.readLine())
             );
@@ -235,10 +237,14 @@ class PokemonSqlSeedFilesWriterTests {
             var closeLineFailMsg = "Issue in closing line of file (line 7)";
 
             assertAll("Row constructors",
-                    () -> assertEquals("\t(37, 37, 'Vulpix', 6, 'Fire', null, false, false),", reader.readLine()),
-                    () -> assertEquals("\t(10104, 38, 'Ninetales', 6, 'Ice', 'Fairy', false, false),", reader.readLine()),
-                    () -> assertEquals("\t(80, 80, 'Slowbro', 4, 'Water', 'Psychic', false, false),", reader.readLine()),
-                    () -> assertEquals("\t(146, 146, 'Moltres', null, 'Fire', null, false, true);", reader.readLine(), closeLineFailMsg)
+                    () -> assertEquals("\t(37, 37, 'Vulpix', 6, 'Fire', null, false, false, false),", reader.readLine()),
+                    () -> assertEquals("\t(10104, 38, 'Ninetales', 6, 'Ice', 'Fairy', false, false, false),", reader.readLine()),
+                    () -> assertEquals("\t(80, 80, 'Slowbro', 4, 'Water', 'Psychic', false, false, false),", reader.readLine()),
+                    () -> assertEquals(
+                            "\t(146, 146, 'Moltres', null, 'Fire', null, false, true, false, false);",
+                            reader.readLine(),
+                            closeLineFailMsg
+                    )
             );
 
             assertNull(reader.readLine(), "More lines written than expected");
@@ -283,10 +289,14 @@ class PokemonSqlSeedFilesWriterTests {
             var closeLineFailMsg = "Issue in closing line of file (line 7)";
 
             assertAll("Row constructors",
-                    () -> assertEquals("\t(152, 152, 'Chikorita', 1, 'Grass', null, false, false),", reader.readLine()),
-                    () -> assertEquals("\t(10235, 215, 'Sneasel', 4, 'Fighting', 'Poison', false, false),", reader.readLine()),
-                    () -> assertEquals("\t(214, 214, 'Heracross', 4, 'Bug', 'Fighting', false, false),", reader.readLine()),
-                    () -> assertEquals("\t(243, 243, 'Raikou', null, 'Electric', null, false, true);", reader.readLine(), closeLineFailMsg)
+                    () -> assertEquals("\t(152, 152, 'Chikorita', 1, 'Grass', null, false, false, false),", reader.readLine()),
+                    () -> assertEquals("\t(10235, 215, 'Sneasel', 4, 'Fighting', 'Poison', false, false, false),", reader.readLine()),
+                    () -> assertEquals("\t(214, 214, 'Heracross', 4, 'Bug', 'Fighting', false, false, false),", reader.readLine()),
+                    () -> assertEquals(
+                            "\t(243, 243, 'Raikou', null, 'Electric', null, false, true, false, false);",
+                            reader.readLine(),
+                            closeLineFailMsg
+                    )
             );
 
             assertNull(reader.readLine(), "More lines written than expected");
@@ -333,8 +343,8 @@ class PokemonSqlSeedFilesWriterTests {
             var closeLineFailMsg = "Issue in closing line of file (line 5)";
 
             assertAll("Row constructors",
-                    () -> assertEquals("\t(334, 334, 'Altaria', 4, 'Dragon', 'Flying', false, false),", reader.readLine()),
-                    () -> assertEquals("\t(285, 285, 'Shroomish', 4, 'Grass', null, false, false);", reader.readLine(), closeLineFailMsg)
+                    () -> assertEquals("\t(334, 334, 'Altaria', 4, 'Dragon', 'Flying', false, false, false),", reader.readLine()),
+                    () -> assertEquals("\t(285, 285, 'Shroomish', 4, 'Grass', null, false, false, false);", reader.readLine(), closeLineFailMsg)
             );
 
             assertNull(reader.readLine(), "More lines written than expected");

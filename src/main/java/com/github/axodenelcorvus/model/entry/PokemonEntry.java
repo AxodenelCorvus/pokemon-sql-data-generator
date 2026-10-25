@@ -14,10 +14,11 @@ public final class PokemonEntry implements SqlTupleSerializable {
     private String secondaryType;
     private boolean isMythical;
     private boolean isLegendary;
+    private boolean isFossil;
 
     private PokemonEntry() { }
 
-    public static PokemonEntry from(PokemonDTO pokemonDTO, PokemonSpeciesDTO pokemonSpeciesDTO) {
+    public static PokemonEntry from(PokemonDTO pokemonDTO, PokemonSpeciesDTO pokemonSpeciesDTO, FossilPokemonChecker fossilChecker) {
         PokemonEntry result = new PokemonEntry();
 
         result.id = pokemonDTO.id();
@@ -28,6 +29,7 @@ public final class PokemonEntry implements SqlTupleSerializable {
         result.isMythical = pokemonSpeciesDTO.isMythical();
         result.isLegendary = pokemonSpeciesDTO.isLegendary();
         result.setGenderRate(pokemonSpeciesDTO.genderRate());
+        result.isFossil = fossilChecker.checkIfFossil(pokemonSpeciesDTO.dexId());
 
         return result;
     }
@@ -64,6 +66,10 @@ public final class PokemonEntry implements SqlTupleSerializable {
         return isLegendary;
     }
 
+    public boolean isFossil() {
+        return isFossil;
+    }
+
     private void setGenderRate(Integer genderRate) {
         this.genderRate = genderRate < 0 ? null : genderRate;
     }
@@ -76,11 +82,11 @@ public final class PokemonEntry implements SqlTupleSerializable {
     }
 
     public static final String TABLE_NAME = "pokemon";
-    public static final String COLUMN_LIST = "(id, national_dex_id, name, gender_rate, primary_type, secondary_type, is_mythical, is_legendary)";
+    public static final String COLUMN_LIST = "(id, national_dex_id, name, gender_rate, primary_type, secondary_type, is_mythical, is_legendary, is_fossil)";
 
     @Override
     public String toSqlTuple(SqlStringResolver sqlStrResolution) {
-        return "(%d, %d, %s, %d, %s, %s, %b, %b)".formatted(
+        return "(%d, %d, %s, %d, %s, %s, %b, %b, %b)".formatted(
                 id,
                 nationalDexId,
                 sqlStrResolution.apply(name),
@@ -88,7 +94,8 @@ public final class PokemonEntry implements SqlTupleSerializable {
                 sqlStrResolution.apply(primaryType),
                 sqlStrResolution.apply(secondaryType),
                 isMythical,
-                isLegendary
+                isLegendary,
+                isFossil
         );
     }
 
@@ -101,7 +108,8 @@ public final class PokemonEntry implements SqlTupleSerializable {
                 && Objects.equals(primaryType, other.primaryType)
                 && Objects.equals(secondaryType, other.secondaryType)
                 && isMythical == other.isMythical
-                && isLegendary == other.isLegendary;
+                && isLegendary == other.isLegendary
+                && isFossil == other.isFossil;
     }
 
     @Override
@@ -114,6 +122,7 @@ public final class PokemonEntry implements SqlTupleSerializable {
     public String toString() {
         char mythicalToChar = isMythical ? 'T' : 'F';
         char legendaryToChar = isLegendary ? 'T' : 'F';
+        char fossilToChar = isFossil ? 'T' : 'F';
 
         return "PokemonEntry{" +
                 "id=" + id +
@@ -124,6 +133,7 @@ public final class PokemonEntry implements SqlTupleSerializable {
                 ", secondaryType=\"" + secondaryType + '\"' +
                 ", isMythical=" + mythicalToChar +
                 ", isLegendary=" + legendaryToChar +
+                ", isFossil=" + fossilToChar +
                 '}';
     }
 }

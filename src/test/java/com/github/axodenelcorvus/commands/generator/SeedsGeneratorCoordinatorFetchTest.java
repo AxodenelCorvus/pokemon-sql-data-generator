@@ -61,10 +61,13 @@ class SeedsGeneratorCoordinatorFetchTest {
                 GENERATION_OF_GIRATINA
         );
 
+        var unusedChecker = new FossilPokemonChecker(GENERATION_OF_GIRATINA);
+
         this.generatorCoordinator = new SeedsGeneratorCoordinator(
                 null, //Not in use for these tests
                 pokeApiFetcher,
-                singleAltFormDescriptorsByPokemonId
+                singleAltFormDescriptorsByPokemonId,
+                unusedChecker
         );
     }
 
@@ -149,6 +152,7 @@ class SeedsGeneratorCoordinatorFetchTest {
         List<PokemonEntriesBundle> listOfPkmSpeciesBundled = new ArrayList<>();
         int i = 0; //Index used to walk through tagged samplePokemonDtos
         EnumMap<RegionalForm, PokemonDTO> subSpeciesPokemonByRegion;
+        FossilPokemonChecker unusedChecker = new FossilPokemonChecker(GENERATION_OF_GIRATINA);
 
         for (PokemonSpeciesDTO samplePokemonSpeciesBase : samplePokemonSpeciesDtos) {
             subSpeciesPokemonByRegion = new EnumMap<>(RegionalForm.class);
@@ -173,7 +177,7 @@ class SeedsGeneratorCoordinatorFetchTest {
             }
 
             var currPokemonSpeciesBundle = PokemonEntriesBundle
-                    .fromSpecies(samplePokemonSpeciesBase, subSpeciesPokemonByRegion);
+                    .fromSpecies(samplePokemonSpeciesBase, subSpeciesPokemonByRegion, unusedChecker);
 
             if (samplePokemonSpeciesBase.name().equals("Giratina")) {
                 var additionalAltSpriteEntry = new PokemonSpriteEntry(487, "Origin");

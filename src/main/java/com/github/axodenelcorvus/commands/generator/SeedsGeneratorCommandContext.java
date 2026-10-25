@@ -9,6 +9,7 @@ import com.github.axodenelcorvus.commands.exceptions.UnsupportedOptionException;
 import com.github.axodenelcorvus.fetcher.PokeApiFetcher;
 import com.github.axodenelcorvus.fetcher.SingleAlternativeFormMapProvider;
 import com.github.axodenelcorvus.model.dto.parser.PokeApiJsonParser;
+import com.github.axodenelcorvus.model.entry.FossilPokemonChecker;
 import com.github.axodenelcorvus.writer.PokemonSqlSeedFilesWriter;
 
 import java.net.http.HttpClient;
@@ -116,6 +117,8 @@ public class SeedsGeneratorCommandContext implements CoreSubcommandContextualize
                                 .connectTimeout(Duration.ofSeconds(10))
                                 .build();
 
+        var pokemonFossilChecker = new FossilPokemonChecker(generationScope);
+
         var sqlSeedsFileWriter =
                 new PokemonSqlSeedFilesWriter(generationScope, optionalDirectoryDestination);
 
@@ -125,8 +128,12 @@ public class SeedsGeneratorCommandContext implements CoreSubcommandContextualize
         Map<Integer, String> singleAltFormDescriptorsByPokemonId =
                 SingleAlternativeFormMapProvider.from(generationScope);
 
-        SeedsGeneratorCoordinator seedsGeneratorCoordinator =
-                new SeedsGeneratorCoordinator(sqlSeedsFileWriter, pokeApiDataFetcher, singleAltFormDescriptorsByPokemonId);
+        SeedsGeneratorCoordinator seedsGeneratorCoordinator = new SeedsGeneratorCoordinator(
+                sqlSeedsFileWriter,
+                pokeApiDataFetcher,
+                singleAltFormDescriptorsByPokemonId,
+                pokemonFossilChecker
+        );
 
         return new SeedsGeneratorCommandAction(seedsGeneratorCoordinator, client);
     }

@@ -16,15 +16,20 @@ public record PokemonEntriesBundle(
     /**
      * Bundles together the Pokemon entry records and significant Pokemon entry sprite records from
      * related DTOs to form a singe bundle for a Pokemon "species" group. Care must be considered in use as
-     * there is no checks for correctness on DTOs in parameter.
-     * @param baseSpecies The PokemonSpeciesDTO that contains context on the species group as a whole.
-     * @param subSpeciesByRegion Individual PokemonDTO of species group mapped by region. A Pokemon can have only one default regional
-     *                           form variant per region.
+     * there is no checks for correctness on DTOs in parameters.
+     * @param baseSpecies The PokemonSpeciesDTO that contains context on the species group as a whole
+     * @param subSpeciesByRegion Individual PokemonDTO of species group mapped by distinct regions
+     * @param fossilPokemonChecker Predicate to check if Pokemon is fossil by its ID
      * @return The records entries bundled.
      */
-    public static PokemonEntriesBundle fromSpecies(PokemonSpeciesDTO baseSpecies, EnumMap<RegionalForm, PokemonDTO> subSpeciesByRegion) {
+    public static PokemonEntriesBundle fromSpecies(
+            PokemonSpeciesDTO baseSpecies,
+            EnumMap<RegionalForm, PokemonDTO> subSpeciesByRegion,
+            FossilPokemonChecker fossilPokemonChecker
+    ) {
         Objects.requireNonNull(baseSpecies);
         Objects.requireNonNull(subSpeciesByRegion);
+        Objects.requireNonNull(fossilPokemonChecker);
 
         if (subSpeciesByRegion.isEmpty())
             throw new IllegalArgumentException("RegionalForm.STANDARD value at very least expected in passed map, but no keys present");
@@ -38,8 +43,9 @@ public record PokemonEntriesBundle(
             if (pokemonOfSpecies == null)
                 throw new NullPointerException("Value null for regional key: " + regionForm);
 
-            pokemonEntries
-                    .add(PokemonEntry.from(pokemonOfSpecies, baseSpecies));
+            pokemonEntries.add(
+                    PokemonEntry.from(pokemonOfSpecies, baseSpecies, fossilPokemonChecker)
+            );
 
             boolean isCurrPokemonFemaleSpritePresent = pokemonOfSpecies.femaleSpriteLink() != null;
 

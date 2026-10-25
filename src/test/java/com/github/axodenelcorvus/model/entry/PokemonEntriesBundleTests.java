@@ -14,12 +14,20 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PokemonEntriesBundleTests {
     private final DtoSampleProvider dtoSampleProvider = new DtoSampleProvider();
+    private final FossilPokemonChecker genOneFossilPokemonChecker = new FossilPokemonChecker(1);
 
     private PokemonEntriesBundle getScytherEntriesBundle() {
         PokemonSpeciesDTO scytherSpeciesSample = dtoSampleProvider.getPokemonSpeciesDTO(123);
         PokemonDTO scytherSample = dtoSampleProvider.getPokemonDTO(123);
 
-        List<PokemonEntry> scytherEntries = List.of(PokemonEntry.from(scytherSample, scytherSpeciesSample));
+        List<PokemonEntry> scytherEntries = List.of(
+                PokemonEntry.from(
+                        scytherSample,
+                        scytherSpeciesSample,
+                        genOneFossilPokemonChecker
+                )
+        );
+
         List<PokemonSpriteEntry> scytherSpriteEntries = List.of(
                 new PokemonSpriteEntry(123, GenderSpriteForm.MALE, RegionalForm.STANDARD, 123),
                 new PokemonSpriteEntry(123, GenderSpriteForm.FEMALE, RegionalForm.STANDARD, 123)
@@ -40,8 +48,16 @@ class PokemonEntriesBundleTests {
         );
 
         List<PokemonEntry> farfetchdEntries = List.of(
-                PokemonEntry.from(farfetchdSample, farfetchdSpeciesSample),
-                PokemonEntry.from(farfetchdGalarSample, farfetchdSpeciesSample)
+                PokemonEntry.from(
+                        farfetchdSample,
+                        farfetchdSpeciesSample,
+                        genOneFossilPokemonChecker
+                ),
+                PokemonEntry.from(
+                        farfetchdGalarSample,
+                        farfetchdSpeciesSample,
+                        genOneFossilPokemonChecker
+                )
         );
 
         List<PokemonSpriteEntry> farfetchdSpriteEntries = List.of(

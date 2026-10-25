@@ -21,11 +21,18 @@ public final class FetchDataThenBundleEntriesTask implements Callable<PokemonEnt
     private final PokeApiFetcher pokeApiFetcher;
     private final String pokemonSpeciesSlugName;
     private final Map<Integer, String> singleAltFormDescriptorsById;
+    private final FossilPokemonChecker fossilPokemonChecker;
 
-    public FetchDataThenBundleEntriesTask(PokeApiFetcher pokeApiFetcher, String pokemonSpeciesSlugName, Map<Integer, String> singleAltFormDescriptorsById) {
+    public FetchDataThenBundleEntriesTask(
+            PokeApiFetcher pokeApiFetcher,
+            String pokemonSpeciesSlugName,
+            Map<Integer, String> singleAltFormDescriptorsById,
+            FossilPokemonChecker fossilPokemonChecker
+    ) {
         this.pokeApiFetcher = pokeApiFetcher;
         this.pokemonSpeciesSlugName = pokemonSpeciesSlugName;
         this.singleAltFormDescriptorsById = singleAltFormDescriptorsById;
+        this.fossilPokemonChecker = fossilPokemonChecker;
     }
 
     @Override
@@ -49,7 +56,7 @@ public final class FetchDataThenBundleEntriesTask implements Callable<PokemonEnt
 
         pokemonByRegion = fetchPokemonByRegion(speciesDTO.varieties());
 
-        return PokemonEntriesBundle.fromSpecies(speciesDTO, pokemonByRegion);
+        return PokemonEntriesBundle.fromSpecies(speciesDTO, pokemonByRegion, fossilPokemonChecker);
     }
 
     /*
@@ -104,7 +111,7 @@ public final class FetchDataThenBundleEntriesTask implements Callable<PokemonEnt
         for (PokemonVarietyDTO variety : speciesDTO.varieties()) {
             if (variety.isDefault()) {
                 PokemonDTO defaultFormDTO = pokeApiFetcher.fetchPokemon(variety.slugName()) ;
-                pokemonEntries.add(PokemonEntry.from(defaultFormDTO, speciesDTO));
+                pokemonEntries.add(PokemonEntry.from(defaultFormDTO, speciesDTO, fossilPokemonChecker));
                 break;
             }
         }

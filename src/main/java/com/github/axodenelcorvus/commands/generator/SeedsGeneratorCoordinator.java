@@ -2,6 +2,7 @@ package com.github.axodenelcorvus.commands.generator;
 
 import com.github.axodenelcorvus.fetcher.FetchDataThenBundleEntriesTask;
 import com.github.axodenelcorvus.fetcher.PokeApiFetcher;
+import com.github.axodenelcorvus.model.entry.FossilPokemonChecker;
 import com.github.axodenelcorvus.model.entry.PokemonEntriesBundle;
 import com.github.axodenelcorvus.writer.PokemonSqlSeedFilesWriter;
 
@@ -16,14 +17,17 @@ public class SeedsGeneratorCoordinator {
     private final PokeApiFetcher apiFetcher;
     private final Map<Integer, String> singleAltFormDescriptorsByPokemonId;
     public final int BATCH_CAPACITY = 40;
+    private final FossilPokemonChecker fossilPokemonChecker;
 
     SeedsGeneratorCoordinator(PokemonSqlSeedFilesWriter pokemonSqlSeedFilesWriter,
                               PokeApiFetcher pokeApifetcher,
-                              Map<Integer, String> singleAltFormDescriptorsByPokemonId)
-    {
+                              Map<Integer, String> singleAltFormDescriptorsByPokemonId,
+                              FossilPokemonChecker fossilPokemonChecker
+    ) {
         sqlFilesWriter = pokemonSqlSeedFilesWriter;
         apiFetcher = pokeApifetcher;
         this.singleAltFormDescriptorsByPokemonId = singleAltFormDescriptorsByPokemonId;
+        this.fossilPokemonChecker = fossilPokemonChecker;
     }
 
     public List<String> fetchPokemonSpeciesSlugNames() throws IOException, InterruptedException {
@@ -45,8 +49,12 @@ public class SeedsGeneratorCoordinator {
 
         try {
             for (String pokemonSlugName : slugNames) {
-                FetchDataThenBundleEntriesTask currFetchTaskForPokemon =
-                        new FetchDataThenBundleEntriesTask(apiFetcher, pokemonSlugName, singleAltFormDescriptorsByPokemonId);
+                FetchDataThenBundleEntriesTask currFetchTaskForPokemon = new FetchDataThenBundleEntriesTask(
+                        apiFetcher,
+                        pokemonSlugName,
+                        singleAltFormDescriptorsByPokemonId,
+                        fossilPokemonChecker
+                );
 
                 bundledFutures.add(executorService.submit(currFetchTaskForPokemon));
                 countOfFetchedPokemon++;

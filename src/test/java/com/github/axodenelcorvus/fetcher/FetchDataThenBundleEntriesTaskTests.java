@@ -1,6 +1,8 @@
 package com.github.axodenelcorvus.fetcher;
 
+import com.github.axodenelcorvus.SupportedGameGenerationRange;
 import com.github.axodenelcorvus.model.dto.parser.PokeApiJsonParser;
+import com.github.axodenelcorvus.model.entry.FossilPokemonChecker;
 import com.github.axodenelcorvus.model.entry.PokemonEntriesBundle;
 import com.github.axodenelcorvus.model.entry.SqlStringResolver;
 import com.github.axodenelcorvus.model.entry.SqlTupleSerializable;
@@ -20,6 +22,8 @@ class FetchDataThenBundleEntriesTaskTests {
     private final int GENERATION_TEST_ID = 1;
     private final HttpClient TEST_CLIENT = HttpClient.newHttpClient();
     private final PokeApiFetcher fetcher;
+    private final FossilPokemonChecker unusedFossilPokemonChecker =
+            new FossilPokemonChecker(SupportedGameGenerationRange.LATEST_GEN + 1);
 
 
     private Set<String> taurosEntriesSerialized = new HashSet<>();
@@ -66,9 +70,9 @@ class FetchDataThenBundleEntriesTaskTests {
         //it has no distinct differences between male and female sprites so uses descriptor: "Default"
 
         taurosEntriesSerialized
-                .add("(128, 128, 'Tauros', 0, 'Normal', null, false, false)");
+                .add("(128, 128, 'Tauros', 0, 'Normal', null, false, false, false)");
         taurosEntriesSerialized
-                .add("(10250, 128, 'Tauros', 0, 'Fighting', null, false, false)");
+                .add("(10250, 128, 'Tauros', 0, 'Fighting', null, false, false, false)");
         taurosEntriesSerialized
                 .add("(128, 'Default', '/universal_default/128.png')");
         taurosEntriesSerialized
@@ -80,9 +84,9 @@ class FetchDataThenBundleEntriesTaskTests {
     @BeforeAll
     void setupSneaselEntries() {
         sneaselEntriesSerialized
-                .add("(215, 215, 'Sneasel', 4, 'Dark', 'Ice', false, false)");
+                .add("(215, 215, 'Sneasel', 4, 'Dark', 'Ice', false, false, false)");
         sneaselEntriesSerialized
-                .add("(10235, 215, 'Sneasel', 4, 'Fighting', 'Poison', false, false)");
+                .add("(10235, 215, 'Sneasel', 4, 'Fighting', 'Poison', false, false, false)");
 
         sneaselEntriesSerialized
                 .add("(215, 'Male', '/universal_default/215.png')");
@@ -100,7 +104,7 @@ class FetchDataThenBundleEntriesTaskTests {
 
         //One SHAYMIN entry to its significant sprite record entries
         genFourSingleAltFormEntriesSerialized
-                .add("(492, 492, 'Shaymin', null, 'Grass', null, true, false)");
+                .add("(492, 492, 'Shaymin', null, 'Grass', null, true, false, false)");
         genFourSingleAltFormEntriesSerialized
                 .add("(492, 'Default', '/universal_default/492.png')");
         genFourSingleAltFormEntriesSerialized
@@ -108,7 +112,7 @@ class FetchDataThenBundleEntriesTaskTests {
 
         //One GIRATINA entry to its significant sprite record entries
         genFourSingleAltFormEntriesSerialized
-                .add("(487, 487, 'Giratina', null, 'Ghost', 'Dragon', false, true)");
+                .add("(487, 487, 'Giratina', null, 'Ghost', 'Dragon', false, true, false)");
         genFourSingleAltFormEntriesSerialized
                 .add("(487, 'Default', '/universal_default/487.png')");
         genFourSingleAltFormEntriesSerialized
@@ -116,7 +120,7 @@ class FetchDataThenBundleEntriesTaskTests {
 
         //One PALKIA entry to its significant sprite record entries
         genFourSingleAltFormEntriesSerialized
-                .add("(484, 484, 'Palkia', null, 'Water', 'Dragon', false, true)");
+                .add("(484, 484, 'Palkia', null, 'Water', 'Dragon', false, true, false)");
         genFourSingleAltFormEntriesSerialized
                 .add("(484, 'Default', '/universal_default/484.png')");
         genFourSingleAltFormEntriesSerialized
@@ -124,7 +128,7 @@ class FetchDataThenBundleEntriesTaskTests {
 
         //One DIALGA entry to its significant sprite record entries
         genFourSingleAltFormEntriesSerialized
-                .add("(483, 483, 'Dialga', null, 'Steel', 'Dragon', false, true)");
+                .add("(483, 483, 'Dialga', null, 'Steel', 'Dragon', false, true, false)");
         genFourSingleAltFormEntriesSerialized
                 .add("(483, 'Default', '/universal_default/483.png')");
         genFourSingleAltFormEntriesSerialized
@@ -135,7 +139,12 @@ class FetchDataThenBundleEntriesTaskTests {
     @Test
     @DisplayName("Tauros entries fetch task")
     void testTaurosEntries() throws Exception {
-        Callable<PokemonEntriesBundle> task = new FetchDataThenBundleEntriesTask(fetcher, "tauros", Map.of());
+        Callable<PokemonEntriesBundle> task = new FetchDataThenBundleEntriesTask(
+                fetcher,
+                "tauros",
+                Map.of(),
+                unusedFossilPokemonChecker
+        );
         PokemonEntriesBundle actualBundle = task.call();
 
         List<SqlTupleSerializable> serializableEntries = new ArrayList<>();
@@ -164,7 +173,12 @@ class FetchDataThenBundleEntriesTaskTests {
     @Test
     @DisplayName("Sneasel entries fetch task")
     void testSneaselEntries() throws Exception {
-        Callable<PokemonEntriesBundle> task = new FetchDataThenBundleEntriesTask(fetcher, "sneasel", Map.of());
+        Callable<PokemonEntriesBundle> task = new FetchDataThenBundleEntriesTask(
+                fetcher,
+                "sneasel",
+                Map.of(),
+                unusedFossilPokemonChecker
+        );
         PokemonEntriesBundle actualBundle = task.call();
 
         List<SqlTupleSerializable> serializableEntries = new ArrayList<>();
@@ -199,8 +213,12 @@ class FetchDataThenBundleEntriesTaskTests {
         List<PokemonEntriesBundle> entriesBundles = new ArrayList<>();
 
         for (String slugName : slugNamesForTasks) {
-            Callable<PokemonEntriesBundle> fetchTaskForCurrPokemonEntries =
-                    new FetchDataThenBundleEntriesTask(fetcher, slugName, singleAltFormDescriptorsById);
+            Callable<PokemonEntriesBundle> fetchTaskForCurrPokemonEntries = new FetchDataThenBundleEntriesTask(
+                    fetcher,
+                    slugName,
+                    singleAltFormDescriptorsById,
+                    unusedFossilPokemonChecker
+            );
             entriesBundles.add(fetchTaskForCurrPokemonEntries.call());
         }
 
