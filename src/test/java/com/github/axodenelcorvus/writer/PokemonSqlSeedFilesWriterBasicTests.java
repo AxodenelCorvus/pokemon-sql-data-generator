@@ -1,7 +1,7 @@
 package com.github.axodenelcorvus.writer;
 
 
-import com.github.axodenelcorvus.SupportedGameGenerationRange;
+import com.github.axodenelcorvus.GameGenerationScope;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
@@ -41,7 +41,7 @@ class PokemonSqlSeedFilesWriterBasicTests {
 
     static IntStream validPokemonGenerationRange() {
         return IntStream
-                .range(SupportedGameGenerationRange.FIRST_GEN, SupportedGameGenerationRange.LATEST_GEN + 1);
+                .range(GameGenerationScope.GEN_1.asInt(), GameGenerationScope.GEN_9.asInt() + 1);
     }
 
     @ParameterizedTest

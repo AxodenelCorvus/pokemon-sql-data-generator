@@ -1,33 +1,29 @@
 package com.github.axodenelcorvus.commands.generator;
 
+import com.github.axodenelcorvus.GameGenerationScope;
 import com.github.axodenelcorvus.fetcher.FetchDataThenBundleEntriesTask;
 import com.github.axodenelcorvus.fetcher.PokeApiFetcher;
-import com.github.axodenelcorvus.model.entry.FossilPokemonChecker;
 import com.github.axodenelcorvus.model.entry.PokemonEntriesBundle;
 import com.github.axodenelcorvus.writer.PokemonSqlSeedFilesWriter;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.*;
 
 public class SeedsGeneratorCoordinator {
     private final PokemonSqlSeedFilesWriter sqlFilesWriter;
     private final PokeApiFetcher apiFetcher;
-    private final Map<Integer, String> singleAltFormDescriptorsByPokemonId;
     public final int BATCH_CAPACITY = 40;
-    private final FossilPokemonChecker fossilPokemonChecker;
+    private final GameGenerationScope generationScope;
 
     SeedsGeneratorCoordinator(PokemonSqlSeedFilesWriter pokemonSqlSeedFilesWriter,
                               PokeApiFetcher pokeApifetcher,
-                              Map<Integer, String> singleAltFormDescriptorsByPokemonId,
-                              FossilPokemonChecker fossilPokemonChecker
+                              GameGenerationScope generationScope
     ) {
         sqlFilesWriter = pokemonSqlSeedFilesWriter;
         apiFetcher = pokeApifetcher;
-        this.singleAltFormDescriptorsByPokemonId = singleAltFormDescriptorsByPokemonId;
-        this.fossilPokemonChecker = fossilPokemonChecker;
+        this.generationScope = generationScope;
     }
 
     public List<String> fetchPokemonSpeciesSlugNames() throws IOException, InterruptedException {
@@ -49,11 +45,10 @@ public class SeedsGeneratorCoordinator {
 
         try {
             for (String pokemonSlugName : slugNames) {
-                FetchDataThenBundleEntriesTask currFetchTaskForPokemon = new FetchDataThenBundleEntriesTask(
+                var currFetchTaskForPokemon = new FetchDataThenBundleEntriesTask(
                         apiFetcher,
                         pokemonSlugName,
-                        singleAltFormDescriptorsByPokemonId,
-                        fossilPokemonChecker
+                        generationScope
                 );
 
                 bundledFutures.add(executorService.submit(currFetchTaskForPokemon));

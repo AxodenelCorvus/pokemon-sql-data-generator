@@ -79,17 +79,15 @@ class PokemonSqlSeedFilesWriterTests {
 
     //Supplies all Pokemon introduced in generation one, but also including variant forms (produced later)
     private List<PokemonEntry> supplyPokemonEntriesGenerationOne() {
-        FossilPokemonChecker genOneFossilChecker = new FossilPokemonChecker(1);
-
         return List.of(
                 //Vulpix
-                PokemonEntry.from(dtoProvider.getPokemonDTO(37), dtoProvider.getPokemonSpeciesDTO(37), genOneFossilChecker),
+                PokemonEntry.from(dtoProvider.getPokemonDTO(37), dtoProvider.getPokemonSpeciesDTO(37), false),
                 //Alolan Ninetales
-                PokemonEntry.from(dtoProvider.getPokemonDTO(10104), dtoProvider.getPokemonSpeciesDTO(10104), genOneFossilChecker),
+                PokemonEntry.from(dtoProvider.getPokemonDTO(10104), dtoProvider.getPokemonSpeciesDTO(10104), false),
                 //Slowbro
-                PokemonEntry.from(dtoProvider.getPokemonDTO(80), dtoProvider.getPokemonSpeciesDTO(80), genOneFossilChecker),
+                PokemonEntry.from(dtoProvider.getPokemonDTO(80), dtoProvider.getPokemonSpeciesDTO(80), false),
                 //Moltres
-                PokemonEntry.from(dtoProvider.getPokemonDTO(146), dtoProvider.getPokemonSpeciesDTO(146), genOneFossilChecker)
+                PokemonEntry.from(dtoProvider.getPokemonDTO(146), dtoProvider.getPokemonSpeciesDTO(146), false)
         );
     }
 
@@ -103,17 +101,15 @@ class PokemonSqlSeedFilesWriterTests {
     }
 
     private List<PokemonEntry> supplyPokemonEntriesGenerationTwo() {
-        FossilPokemonChecker genTwoFossilChecker = new FossilPokemonChecker(2);
-
         return List.of(
                 //Chikorita
-                PokemonEntry.from(dtoProvider.getPokemonDTO(152), dtoProvider.getPokemonSpeciesDTO(152), genTwoFossilChecker),
+                PokemonEntry.from(dtoProvider.getPokemonDTO(152), dtoProvider.getPokemonSpeciesDTO(152), false),
                 //Hisusian Sneasel
-                PokemonEntry.from(dtoProvider.getPokemonDTO(10235), dtoProvider.getPokemonSpeciesDTO(10235), genTwoFossilChecker),
+                PokemonEntry.from(dtoProvider.getPokemonDTO(10235), dtoProvider.getPokemonSpeciesDTO(10235), false),
                 //Heracross
-                PokemonEntry.from(dtoProvider.getPokemonDTO(214), dtoProvider.getPokemonSpeciesDTO(214), genTwoFossilChecker),
+                PokemonEntry.from(dtoProvider.getPokemonDTO(214), dtoProvider.getPokemonSpeciesDTO(214), false),
                 //Raikou
-                PokemonEntry.from(dtoProvider.getPokemonDTO(243), dtoProvider.getPokemonSpeciesDTO(243), genTwoFossilChecker)
+                PokemonEntry.from(dtoProvider.getPokemonDTO(243), dtoProvider.getPokemonSpeciesDTO(243), false)
         );
     }
 
@@ -129,13 +125,11 @@ class PokemonSqlSeedFilesWriterTests {
     }
 
     private List<PokemonEntry> supplyPokemonEntriesGenerationThree() {
-        FossilPokemonChecker genThreeFossilChecker = new FossilPokemonChecker(3);
-
         return List.of(
                 //Altaria
-                PokemonEntry.from(dtoProvider.getPokemonDTO(334), dtoProvider.getPokemonSpeciesDTO(334), genThreeFossilChecker),
+                PokemonEntry.from(dtoProvider.getPokemonDTO(334), dtoProvider.getPokemonSpeciesDTO(334), false),
                 //Shroomish
-                PokemonEntry.from(dtoProvider.getPokemonDTO(285), dtoProvider.getPokemonSpeciesDTO(285), genThreeFossilChecker)
+                PokemonEntry.from(dtoProvider.getPokemonDTO(285), dtoProvider.getPokemonSpeciesDTO(285), false)
         );
     }
 
@@ -241,7 +235,7 @@ class PokemonSqlSeedFilesWriterTests {
                     () -> assertEquals("\t(10104, 38, 'Ninetales', 6, 'Ice', 'Fairy', false, false, false),", reader.readLine()),
                     () -> assertEquals("\t(80, 80, 'Slowbro', 4, 'Water', 'Psychic', false, false, false),", reader.readLine()),
                     () -> assertEquals(
-                            "\t(146, 146, 'Moltres', null, 'Fire', null, false, true, false, false);",
+                            "\t(146, 146, 'Moltres', null, 'Fire', null, false, true, false);",
                             reader.readLine(),
                             closeLineFailMsg
                     )
@@ -293,7 +287,7 @@ class PokemonSqlSeedFilesWriterTests {
                     () -> assertEquals("\t(10235, 215, 'Sneasel', 4, 'Fighting', 'Poison', false, false, false),", reader.readLine()),
                     () -> assertEquals("\t(214, 214, 'Heracross', 4, 'Bug', 'Fighting', false, false, false),", reader.readLine()),
                     () -> assertEquals(
-                            "\t(243, 243, 'Raikou', null, 'Electric', null, false, true, false, false);",
+                            "\t(243, 243, 'Raikou', null, 'Electric', null, false, true, false);",
                             reader.readLine(),
                             closeLineFailMsg
                     )

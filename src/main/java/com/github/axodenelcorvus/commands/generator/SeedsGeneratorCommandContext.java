@@ -1,15 +1,13 @@
 package com.github.axodenelcorvus.commands.generator;
 
-import com.github.axodenelcorvus.SupportedGameGenerationRange;
+import com.github.axodenelcorvus.GameGenerationScope;
 import com.github.axodenelcorvus.commands.CoreSubcommandAction;
 import com.github.axodenelcorvus.commands.CoreSubcommandContextualizer;
 import com.github.axodenelcorvus.commands.exceptions.MissingArgumentException;
 import com.github.axodenelcorvus.commands.exceptions.RepeatedOptionException;
 import com.github.axodenelcorvus.commands.exceptions.UnsupportedOptionException;
 import com.github.axodenelcorvus.fetcher.PokeApiFetcher;
-import com.github.axodenelcorvus.fetcher.SingleAlternativeFormMapProvider;
 import com.github.axodenelcorvus.model.dto.parser.PokeApiJsonParser;
-import com.github.axodenelcorvus.model.entry.FossilPokemonChecker;
 import com.github.axodenelcorvus.writer.PokemonSqlSeedFilesWriter;
 
 import java.net.http.HttpClient;
@@ -17,13 +15,12 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class SeedsGeneratorCommandContext implements CoreSubcommandContextualizer {
 
     private Path optionalDirectoryDestination;
-    private int generationScope;
+    private GameGenerationScope generationScope;
 
     public SeedsGeneratorCommandContext() {}
 
@@ -80,24 +77,23 @@ public class SeedsGeneratorCommandContext implements CoreSubcommandContextualize
     }
 
     private void setGenerationScope(String generationFromUser) {
-        int intGeneration;
+        int generation;
+        String outOfScopeGenerationErrMsg = GameGenerationScope.getOutOfRangeErrMsg();
 
-        try { intGeneration = Integer.parseInt(generationFromUser); }
+        try { generation = Integer.parseInt(generationFromUser); }
         catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Generation given could not be understood | %s"
-                    .formatted(SupportedGameGenerationRange.getOutOfRangeErrMsg()));
+            throw new NumberFormatException("Generation given could not be understood | %s"
+                    .formatted(outOfScopeGenerationErrMsg));
         }
 
-
-        if (!SupportedGameGenerationRange.isValidGeneration(intGeneration))
-            throw new IllegalArgumentException(SupportedGameGenerationRange.getOutOfRangeErrMsg());
-
-        this.generationScope = intGeneration;
+        this.generationScope = GameGenerationScope
+                .from(generation)
+                .orElseThrow(() -> new IllegalArgumentException(outOfScopeGenerationErrMsg));
     }
 
     public Path getOptionalDirectoryDestination() { return optionalDirectoryDestination; }
 
-    public int getGenerationScope() { return generationScope; }
+    public GameGenerationScope getGenerationScope() { return generationScope; }
 
 
     @Override
@@ -117,22 +113,21 @@ public class SeedsGeneratorCommandContext implements CoreSubcommandContextualize
                                 .connectTimeout(Duration.ofSeconds(10))
                                 .build();
 
-        var pokemonFossilChecker = new FossilPokemonChecker(generationScope);
+        var sqlSeedsFileWriter = new PokemonSqlSeedFilesWriter(
+                generationScope.asInt(),
+                optionalDirectoryDestination
+        );
 
-        var sqlSeedsFileWriter =
-                new PokemonSqlSeedFilesWriter(generationScope, optionalDirectoryDestination);
-
-        var pokeApiDataFetcher =
-                new PokeApiFetcher(client, new PokeApiJsonParser(), generationScope);
-
-        Map<Integer, String> singleAltFormDescriptorsByPokemonId =
-                SingleAlternativeFormMapProvider.from(generationScope);
+        var pokeApiDataFetcher = new PokeApiFetcher(
+                client,
+                new PokeApiJsonParser(),
+                generationScope.asInt()
+        );
 
         SeedsGeneratorCoordinator seedsGeneratorCoordinator = new SeedsGeneratorCoordinator(
                 sqlSeedsFileWriter,
                 pokeApiDataFetcher,
-                singleAltFormDescriptorsByPokemonId,
-                pokemonFossilChecker
+                generationScope
         );
 
         return new SeedsGeneratorCommandAction(seedsGeneratorCoordinator, client);

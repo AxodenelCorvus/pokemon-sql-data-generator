@@ -1,6 +1,6 @@
 package com.github.axodenelcorvus.commands.generator;
 
-import com.github.axodenelcorvus.SupportedGameGenerationRange;
+import com.github.axodenelcorvus.GameGenerationScope;
 import com.github.axodenelcorvus.commands.exceptions.MissingArgumentException;
 import com.github.axodenelcorvus.commands.exceptions.RepeatedOptionException;
 import com.github.axodenelcorvus.commands.exceptions.UnsupportedOptionException;
@@ -40,7 +40,7 @@ class SeedsGeneratorCommandContextTests {
     @Test
     void testSetupWithNoOptions() {
         generatorCmdContext.setup("1");
-        assertEquals(1, generatorCmdContext.getGenerationScope());
+        assertEquals(1, generatorCmdContext.getGenerationScope().asInt());
     }
 
 
@@ -76,7 +76,7 @@ class SeedsGeneratorCommandContextTests {
 
     static Stream<String> validPokemonGenerationRange() {
         return IntStream
-                .range(SupportedGameGenerationRange.FIRST_GEN, SupportedGameGenerationRange.LATEST_GEN + 1)
+                .range(GameGenerationScope.GEN_1.asInt(), GameGenerationScope.GEN_9.asInt() + 1)
                 .mapToObj(String::valueOf);
     }
 
@@ -85,7 +85,7 @@ class SeedsGeneratorCommandContextTests {
     void testValidSetupWithOptionsForEachGeneration(String generation) {
         generatorCmdContext.setup(generation, "--to-dir", "sql_pokemon");
         assertEquals("sql_pokemon", generatorCmdContext.getOptionalDirectoryDestination().toString());
-        assertEquals(Integer.parseInt(generation), generatorCmdContext.getGenerationScope());
+        assertEquals(Integer.parseInt(generation), generatorCmdContext.getGenerationScope().asInt());
     }
 
     @Test

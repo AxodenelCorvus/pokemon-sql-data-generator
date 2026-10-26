@@ -1,5 +1,6 @@
 package com.github.axodenelcorvus.model.entry;
 
+import com.github.axodenelcorvus.GameGenerationScope;
 import com.github.axodenelcorvus.model.DtoSampleProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ class PokemonEntryTests {
     private final DtoSampleProvider dtoProvider = new DtoSampleProvider();
 
     //Since all Pokemon in tests use a generation one introduced Pokemon species
-    private final FossilPokemonChecker genOneFossilChecker = new FossilPokemonChecker(1);
+    private final GameGenerationScope gameGenerationScope = GameGenerationScope.GEN_1;
 
     @Test
     @DisplayName("Test a standard entry")
@@ -22,7 +23,7 @@ class PokemonEntryTests {
         var testSlowbroEntry = PokemonEntry.from(
                 dtoProvider.getPokemonDTO(80),
                 dtoProvider.getPokemonSpeciesDTO(80),
-                genOneFossilChecker
+                gameGenerationScope.hasFossilPokemon(80)
         );
 
         String actualTupleStrRepresentation = testSlowbroEntry.toSqlTuple(sqlStrResolver);
@@ -36,7 +37,7 @@ class PokemonEntryTests {
         var testFarfetchdEntry = PokemonEntry.from(
                 dtoProvider.getPokemonDTO(10166),
                 dtoProvider.getPokemonSpeciesDTO(10166),
-                genOneFossilChecker
+                gameGenerationScope.hasFossilPokemon(10166)
         );
 
         String actualTupleStrRepresentation = testFarfetchdEntry.toSqlTuple(sqlStrResolver);
@@ -50,7 +51,7 @@ class PokemonEntryTests {
         var testMewEntry = PokemonEntry.from(
                 dtoProvider.getPokemonDTO(151),
                 dtoProvider.getPokemonSpeciesDTO(151),
-                genOneFossilChecker
+                gameGenerationScope.hasFossilPokemon(151)
         );
 
         String actualTupleStrRepresentation = testMewEntry.toSqlTuple(sqlStrResolver);

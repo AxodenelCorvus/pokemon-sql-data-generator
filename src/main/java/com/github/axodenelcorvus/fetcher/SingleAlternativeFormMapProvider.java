@@ -6,14 +6,6 @@ public final class SingleAlternativeFormMapProvider {
 
     private SingleAlternativeFormMapProvider() {}
 
-    /**
-     * Provides the necessary immutable Map to assist in building sprite record entries for Pokemon that have a single non-regional alternative
-     * sprite stemming off thier base form. Not all Pokemon that have a single alternative sprite are included in possible maps per
-     * generation as some are either too insignificant or not easily determined from PokeAPI.
-     * @param generationScope The Pokemon game generation for scope of current generation command run of application.
-     * @return The requested immutable Map of Pokemon IDs to the matching form descriptors. Duplicate shared descriptor values present, so mapping
-     * is not one-to-one.
-     */
     public static Map<Integer, String> from(int generationScope) {
         return switch(generationScope) {
                                      //Correlating Pokemon name of each descriptor's key ID

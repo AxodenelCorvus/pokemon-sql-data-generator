@@ -19,17 +19,16 @@ public record PokemonEntriesBundle(
      * there is no checks for correctness on DTOs in parameters.
      * @param baseSpecies The PokemonSpeciesDTO that contains context on the species group as a whole
      * @param subSpeciesByRegion Individual PokemonDTO of species group mapped by distinct regions
-     * @param fossilPokemonChecker Predicate to check if Pokemon is fossil by its ID
+     * @param isSpeciesFossil boolean that indicates if species is fossil, which is a value of species group not determined from a DTO
      * @return The records entries bundled.
      */
     public static PokemonEntriesBundle fromSpecies(
             PokemonSpeciesDTO baseSpecies,
             EnumMap<RegionalForm, PokemonDTO> subSpeciesByRegion,
-            FossilPokemonChecker fossilPokemonChecker
+            boolean isSpeciesFossil
     ) {
         Objects.requireNonNull(baseSpecies);
         Objects.requireNonNull(subSpeciesByRegion);
-        Objects.requireNonNull(fossilPokemonChecker);
 
         if (subSpeciesByRegion.isEmpty())
             throw new IllegalArgumentException("RegionalForm.STANDARD value at very least expected in passed map, but no keys present");
@@ -44,7 +43,7 @@ public record PokemonEntriesBundle(
                 throw new NullPointerException("Value null for regional key: " + regionForm);
 
             pokemonEntries.add(
-                    PokemonEntry.from(pokemonOfSpecies, baseSpecies, fossilPokemonChecker)
+                    PokemonEntry.from(pokemonOfSpecies, baseSpecies, isSpeciesFossil)
             );
 
             boolean isCurrPokemonFemaleSpritePresent = pokemonOfSpecies.femaleSpriteLink() != null;

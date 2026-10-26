@@ -9,12 +9,12 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.axodenelcorvus.GameGenerationScope.GEN_1;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PokemonEntriesBundleTests {
     private final DtoSampleProvider dtoSampleProvider = new DtoSampleProvider();
-    private final FossilPokemonChecker genOneFossilPokemonChecker = new FossilPokemonChecker(1);
 
     private PokemonEntriesBundle getScytherEntriesBundle() {
         PokemonSpeciesDTO scytherSpeciesSample = dtoSampleProvider.getPokemonSpeciesDTO(123);
@@ -24,7 +24,7 @@ class PokemonEntriesBundleTests {
                 PokemonEntry.from(
                         scytherSample,
                         scytherSpeciesSample,
-                        genOneFossilPokemonChecker
+                        GEN_1.hasFossilPokemon(123)
                 )
         );
 
@@ -51,12 +51,12 @@ class PokemonEntriesBundleTests {
                 PokemonEntry.from(
                         farfetchdSample,
                         farfetchdSpeciesSample,
-                        genOneFossilPokemonChecker
+                        GEN_1.hasFossilPokemon(83)
                 ),
                 PokemonEntry.from(
                         farfetchdGalarSample,
                         farfetchdSpeciesSample,
-                        genOneFossilPokemonChecker
+                        GEN_1.hasFossilPokemon(83)
                 )
         );
 

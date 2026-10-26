@@ -1,6 +1,6 @@
 package com.github.axodenelcorvus.commands.generator;
 
-import com.github.axodenelcorvus.SupportedGameGenerationRange;
+import com.github.axodenelcorvus.GameGenerationScope;
 import com.github.axodenelcorvus.commands.HelpDisplayable;
 import com.github.axodenelcorvus.writer.PokemonSqlSeedFilesWriter;
 
@@ -25,7 +25,8 @@ public class HelpDisplayer implements HelpDisplayable {
         String[] requiredArgs = new String[2];
         requiredArgs[0] = "<generation>";
         requiredArgs[1] = "\tA single generation %d-%d specified to generate files for in specified or default directory."
-                            .formatted(SupportedGameGenerationRange.FIRST_GEN, SupportedGameGenerationRange.LATEST_GEN);
+                .formatted(GameGenerationScope.GEN_1.asInt(), GameGenerationScope.GEN_9.asInt());
+
         return requiredArgs;
     }
 

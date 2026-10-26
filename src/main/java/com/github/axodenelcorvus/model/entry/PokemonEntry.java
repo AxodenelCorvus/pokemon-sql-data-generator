@@ -18,7 +18,7 @@ public final class PokemonEntry implements SqlTupleSerializable {
 
     private PokemonEntry() { }
 
-    public static PokemonEntry from(PokemonDTO pokemonDTO, PokemonSpeciesDTO pokemonSpeciesDTO, FossilPokemonChecker fossilChecker) {
+    public static PokemonEntry from(PokemonDTO pokemonDTO, PokemonSpeciesDTO pokemonSpeciesDTO, boolean isSpeciesFossil) {
         PokemonEntry result = new PokemonEntry();
 
         result.id = pokemonDTO.id();
@@ -29,7 +29,7 @@ public final class PokemonEntry implements SqlTupleSerializable {
         result.isMythical = pokemonSpeciesDTO.isMythical();
         result.isLegendary = pokemonSpeciesDTO.isLegendary();
         result.setGenderRate(pokemonSpeciesDTO.genderRate());
-        result.isFossil = fossilChecker.checkIfFossil(pokemonSpeciesDTO.dexId());
+        result.isFossil = isSpeciesFossil;
 
         return result;
     }

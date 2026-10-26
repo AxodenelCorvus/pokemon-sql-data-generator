@@ -1,7 +1,7 @@
 package com.github.axodenelcorvus.commands.generator;
 
+import com.github.axodenelcorvus.GameGenerationScope;
 import com.github.axodenelcorvus.fetcher.PokeApiFetcher;
-import com.github.axodenelcorvus.fetcher.SingleAlternativeFormMapProvider;
 import com.github.axodenelcorvus.model.dto.PokemonDTO;
 import com.github.axodenelcorvus.model.dto.PokemonSpeciesDTO;
 import com.github.axodenelcorvus.model.dto.PokemonVarietyDTO;
@@ -24,8 +24,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SeedsGeneratorCoordinatorFetchTest {
     private final HttpClient TEST_CLIENT = HttpClient.newHttpClient();
-    private final int GENERATION_OF_GIRATINA = 4;
-
     private final PokeApiJsonParser jsonParserUsed = new PokeApiJsonParser();
 
     private PokemonEntriesBundle expectedPokemonEntriesBundle;
@@ -50,24 +48,18 @@ class SeedsGeneratorCoordinatorFetchTest {
     private final SeedsGeneratorCoordinator generatorCoordinator;
 
     //Setup SeedsGeneratorCoordinator
-
     SeedsGeneratorCoordinatorFetchTest() {
-        Map<Integer, String> singleAltFormDescriptorsByPokemonId =
-                                SingleAlternativeFormMapProvider.from(GENERATION_OF_GIRATINA);
-
+        int GENERATION_FOR_TESTS = 4;
         PokeApiFetcher pokeApiFetcher = new PokeApiFetcher(
                 TEST_CLIENT,
                 jsonParserUsed,
-                GENERATION_OF_GIRATINA
+                GENERATION_FOR_TESTS
         );
-
-        var unusedChecker = new FossilPokemonChecker(GENERATION_OF_GIRATINA);
 
         this.generatorCoordinator = new SeedsGeneratorCoordinator(
                 null, //Not in use for these tests
                 pokeApiFetcher,
-                singleAltFormDescriptorsByPokemonId,
-                unusedChecker
+                GameGenerationScope.from(GENERATION_FOR_TESTS).get()
         );
     }
 
@@ -152,7 +144,6 @@ class SeedsGeneratorCoordinatorFetchTest {
         List<PokemonEntriesBundle> listOfPkmSpeciesBundled = new ArrayList<>();
         int i = 0; //Index used to walk through tagged samplePokemonDtos
         EnumMap<RegionalForm, PokemonDTO> subSpeciesPokemonByRegion;
-        FossilPokemonChecker unusedChecker = new FossilPokemonChecker(GENERATION_OF_GIRATINA);
 
         for (PokemonSpeciesDTO samplePokemonSpeciesBase : samplePokemonSpeciesDtos) {
             subSpeciesPokemonByRegion = new EnumMap<>(RegionalForm.class);
@@ -177,7 +168,7 @@ class SeedsGeneratorCoordinatorFetchTest {
             }
 
             var currPokemonSpeciesBundle = PokemonEntriesBundle
-                    .fromSpecies(samplePokemonSpeciesBase, subSpeciesPokemonByRegion, unusedChecker);
+                    .fromSpecies(samplePokemonSpeciesBase, subSpeciesPokemonByRegion, false);
 
             if (samplePokemonSpeciesBase.name().equals("Giratina")) {
                 var additionalAltSpriteEntry = new PokemonSpriteEntry(487, "Origin");

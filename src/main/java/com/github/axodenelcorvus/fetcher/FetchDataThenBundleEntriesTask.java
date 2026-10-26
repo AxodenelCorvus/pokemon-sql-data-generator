@@ -1,5 +1,6 @@
 package com.github.axodenelcorvus.fetcher;
 
+import com.github.axodenelcorvus.GameGenerationScope;
 import com.github.axodenelcorvus.model.dto.PokemonDTO;
 import com.github.axodenelcorvus.model.dto.PokemonSpeciesDTO;
 import com.github.axodenelcorvus.model.dto.PokemonVarietyDTO;
@@ -20,19 +21,19 @@ import java.util.concurrent.Callable;
 public final class FetchDataThenBundleEntriesTask implements Callable<PokemonEntriesBundle> {
     private final PokeApiFetcher pokeApiFetcher;
     private final String pokemonSpeciesSlugName;
-    private final Map<Integer, String> singleAltFormDescriptorsById;
-    private final FossilPokemonChecker fossilPokemonChecker;
+    private final GameGenerationScope generationScope;
+
+    //Make empty, in case of issues a value will still be written that can be fixed later or by running generator command again. Should still be caught in tests
+    private String altFormDescriptor = "";
 
     public FetchDataThenBundleEntriesTask(
             PokeApiFetcher pokeApiFetcher,
             String pokemonSpeciesSlugName,
-            Map<Integer, String> singleAltFormDescriptorsById,
-            FossilPokemonChecker fossilPokemonChecker
+            GameGenerationScope generationScope
     ) {
         this.pokeApiFetcher = pokeApiFetcher;
         this.pokemonSpeciesSlugName = pokemonSpeciesSlugName;
-        this.singleAltFormDescriptorsById = singleAltFormDescriptorsById;
-        this.fossilPokemonChecker = fossilPokemonChecker;
+        this.generationScope = generationScope;
     }
 
     @Override
@@ -40,7 +41,11 @@ public final class FetchDataThenBundleEntriesTask implements Callable<PokemonEnt
         PokemonSpeciesDTO pokemonSpeciesDTO = pokeApiFetcher.fetchPokemonSpecies(pokemonSpeciesSlugName);
         PokemonEntriesBundle resultsBundled;
 
-        if (singleAltFormDescriptorsById.containsKey(pokemonSpeciesDTO.dexId()))
+        generationScope
+                .getSingleAlternativeFormDescriptor(pokemonSpeciesDTO.dexId())
+                .ifPresent((altFormDesc) -> altFormDescriptor = altFormDesc);
+
+        if (!altFormDescriptor.isBlank())
             resultsBundled = fetchSingleAltFormEntries(pokemonSpeciesDTO);
         else
             resultsBundled = fetchStandardEntries(pokemonSpeciesDTO);
@@ -55,8 +60,9 @@ public final class FetchDataThenBundleEntriesTask implements Callable<PokemonEnt
         EnumMap<RegionalForm, PokemonDTO> pokemonByRegion;
 
         pokemonByRegion = fetchPokemonByRegion(speciesDTO.varieties());
+        boolean isSpeciesFossil = generationScope.hasFossilPokemon(speciesDTO.dexId());
 
-        return PokemonEntriesBundle.fromSpecies(speciesDTO, pokemonByRegion, fossilPokemonChecker);
+        return PokemonEntriesBundle.fromSpecies(speciesDTO, pokemonByRegion, isSpeciesFossil);
     }
 
     /*
@@ -108,17 +114,17 @@ public final class FetchDataThenBundleEntriesTask implements Callable<PokemonEnt
         List<PokemonEntry> pokemonEntries = new ArrayList<>();
         List<PokemonSpriteEntry> pokemonSpriteEntries = new ArrayList<>();
 
+        boolean isSpeciesFossil = generationScope.hasFossilPokemon(speciesDTO.dexId());
+
         for (PokemonVarietyDTO variety : speciesDTO.varieties()) {
             if (variety.isDefault()) {
                 PokemonDTO defaultFormDTO = pokeApiFetcher.fetchPokemon(variety.slugName()) ;
-                pokemonEntries.add(PokemonEntry.from(defaultFormDTO, speciesDTO, fossilPokemonChecker));
+                pokemonEntries.add(PokemonEntry.from(defaultFormDTO, speciesDTO, isSpeciesFossil));
                 break;
             }
         }
 
         int pokemonId = pokemonEntries.getFirst().getId();
-
-        String altFormDescriptor = singleAltFormDescriptorsById.get(pokemonId);
 
         var defaultSpriteEntry = new PokemonSpriteEntry(pokemonId, GenderSpriteForm.NONE, RegionalForm.STANDARD, speciesDTO.dexId());
         var altSpriteEntry = new PokemonSpriteEntry(speciesDTO.dexId(), altFormDescriptor);

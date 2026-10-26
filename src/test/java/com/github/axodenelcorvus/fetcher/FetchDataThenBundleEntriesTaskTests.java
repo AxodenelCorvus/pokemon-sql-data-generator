@@ -1,8 +1,7 @@
 package com.github.axodenelcorvus.fetcher;
 
-import com.github.axodenelcorvus.SupportedGameGenerationRange;
+import com.github.axodenelcorvus.GameGenerationScope;
 import com.github.axodenelcorvus.model.dto.parser.PokeApiJsonParser;
-import com.github.axodenelcorvus.model.entry.FossilPokemonChecker;
 import com.github.axodenelcorvus.model.entry.PokemonEntriesBundle;
 import com.github.axodenelcorvus.model.entry.SqlStringResolver;
 import com.github.axodenelcorvus.model.entry.SqlTupleSerializable;
@@ -22,13 +21,10 @@ class FetchDataThenBundleEntriesTaskTests {
     private final int GENERATION_TEST_ID = 1;
     private final HttpClient TEST_CLIENT = HttpClient.newHttpClient();
     private final PokeApiFetcher fetcher;
-    private final FossilPokemonChecker unusedFossilPokemonChecker =
-            new FossilPokemonChecker(SupportedGameGenerationRange.LATEST_GEN + 1);
 
-
-    private Set<String> taurosEntriesSerialized = new HashSet<>();
-    private Set<String> sneaselEntriesSerialized = new HashSet<>();
-    private Set<String> genFourSingleAltFormEntriesSerialized = new HashSet<>();
+    private final Set<String> taurosEntriesSerialized = new HashSet<>();
+    private final Set<String> sneaselEntriesSerialized = new HashSet<>();
+    private final Set<String> genFourSingleAltFormEntriesSerialized = new HashSet<>();
 
     private final String MORE_ENTRIES_THAN_EXPECTED_MSG =
             "More entries than expected, possible duplicate entries *may* be present as well";
@@ -142,8 +138,7 @@ class FetchDataThenBundleEntriesTaskTests {
         Callable<PokemonEntriesBundle> task = new FetchDataThenBundleEntriesTask(
                 fetcher,
                 "tauros",
-                Map.of(),
-                unusedFossilPokemonChecker
+                GameGenerationScope.GEN_1
         );
         PokemonEntriesBundle actualBundle = task.call();
 
@@ -176,8 +171,7 @@ class FetchDataThenBundleEntriesTaskTests {
         Callable<PokemonEntriesBundle> task = new FetchDataThenBundleEntriesTask(
                 fetcher,
                 "sneasel",
-                Map.of(),
-                unusedFossilPokemonChecker
+                GameGenerationScope.GEN_4
         );
         PokemonEntriesBundle actualBundle = task.call();
 
@@ -207,8 +201,6 @@ class FetchDataThenBundleEntriesTaskTests {
     @Test
     @DisplayName("Fetch tasks for generation 4 entries w/ single alternative forms that are determinable")
     void testGenerationFourSpecialCases() throws Exception {
-        int generationInTestUse = 4;
-        Map<Integer, String> singleAltFormDescriptorsById = SingleAlternativeFormMapProvider.from(generationInTestUse);
         List<String> slugNamesForTasks = List.of("shaymin", "giratina", "dialga", "palkia");
         List<PokemonEntriesBundle> entriesBundles = new ArrayList<>();
 
@@ -216,8 +208,7 @@ class FetchDataThenBundleEntriesTaskTests {
             Callable<PokemonEntriesBundle> fetchTaskForCurrPokemonEntries = new FetchDataThenBundleEntriesTask(
                     fetcher,
                     slugName,
-                    singleAltFormDescriptorsById,
-                    unusedFossilPokemonChecker
+                    GameGenerationScope.GEN_4
             );
             entriesBundles.add(fetchTaskForCurrPokemonEntries.call());
         }

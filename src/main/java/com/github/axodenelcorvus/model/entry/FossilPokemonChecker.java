@@ -1,50 +1,43 @@
 package com.github.axodenelcorvus.model.entry;
 
-import com.github.axodenelcorvus.SupportedGameGenerationRange;
+import com.github.axodenelcorvus.GameGenerationScope;
 
 public final class FossilPokemonChecker {
 
     private final int beginGenerationFossilsId;
     private final int endGenerationFossilIds;
 
-    public FossilPokemonChecker(int generation) {
-
-        //By default, take on range that will always return false (since no valid id's can be zero)
-        int beginGenerationFossilsId = 0;
-        int endGenerationFossilIds = 0;
-
+    public FossilPokemonChecker(GameGenerationScope generation) {
         switch (generation) {
-            case (SupportedGameGenerationRange.FIRST_GEN) -> {
+            case GameGenerationScope.GEN_1:
                 beginGenerationFossilsId = 138;
                 endGenerationFossilIds = 142;
-            }
-            case (3) -> {
+                break;
+            case GameGenerationScope.GEN_3:
                 beginGenerationFossilsId = 345;
                 endGenerationFossilIds = 348;
-            }
-            case (4) -> {
+                break;
+            case GameGenerationScope.GEN_4:
                 beginGenerationFossilsId = 408;
                 endGenerationFossilIds = 411;
-            }
-            case (5) -> {
+                break;
+            case GameGenerationScope.GEN_5:
                 beginGenerationFossilsId = 564;
                 endGenerationFossilIds = 567;
-            }
-            case (6) -> {
+                break;
+            case GameGenerationScope.GEN_6:
                 beginGenerationFossilsId = 696;
                 endGenerationFossilIds = 699;
-            }
-            case (8) -> {
+                break;
+            case GameGenerationScope.GEN_8:
                 beginGenerationFossilsId = 880;
                 endGenerationFossilIds = 883;
-            }
-            //Current latest generation has no fossil Pokemon, as do some other generations cases
-            case (SupportedGameGenerationRange.LATEST_GEN) -> {}
-            default -> {}
+                break;
+            //By default, take on range that will always return false during check (since no valid id's can be zero)
+            default:
+                beginGenerationFossilsId = 0;
+                endGenerationFossilIds = 0;
         }
-
-        this.beginGenerationFossilsId = beginGenerationFossilsId;
-        this.endGenerationFossilIds = endGenerationFossilIds;
     }
 
     public boolean checkIfFossil(int dexId) {
