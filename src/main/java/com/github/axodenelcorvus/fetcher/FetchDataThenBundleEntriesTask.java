@@ -51,7 +51,7 @@ public final class FetchDataThenBundleEntriesTask implements Callable<PokemonEnt
             resultsBundled = fetchStandardEntries(pokemonSpeciesDTO);
 
         for (PokemonEntry pokemonEntry : resultsBundled.pokemonEntries())
-            System.out.println('\t' + PokemonEntryFetchDisplayFormatter.formatDisplayFrom(pokemonEntry));
+            System.out.println(PokemonEntryFetchDisplay.formatDisplayFrom(pokemonEntry));
 
         return resultsBundled;
     }

@@ -3,6 +3,7 @@ package com.github.axodenelcorvus.commands.generator;
 import com.github.axodenelcorvus.GameGenerationScope;
 import com.github.axodenelcorvus.fetcher.FetchDataThenBundleEntriesTask;
 import com.github.axodenelcorvus.fetcher.PokeApiFetcher;
+import com.github.axodenelcorvus.fetcher.PokemonEntryFetchDisplay;
 import com.github.axodenelcorvus.model.entry.PokemonEntriesBundle;
 import com.github.axodenelcorvus.writer.PokemonSqlSeedFilesWriter;
 
@@ -42,6 +43,8 @@ public class SeedsGeneratorCoordinator {
 
         int countOfFetchedPokemon = 0;
         int totalNumToBeFetched = slugNames.size();
+
+        System.out.println(PokemonEntryFetchDisplay.getHeaderDisplay());
 
         try {
             for (String pokemonSlugName : slugNames) {
