@@ -56,6 +56,35 @@
                     </properties>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.8.0</version>
+
+                <configuration>
+                    <!-- Assemble JAR with dependencies -->
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+
+                    <!-- Archive handled by maven-archiver -->
+                    <archive>
+                        <manifest>
+                            <mainClass>com.github.axodenelcorvus.Main</mainClass>
+                        </manifest>
+                    </archive>
+
+                    <finalName>pkm-sql-data-gen</finalName>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
