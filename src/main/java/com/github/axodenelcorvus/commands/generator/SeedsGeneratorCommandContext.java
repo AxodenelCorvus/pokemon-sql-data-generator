@@ -60,7 +60,7 @@ public class SeedsGeneratorCommandContext implements CoreSubcommandContextualize
     private int configureOptionAtIndex(int currIndex, String optionCandidate, String... remainingOptionsAhead) {
         if (optionCandidate.equals("to-dir")) {
             if (remainingOptionsAhead.length == 0)
-                throw new MissingArgumentException("Required destination directory for files with to-dir, but none were provided");
+                throw new MissingArgumentException("Required destination directory for generated files when to-dir used was not provided");
 
             this.setOptionalDirectoryDestination(remainingOptionsAhead[0]);
             currIndex++;

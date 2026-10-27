@@ -24,10 +24,10 @@ final class SqlSeedFilesContext {
         Path normalizedDirDestination = dirTargeted.normalize();
 
         if (normalizedDirDestination.isAbsolute())
-            throw new InvalidPathException(dirTargeted.toString(), "Unexpected absolute path given");
+            throw new InvalidPathException(dirTargeted.toString(), "Unexpected absolute path given | Path given: ");
 
         if (normalizedDirDestination.getNameCount() != 1 || normalizedDirDestination.startsWith(".."))
-            throw new InvalidPathException(dirTargeted.toString(), "Only current working directory or a child directory of it is acceptable");
+            throw new InvalidPathException(dirTargeted.toString(), "Only current working directory or a child directory of it is acceptable | Path given: ");
 
         this.directoryTargeted = normalizedDirDestination;
     }
