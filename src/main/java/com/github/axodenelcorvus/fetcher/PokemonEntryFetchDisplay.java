@@ -8,102 +8,42 @@ public final class PokemonEntryFetchDisplay {
 
     private static final String ENTRY_FORMAT;
 
-    //Length of output entry output strings up to middle delimiter with delimiter included in length
-    //For made up example:
-    //"        Primary Key: 10000 | Dex ID: 1111 | "
-    public static final int END_BOUND_OF_MID_DELIMITER;
+    //Length of output entry output strings up to middle delimiter (up to 2nd '|')
+    public static final int END_BOUND_OF_MID_COLUMN;
 
     public static final int TOTAL_LENGTH_OF_ENTRY_DISPLAYS;
 
     static {
-        int tabLength = 8;
+        int TAB_LENGTH = 8;
 
-        String[] fieldLabels = { "Primary Key: ", "Dex ID: ", "Type1: ", "Type2: " };
-        int[] fieldSpannedLengths = { 5, 4, 8, 8 };
+        String entryFormat = " ".repeat(TAB_LENGTH);
 
-        String COL_DELIMITER = " | ";
+        entryFormat += "Primary Key: %-5d | Dex ID: %04d | Type1: %-8s | Type2: %-8s";
 
-        int halfOfEntryFieldsDisplayLen = tabLength;
+        ENTRY_FORMAT = entryFormat;
 
-        int middleBoundaryOfFieldLabels = fieldLabels.length / 2;
+        String madeUpPackedSample = entryFormat.formatted(10000, 1000, "Fighting", "Fighting");
 
-        //Include delimiters and tab length in length values
-        int i = 0;
-        for (i = i; i < middleBoundaryOfFieldLabels; i++) {
-            halfOfEntryFieldsDisplayLen += fieldLabels[i].length()
-                    + COL_DELIMITER.length()
-                    + fieldSpannedLengths[i];
-        }
+        END_BOUND_OF_MID_COLUMN = madeUpPackedSample.indexOf(" T");
 
-        END_BOUND_OF_MID_DELIMITER = halfOfEntryFieldsDisplayLen;
-
-        int totalEntryDisplayLen = halfOfEntryFieldsDisplayLen;
-        int lastFieldIdx = fieldLabels.length - 1;
-
-        for (i = i; i < fieldLabels.length; i++) {
-            totalEntryDisplayLen += fieldLabels[i].length()
-                    + fieldSpannedLengths[i];
-
-            if (lastFieldIdx != i)
-                totalEntryDisplayLen += COL_DELIMITER.length();
-        }
-
-        TOTAL_LENGTH_OF_ENTRY_DISPLAYS = totalEntryDisplayLen;
-
-        StringBuilder entryStrFormatBuilder = new StringBuilder();
-
-        ENTRY_FORMAT = entryStrFormatBuilder
-                .repeat(' ', tabLength)
-                .append(fieldLabels[0])
-                    .append("%-")
-                    .append(fieldSpannedLengths[0])
-                    .append('d')
-                .append(COL_DELIMITER)
-                .append(fieldLabels[1])
-                    .append("%0")
-                    .append(fieldSpannedLengths[1])
-                    .append('d')
-                .append(COL_DELIMITER)
-                .append(fieldLabels[2])
-                    .append("%-")
-                    .append(fieldSpannedLengths[2])
-                    .append('s')
-                .append(COL_DELIMITER)
-                .append(fieldLabels[3])
-                    .append("%-")
-                    .append(fieldSpannedLengths[3])
-                    .append('s')
-                .toString();
+        //Include delimiters and whitespaces in length
+        TOTAL_LENGTH_OF_ENTRY_DISPLAYS = madeUpPackedSample.length();
     }
 
     public static String getHeaderDisplay() {
         String entriesHeaderContentLeftPiece = "(--ENTRIES ";
         String entriesHeaderContentRightPiece = "FETCHED--)";
 
-        //Trim off single trailing whitespace of delimiter (push bounds back one)
-        int endBoundOfMidDelimiterPushedBackOne = END_BOUND_OF_MID_DELIMITER - 1;
 
         StringBuilder entriesHeaderBuilder = new StringBuilder();
 
-        int entriesHeaderLeftPadLength = endBoundOfMidDelimiterPushedBackOne - entriesHeaderContentLeftPiece.length();
-        buildUpHeaderPadding(entriesHeaderBuilder, entriesHeaderLeftPadLength);
+        int entriesHeaderLeftPadLength = END_BOUND_OF_MID_COLUMN - entriesHeaderContentLeftPiece.length();
 
-        buildUpHeaderCenter(entriesHeaderBuilder, entriesHeaderContentLeftPiece, entriesHeaderContentRightPiece);
-
-        int entriesHeaderRightPadLength = TOTAL_LENGTH_OF_ENTRY_DISPLAYS - entriesHeaderBuilder.length();
-        buildUpHeaderPadding(entriesHeaderBuilder, entriesHeaderRightPadLength);
+        entriesHeaderBuilder
+                .repeat(' ', entriesHeaderLeftPadLength)
+                .append(entriesHeaderContentLeftPiece).append(entriesHeaderContentRightPiece);
 
         return entriesHeaderBuilder.toString();
-    }
-
-    private static void buildUpHeaderPadding(StringBuilder entriesHeaderBuilder, int padToLength) {
-        entriesHeaderBuilder.repeat(' ', padToLength);
-    }
-
-    private static void buildUpHeaderCenter(StringBuilder entriesHeaderBuilder, String leftContentPiece, String rightContentPiece) {
-        entriesHeaderBuilder
-                .append(leftContentPiece)
-                .append(rightContentPiece);
     }
 
     public static String formatDisplayFrom(PokemonEntry pokemonEntry) {

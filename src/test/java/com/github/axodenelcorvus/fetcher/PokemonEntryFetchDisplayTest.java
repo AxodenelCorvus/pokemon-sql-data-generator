@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static com.github.axodenelcorvus.fetcher.PokemonEntryFetchDisplay.END_BOUND_OF_MID_DELIMITER;
+import static com.github.axodenelcorvus.fetcher.PokemonEntryFetchDisplay.END_BOUND_OF_MID_COLUMN;
 import static com.github.axodenelcorvus.fetcher.PokemonEntryFetchDisplay.TOTAL_LENGTH_OF_ENTRY_DISPLAYS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -61,14 +61,14 @@ class PokemonEntryFetchDisplayTest {
     }
 
     @Test
-    @DisplayName("Class Constants Correct")
+    @DisplayName("Class constants correct")
     void testConstantsCorrect() {
         assertEquals(77, TOTAL_LENGTH_OF_ENTRY_DISPLAYS);
-        assertEquals(44, END_BOUND_OF_MID_DELIMITER);
+        assertEquals(43, END_BOUND_OF_MID_COLUMN);
     }
 
     @Test
-    @DisplayName("Full Message with Two Samples")
+    @DisplayName("Full message with two Samples")
     void testFullMessageWithFewSamples() {
         boolean isSpeciesFossil = false;
 
@@ -94,7 +94,7 @@ class PokemonEntryFetchDisplayTest {
         String actualFullDisplay = fetchEntryHeader + vulpixEntryDisplay + hisuiFarfetchdEntryDisplay;
 
         String expectedFullDisplay =
-                "                                (--ENTRIES FETCHED--)                        " + '\n' +
+                "                                (--ENTRIES FETCHED--)" + '\n' +
                 "        Primary Key: 37    | Dex ID: 0037 | Type1: Fire     | Type2: N/A     " + '\n' +
                 "        Primary Key: 10166 | Dex ID: 0083 | Type1: Fighting | Type2: N/A     ";
 
