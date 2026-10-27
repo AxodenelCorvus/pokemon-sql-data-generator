@@ -18,25 +18,34 @@ class AggregateHelpMessageProvider {
         helpDisplayables.add(new SeedsGeneratorCommandContext().getHelpDisplayable());
         helpDisplayables.add(new HelpCommandContext().getHelpDisplayable());
 
-        for (HelpDisplayable displayable : helpDisplayables) {
-            helpMessageSuppliers.add(() -> {
-                    return
-                    """
-                    %s  -  %s
-                    
-                    %s
-                    
-                    %s
-                    """.formatted(
-                            displayable.getUsageExample(),
-                            displayable.getCommandDescription(),
-                            String.join("\n", displayable.getRequiredArguments()),
-                            String.join("\n", displayable.getOptionsList())
-                    );
-            });
+        StringBuilder helpMsgBuilder = new StringBuilder();
+
+        for (HelpDisplayable helpDisplayable : helpDisplayables) {
+            helpMsgBuilder
+                    .append(helpDisplayable.getUsageExample())
+                    .append("  -  ")
+                    .append(helpDisplayable.getCommandDescription())
+                    .append("\n\n");
+
+            for (String requiredArgumentHelpDisplay : helpDisplayable.getRequiredArguments()) {
+                helpMsgBuilder.append(requiredArgumentHelpDisplay);
+                helpMsgBuilder.append("\n");
+            }
+
+            if (helpDisplayable.getOptionsList().length != 0) {
+                helpMsgBuilder.append("\nOPTIONS\n\n");
+                for (String optionHelpDisplay : helpDisplayable.getOptionsList()) {
+                    helpMsgBuilder.append(optionHelpDisplay);
+                    helpMsgBuilder.append('\n');
+                }
+            }
+
+            String helpMessage = helpMsgBuilder.toString();
+
+            helpMessageSuppliers.add(() -> helpMessage);
+            helpMsgBuilder.setLength(0);
         }
 
         return helpMessageSuppliers;
     }
-
 }

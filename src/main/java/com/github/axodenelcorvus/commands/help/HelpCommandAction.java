@@ -14,10 +14,16 @@ public class HelpCommandAction implements CoreSubcommandAction {
         List<Supplier<String>> helpDisplayMessages = AggregateHelpMessageProvider.supplyDisplayMessages();
 
         for (Supplier<String> helpDisplay : helpDisplayMessages) {
+            printNewHelpDisplayStart();
             System.out.println(helpDisplay.get());
         }
-        
+
         return 0;
+    }
+
+    private void printNewHelpDisplayStart() {
+        System.out.println();
+        System.out.println("+".repeat(30));
     }
 
 }

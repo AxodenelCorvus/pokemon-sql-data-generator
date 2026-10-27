@@ -22,7 +22,7 @@ public class HelpCommandContext implements CoreSubcommandContextualizer, HelpDis
 
     @Override
     public String getCommandDescription() {
-        return "\t Displays this message and provides help for all subcommands possible below";
+        return "Displays this message, provides help for using any subcommand";
     }
 
     @Override

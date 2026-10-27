@@ -43,7 +43,7 @@ public class Main {
 
             actionStatusResult = cmdAction.activate();
         } catch (IllegalArgumentException e) {
-            System.err.printf("%s%n%n", e.getMessage());
+            System.err.printf("%n%s%n%n", e.getMessage());
             HelpCommandContext helpCommandContext = new HelpCommandContext();
             helpCommandContext.setup().activate();
             actionStatusResult = BAD_INPUT_STATUS_CODE;

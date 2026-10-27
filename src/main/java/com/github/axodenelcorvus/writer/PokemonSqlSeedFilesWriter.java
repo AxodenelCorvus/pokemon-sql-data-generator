@@ -49,7 +49,12 @@ public class PokemonSqlSeedFilesWriter {
     }
 
     public Path getDirectoryDestination() {
-        return filesContext.getDirectoryDestination();
+        Path rawPath = filesContext.getDirectoryDestination();
+
+        if (rawPath.getName(0).toString().isEmpty())
+            return Path.of(".");
+        else
+            return rawPath;
     }
 
     public static Path getDefaultDirDestination() {

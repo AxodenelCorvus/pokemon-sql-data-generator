@@ -31,7 +31,7 @@ public class SeedsGeneratorCoordinator {
     }
 
     public PokemonEntriesBundle fetchEntries(List<String> slugNames) throws IOException, InterruptedException, ExecutionException {
-        System.out.println("Fetching Data...");
+        System.out.printf("%nFetching Data...%n%n");
 
         List<PokemonEntriesBundle> pokemonEntriesBundleList =
                                     new ArrayList<>(slugNames.size());
@@ -95,7 +95,7 @@ public class SeedsGeneratorCoordinator {
     }
 
     public void generateFilesFrom(PokemonEntriesBundle entriesBundled) throws IOException {
-        System.out.println("Preparing Directory and Writing New Files...");
+        System.out.printf("%nPreparing Directory and Writing New Files...%n%n");
 
         sqlFilesWriter.createDestinationDirectoryIfNotExists()
                 .ifPresent((dir) -> System.out.printf("\tCreated Directory: %s%n", dir));
@@ -104,14 +104,14 @@ public class SeedsGeneratorCoordinator {
         sqlFilesWriter.writeSpriteRowEntries(entriesBundled.pokemonSpriteEntries());
 
         System.out.printf(
-                "\tGenerated File: ./%s/%s %n",
+                "\tGenerated File Relative Path: %s/%s %n",
                 sqlFilesWriter.getDirectoryDestination(),
                 sqlFilesWriter.getPokemonEntriesInsertionPath().getFileName()
         );
         System.out.printf(
-                "\tGenerated File: ./%s/%s %n",
+                "\tGenerated File Relative Path: %s/%s %n",
                 sqlFilesWriter.getDirectoryDestination(),
-                sqlFilesWriter.getPokemonEntriesInsertionPath().getFileName()
+                sqlFilesWriter.getPokemonSpriteEntriesInsertionPath().getFileName()
         );
     }
 
